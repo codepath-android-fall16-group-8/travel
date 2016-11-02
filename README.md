@@ -1,7 +1,7 @@
 # The Explorer
 Codepath Group Project
 
-Members: Aditi.K , Huyen.T, Raj Praveen
+Members: Aditi.K ,Huyen.T, Raj Praveen
 
 ## Description
 The Explorer is your travel buddy. It stays with you throughout your journey. It lets you look for places, plan your trip, post pictures and add reviews/ratings. It lets you create a story out of your journey which you can share with your friends and family and cherish those moments.
