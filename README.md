@@ -6,6 +6,10 @@ Members: Aditi.K ,Huyen.T, Raj Praveen
 ## Description
 The Explorer is your travel buddy. It stays with you throughout your journey. It lets you look for places, plan your trip, post pictures and add reviews/ratings. It lets you create a story out of your journey which you can share with your friends and family and cherish those moments.
 
+## Wireframes
+
+![14971562_10210227576383007_1290824000_o](https://cloud.githubusercontent.com/assets/22045135/20085482/1fd4f524-a51e-11e6-8612-ea8a72b9b54e.jpg)
+
 ## User Stories
 
 ### Required
