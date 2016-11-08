@@ -8,8 +8,11 @@ The Explorer is your travel buddy. It stays with you throughout your journey. It
 
 ## Wireframes
 
+- Setup, Homescreen, Trip Planning
+
 ![14971562_10210227576383007_1290824000_o](https://cloud.githubusercontent.com/assets/22045135/20085482/1fd4f524-a51e-11e6-8612-ea8a72b9b54e.jpg)
 
+- Destination details, Story view and User stories
 
 ![15007792_10210227574502960_1568109062_o](https://cloud.githubusercontent.com/assets/22045135/20085493/38bd6f80-a51e-11e6-9fe9-016864196b6b.jpg)
 
