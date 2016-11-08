@@ -48,7 +48,6 @@ dependencies {
     // Facebook Login (optional Maven dependency)
      compile 'com.facebook.android:facebook-android-sdk:4.6.0'
      compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
-
     // Google Places API
     compile 'com.google.android.gms:play-services-places:9.8.0'
 }
