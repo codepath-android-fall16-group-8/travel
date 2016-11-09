@@ -3,8 +3,10 @@
           package="com.codepath.travel">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
+        android:name=".ParseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,6 +23,9 @@
             android:name="io.fabric.ApiKey"
             android:value="5df1188b4b70bb742df7eb2351083a5ca0500606"
             />
+        <meta-data
+            android:name="com.parse.APPLICATION_ID"
+            android:value="traveltrails" />
     </application>
 
 </manifest>
