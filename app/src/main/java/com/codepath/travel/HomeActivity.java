@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.travel.models.User;
 import com.crashlytics.android.Crashlytics;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
-        ParseUser user = ParseUser.getCurrentUser();
+        User user = (User) ParseUser.getCurrentUser();
         Toast.makeText(HomeActivity.this, "Using user: " + user.getUsername(), Toast.LENGTH_SHORT).show();
         this.tvHello.setText(String.format("Hello, %s!", ParseUser.getCurrentUser().getUsername()));
     }
@@ -52,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST_CODE) {
-            ParseUser user = ParseUser.getCurrentUser();
+            User user = (User) ParseUser.getCurrentUser();
             Toast.makeText(this, String.format("Logged in: %s", user.getUsername()), Toast.LENGTH_SHORT).show();
             this.tvHello.setText(String.format("Hello, %s!", user.getUsername()));
         }
