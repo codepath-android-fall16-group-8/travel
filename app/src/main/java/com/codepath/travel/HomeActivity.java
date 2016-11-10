@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.models.User;
 import com.crashlytics.android.Crashlytics;
@@ -19,7 +18,8 @@ import com.parse.ParseFacebookUtils;
 import io.fabric.sdk.android.Fabric;
 
 public class HomeActivity extends AppCompatActivity {
-    static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final int LOGIN_REQUEST = 0;
 
     private TextView tvHello;
 
@@ -43,17 +43,14 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             launchLoginActivity();
         }
-
     }
 
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
         User user = (User) ParseUser.getCurrentUser();
-        Toast.makeText(HomeActivity.this, "Using user: " + user.getUsername(), Toast.LENGTH_SHORT).show();
         this.tvHello.setText(String.format("Hello, %s!", ParseUser.getCurrentUser().getUsername()));
     }
 
-    private static final int LOGIN_REQUEST = 0;
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
         startActivityForResult(builder.build(), LOGIN_REQUEST);
@@ -64,14 +61,29 @@ public class HomeActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
             ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
             User user = (User) ParseUser.getCurrentUser();
-            Toast.makeText(this, String.format("Logged in: %s", user.getUsername()), Toast.LENGTH_SHORT).show();
+            // update user fields if this is a new facebook login
+            if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
+                newAccountSetup(user);
+            }
             this.tvHello.setText(String.format("Hello, %s!", user.getUsername()));
         }
     }
 
+    private void newAccountSetup(User user) {
+        // TODO: fetch fb data like username and profile pic urls if possible
+    }
+
     public void onLogout(View view) {
+        Log.d(TAG, String.format("Logging out for user: %s",
+                ParseUser.getCurrentUser().getUsername()));
         ParseUser.logOut();
-        Log.d(TAG, "Logged out");
+        launchLoginActivity();
+    }
+
+    public void onDeleteAccount(View view) {
+        Log.d(TAG, String.format("Deleting account for user: %s",
+                ParseUser.getCurrentUser().getUsername()));
+        ParseUser.getCurrentUser().deleteEventually();
         launchLoginActivity();
     }
 }

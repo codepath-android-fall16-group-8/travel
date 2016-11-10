@@ -6,5 +6,7 @@
 
     <string name="app_name">Travel</string>
 
+    <!-- Account Management -->
     <string name="logout">Logout</string>
+    <string name="deleteAccount">Delete Account</string>
 </resources>

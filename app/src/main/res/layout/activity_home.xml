@@ -11,6 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.codepath.travel.HomeActivity">
 
+    <!-- Debugging Views: feel free to change or delete -->
     <TextView
         android:id="@+id/hello"
         android:layout_width="wrap_content"
@@ -24,5 +25,13 @@
         android:layout_below="@+id/hello"
         android:text="@string/logout"
         android:onClick="onLogout"/>
+
+    <Button
+        android:id="@+id/btnDeleteAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogout"
+        android:text="@string/deleteAccount"
+        android:onClick="onDeleteAccount"/>
 
 </RelativeLayout>

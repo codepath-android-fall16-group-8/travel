@@ -21,9 +21,6 @@
                 android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_ENABLED"
                 android:value="true"/>
             <meta-data
-                android:name="com.parse.ui.ParseLoginActivity.PARSE_LOGIN_EMAIL_AS_USERNAME"
-                android:value="false"/>
-            <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.FACEBOOK_LOGIN_ENABLED"
                 android:value="true"/>
         </activity>
