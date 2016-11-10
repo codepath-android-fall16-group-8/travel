@@ -20,18 +20,8 @@ import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
 @ParseClassName(USER_CLASS_NAME)
 public class User extends ParseUser {
 
-    private ParseUser user;
-
     public User() {
         super();
-    }
-
-    public User(String username, String email, String password) {
-        super();
-        user = new ParseUser();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
     }
 
     public int getFbUid() {
@@ -60,7 +50,7 @@ public class User extends ParseUser {
 
     public void queryTrips(FindCallback<Trip> callback) {
         ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        query.whereEqualTo(USER_KEY, user);
+        query.whereEqualTo(USER_KEY, this);
         query.findInBackground(callback);
     }
 
@@ -102,7 +92,7 @@ public class User extends ParseUser {
 
     public void queryFollowers(FindCallback<User> callback) {
         ParseQuery<User> query = ParseQuery.getQuery(USER_CLASS_NAME);
-        query.whereEqualTo(FOLLOWING_RELATION_KEY, user);
+        query.whereEqualTo(FOLLOWING_RELATION_KEY, this);
         query.findInBackground(callback);
     }
 

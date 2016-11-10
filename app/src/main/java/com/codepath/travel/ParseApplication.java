@@ -9,6 +9,7 @@ import com.codepath.travel.models.Tag;
 import com.codepath.travel.models.Trip;
 import com.codepath.travel.models.User;
 import com.parse.Parse;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.interceptors.ParseLogInterceptor;
@@ -43,9 +44,7 @@ public class ParseApplication extends Application {
                 .addNetworkInterceptor(new ParseLogInterceptor())
                 .server(SERVER_URL).build());
 
-        // New test creation of object below
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+        // ParseFacebookUtils should initialize the Facebook SDK for you
+        ParseFacebookUtils.initialize(this);
     }
 }
