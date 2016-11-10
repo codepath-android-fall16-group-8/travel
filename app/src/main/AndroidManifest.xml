@@ -25,7 +25,10 @@
             />
         <meta-data
             android:name="com.parse.APPLICATION_ID"
-            android:value="traveltrails" />
+            android:value="@string/parse_app_id" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_api_key"/>
     </application>
 
 </manifest>
