@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.codepath.travel">
+    package="com.codepath.travel">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".ParseApplication"
@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
@@ -35,23 +36,31 @@
             <meta-data
                 android:name="com.facebook.sdk.PERMISSIONS"
                 android:value="email" />
-        <activity android:name=".HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        <!--<activity android:name=".HomeActivity">-->
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+        <activity android:name=".activities.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.CreateStoryActivity" />
+        <activity android:name=".activities.SearchActivity" />
+        <activity android:name=".activities.StoryActivity"></activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="5df1188b4b70bb742df7eb2351083a5ca0500606"
-            />
+            android:value="5df1188b4b70bb742df7eb2351083a5ca0500606" />
         <meta-data
             android:name="com.parse.APPLICATION_ID"
             android:value="@string/parse_app_id" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key"/>
+
+
     </application>
 
 </manifest>

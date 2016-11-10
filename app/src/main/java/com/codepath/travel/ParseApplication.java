@@ -2,7 +2,6 @@ package com.codepath.travel;
 
 import android.app.Application;
 
-<<<<<<< 13205e61e02e08727647609498b1fb9bf2156432
 import com.codepath.travel.models.Media;
 import com.codepath.travel.models.SavedPlace;
 import com.codepath.travel.models.StoryPlace;
@@ -13,10 +12,6 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-=======
-import com.parse.Parse;
-import com.parse.ParseObject;
->>>>>>> Creating test data with parse
 import com.parse.interceptors.ParseLogInterceptor;
 
 /**
@@ -39,7 +34,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(SavedPlace.class);
         ParseObject.registerSubclass(Media.class);
         ParseObject.registerSubclass(Tag.class);
-        
+
         // set applicationId, and server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured
         // any network interceptors must be added with the Configuration Builder given this syntax
