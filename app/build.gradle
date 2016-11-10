@@ -42,4 +42,7 @@ dependencies {
     compile 'com.parse:parseinterceptors:0.0.2' // for logging API calls to LogCat
     compile 'com.parse.bolts:bolts-android:1.+'
 
+
+    // Google Places API
+    compile 'com.google.android.gms:play-services-places:9.8.0'
 }

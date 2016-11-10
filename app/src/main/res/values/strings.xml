@@ -1,3 +1,6 @@
 <resources>
+    <!-- APIs and Integrations -->
+    <string name="parse_app_id">traveltrails</string>
+    <string name="google_api_key">AIzaSyD4JhCWAAVr5oxzC9dzYQl6ed2OeHXuLdQ</string>
     <string name="app_name">Travel</string>
 </resources>

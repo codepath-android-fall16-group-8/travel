@@ -2,8 +2,15 @@ package com.codepath.travel;
 
 import android.app.Application;
 
+import com.codepath.travel.models.Media;
+import com.codepath.travel.models.SavedPlace;
+import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.Tag;
+import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.interceptors.ParseLogInterceptor;
 
 /**
@@ -18,6 +25,14 @@ public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // Register parse models
+        ParseUser.registerSubclass(User.class);
+        ParseObject.registerSubclass(Trip.class);
+        ParseObject.registerSubclass(StoryPlace.class);
+        ParseObject.registerSubclass(SavedPlace.class);
+        ParseObject.registerSubclass(Media.class);
+        ParseObject.registerSubclass(Tag.class);
 
         // set applicationId, and server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured
