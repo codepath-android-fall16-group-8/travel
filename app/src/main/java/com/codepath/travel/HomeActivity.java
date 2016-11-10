@@ -3,6 +3,8 @@ package com.codepath.travel;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,6 +12,9 @@ import com.codepath.travel.models.User;
 import com.crashlytics.android.Crashlytics;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.parse.ParseFacebookUtils;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -24,7 +29,11 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // fabric crash reporting
-        Fabric.with(this, new Crashlytics());
+//        Fabric.with(this, new Crashlytics());
+
+        // facebook integration
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(getApplication());
 
         this.tvHello = (TextView) findViewById(R.id.hello);
 
@@ -44,18 +53,25 @@ public class HomeActivity extends AppCompatActivity {
         this.tvHello.setText(String.format("Hello, %s!", ParseUser.getCurrentUser().getUsername()));
     }
 
-    private static final int LOGIN_REQUEST_CODE = 0;
+    private static final int LOGIN_REQUEST = 0;
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
-        startActivityForResult(builder.build(), LOGIN_REQUEST_CODE);
+        startActivityForResult(builder.build(), LOGIN_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST_CODE) {
+        if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
+            ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
             User user = (User) ParseUser.getCurrentUser();
             Toast.makeText(this, String.format("Logged in: %s", user.getUsername()), Toast.LENGTH_SHORT).show();
             this.tvHello.setText(String.format("Hello, %s!", user.getUsername()));
         }
+    }
+
+    public void onLogout(View view) {
+        ParseUser.logOut();
+        Log.d(TAG, "Logged out");
+        launchLoginActivity();
     }
 }

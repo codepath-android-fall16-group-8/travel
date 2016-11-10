@@ -22,6 +22,7 @@ android {
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 dependencies {
@@ -44,10 +45,9 @@ dependencies {
     // Module dependency on ParseUI libraries sources
     compile 'com.parse:parseui-login-android:0.0.1'
     compile 'com.parse:parseui-widget-android:0.0.1'
-
-    // Uncomment if using Facebook Login (optional Maven dependency)
-    // compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-    // compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
+    // Facebook Login (optional Maven dependency)
+     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+     compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
 
     // Google Places API
     compile 'com.google.android.gms:play-services-places:9.8.0'
