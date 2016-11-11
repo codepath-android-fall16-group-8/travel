@@ -17,19 +17,11 @@
             android:layout_height="wrap_content" />
 
         <!-- Debugging Views: feel free to change or delete -->
-        <TextView
-            android:id="@+id/hello"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/toolbar"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            tools:text="Hello World!"/>
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_below="@id/hello"
+            android:layout_below="@id/toolbar"
             android:scaleType="fitStart"
             android:src="@mipmap/ic_launcher"
             android:onClick="onDestination"

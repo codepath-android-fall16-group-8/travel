@@ -12,15 +12,26 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
 import com.codepath.travel.models.User;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.LoggingBehavior;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.parse.ParseFacebookUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -29,7 +40,8 @@ public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
-    private TextView tvHello;
+    private TextView tvName;
+    private ImageView ivProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +50,8 @@ public class HomeActivity extends AppCompatActivity {
 
         // Facebook integration
         FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.setIsDebugEnabled(true);
+        FacebookSdk.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
         AppEventsLogger.activateApp(getApplication());
 
         setupViews();
@@ -49,16 +63,17 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             launchLoginActivity();
         }
-
-
     }
 
     private void setupViews() {
-        this.tvHello = (TextView) findViewById(R.id.hello);
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        View nvHeader = nvDrawer.getHeaderView(0);
+        this.ivProfile = (ImageView) nvHeader.findViewById(R.id.ivProfilePic);
+        this.ivProfile.setImageResource(0);
+        this.tvName = (TextView) nvHeader.findViewById(R.id.tvName);
 
         this.mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
@@ -68,11 +83,43 @@ public class HomeActivity extends AppCompatActivity {
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
         User user = (User) ParseUser.getCurrentUser();
-        this.tvHello.setText(String.format("Hello, %s!", user.getUsername()));
+        this.tvName.setText(user.getUsername());
+        Glide.with(this).load(user.getProfilePicUrl())
+                .placeholder(R.drawable.com_facebook_profile_picture_blank_portrait)
+                .fitCenter()
+                .bitmapTransform(new CropCircleTransformation(this))
+                .into(this.ivProfile);
     }
 
-    private void newAccountSetup(User user) {
-        // TODO: fetch fb data like username and profile pic urls if possible
+    private void newFBAccountSetup(final User user) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            user.setFbUid(object.getInt("id"));
+                            user.setUsername(object.getString("name"));
+                            if (object.has("email")) {
+                                user.setEmail(object.getString("email"));
+                            }
+                            if (object.has("picture")) {
+                                user.setProfilePicUrl(object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                            }
+                            if (object.has("cover")) {
+                                user.setCoverPicUrl(object.getJSONObject("cover").getString("source"));
+                            }
+                            user.saveInBackground();
+                            startWithCurrentUser();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,picture,cover");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     private void launchLoginActivity() {
@@ -91,6 +138,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.d(TAG, String.format("Deleting account for user: %s",
                 ParseUser.getCurrentUser().getUsername()));
         ParseUser.getCurrentUser().deleteEventually();
+        ParseUser.logOut();
         launchLoginActivity();
     }
 
@@ -117,10 +165,9 @@ public class HomeActivity extends AppCompatActivity {
             User user = (User) ParseUser.getCurrentUser();
             // update user fields if this is a new facebook login
             if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
-                newAccountSetup(user);
+                newFBAccountSetup(user);
             }
-            this.tvHello.setText(String.format("Hello, %s!", user.getUsername()));
-
+            startWithCurrentUser();
         }
     }
 

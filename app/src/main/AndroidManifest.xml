@@ -37,14 +37,12 @@
                 android:name="com.facebook.sdk.PERMISSIONS"
                 android:value="email" />
         <activity android:name=".activities.HomeActivity">
-            <!--<activity android:name=".activities.LoginActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.CreateStoryActivity" />
         <activity android:name=".activities.SearchActivity" />
         <activity android:name=".activities.StoryActivity"></activity>
