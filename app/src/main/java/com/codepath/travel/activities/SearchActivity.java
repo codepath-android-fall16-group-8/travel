@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.codepath.travel.R;
 
+@SuppressWarnings("deprecated")
+// Class not in use for now. In future this could be called by Home Activity
 public class SearchActivity extends AppCompatActivity {
 
     @Override

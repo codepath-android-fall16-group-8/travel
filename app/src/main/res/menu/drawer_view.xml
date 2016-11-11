@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/com_facebook_button_like_icon_selected"
+            android:title="Logout" />
+        <item
+            android:id="@+id/nav_delete_account"
+            android:icon="@drawable/com_parse_ui_facebook_login_logo"
+            android:title="Delete Account" />
+    </group>
+</menu>

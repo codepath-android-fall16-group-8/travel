@@ -36,9 +36,8 @@
             <meta-data
                 android:name="com.facebook.sdk.PERMISSIONS"
                 android:value="email" />
-        <!--<activity android:name=".HomeActivity">-->
-
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name=".activities.HomeActivity">
+            <!--<activity android:name=".activities.LoginActivity">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -59,8 +58,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key"/>
-
-
     </application>
 
 </manifest>
