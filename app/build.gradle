@@ -31,6 +31,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
     testCompile 'junit:junit:4.12'
 
     // Fabric
@@ -48,7 +52,7 @@ dependencies {
     // Facebook Login (optional Maven dependency)
      compile 'com.facebook.android:facebook-android-sdk:4.6.0'
      compile 'com.parse:parsefacebookutils-v4-android:1.10.3@aar'
-
     // Google Places API
     compile 'com.google.android.gms:play-services-places:9.8.0'
+
 }
