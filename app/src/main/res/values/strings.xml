@@ -11,6 +11,10 @@
     <string name="confirm_story">confirm to create story</string>
     <string name="toolbar_title_create_story">My planned trip to</string>
     <string name="toolbar_title_story">Trip to</string>
+    <string name="toolbar_title_story_collage">Story: </string>
+    <string name="view_map">View Map</string>
+    <string name="view_collage">View Collage</string>
+    <string name="share_story">Share Story</string>
     <!-- Navigation drawer -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.SearchActivity">
+
+    <item
+        android:id="@+id/miShare"
+        android:orderInCategory="10"
+        android:title="@string/share_story"
+        android:icon="@android:drawable/ic_menu_share"
+        app:showAsAction="ifRoom" />
+</menu>

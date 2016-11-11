@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.SearchActivity">
+
+    <item
+        android:id="@+id/miMap"
+        android:orderInCategory="10"
+        android:title="@string/view_map"
+        android:icon="@android:drawable/ic_dialog_map"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/miCollage"
+        android:orderInCategory="20"
+        android:title="@string/view_collage"
+        android:icon="@android:drawable/ic_menu_gallery"
+        app:showAsAction="ifRoom" />
+</menu>
