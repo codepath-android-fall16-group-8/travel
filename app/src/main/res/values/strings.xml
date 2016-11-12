@@ -1,7 +1,7 @@
 <resources>
     <!-- APIs and Integrations -->
     <string name="parse_app_id">traveltrails</string>
-    <string name="google_api_key">AIzaSyD4JhCWAAVr5oxzC9dzYQl6ed2OeHXuLdQ</string>
+    <string name="google_api_key">AIzaSyBy3aSmVTrzxJ3ycvpIJ26Jv2PYLQHFYSE</string>
     <string name="facebook_app_id">646488778862200</string>
     <!-- Account Management -->
     <string name="logout">Logout</string>
@@ -14,5 +14,18 @@
     <!-- Navigation drawer -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="place_details">
+    <![CDATA[
+        <b>%1$s</b>
+        <br/>
+        <i>Place Id: %2$s</i>
+        <br/>
+        Address: %3$s
+        <br/>
+        Phone: %4$s
+        <br/>
+        Website: %5$s
+    ]]>
+    </string>
 
 </resources>

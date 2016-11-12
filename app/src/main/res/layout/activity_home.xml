@@ -10,32 +10,69 @@
         android:layout_height="match_parent"
         tools:context="com.codepath.travel.activities.HomeActivity">
 
-        <include
-            layout="@layout/toolbar"
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/toolbar"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="?attr/colorPrimaryDark">
+            <fragment
+                android:id="@+id/autocomplete_fragment"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </android.support.v7.widget.Toolbar>
 
         <!-- Debugging Views: feel free to change or delete -->
+
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             android:layout_below="@id/toolbar"
             android:scaleType="fitStart"
             android:src="@mipmap/ic_launcher"
-            android:onClick="onDestination"
-            android:id="@+id/ivDestination" />
+            android:onClick="onSearchedPlace"
+            android:id="@+id/ivPlace" />
 
         <TextView
-            android:text="Place X"
+            tools:text="Place X"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ivDestination"
-            android:layout_alignLeft="@+id/ivDestination"
-            android:layout_alignStart="@+id/ivDestination"
-            android:layout_marginTop="20dp"
-            android:id="@+id/textView" />
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tvPlaceName"
+            android:layout_alignTop="@+id/ivPlace"
+            android:layout_toRightOf="@+id/ivPlace"
+            android:layout_toEndOf="@+id/ivPlace"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/place_address"
+            tools:text="Place Address"
+            android:autoLink="all"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/ivPlace"
+            android:layout_toEndOf="@+id/ivPlace"
+            android:layout_below="@+id/tvPlaceName"/>
+
+        <TextView
+            android:id="@+id/place_attribution"
+            tools:text="Place attribution"
+            android:autoLink="all"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/place_address"
+            android:paddingTop="10dp" />
+
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

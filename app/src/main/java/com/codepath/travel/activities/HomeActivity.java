@@ -2,6 +2,9 @@ package com.codepath.travel.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,11 +12,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
@@ -22,6 +29,16 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.LoggingBehavior;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 import com.facebook.FacebookSdk;
@@ -32,8 +49,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.CropTransformation;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements PlaceSelectionListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int LOGIN_REQUEST = 0;
     private DrawerLayout mDrawer;
@@ -41,7 +59,11 @@ public class HomeActivity extends AppCompatActivity {
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
     private TextView tvName;
+    private TextView tvPlaceName;
+    private TextView tvPlaceAddress;
+    private TextView tvPlaceAttribution;
     private ImageView ivProfile;
+    private ImageView ivPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +85,9 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             launchLoginActivity();
         }
+
+        //Search autocomplete fragment initialization
+        setupSearchAutoComplete();
     }
 
     private void setupViews() {
@@ -73,7 +98,12 @@ public class HomeActivity extends AppCompatActivity {
         View nvHeader = nvDrawer.getHeaderView(0);
         this.ivProfile = (ImageView) nvHeader.findViewById(R.id.ivProfilePic);
         this.ivProfile.setImageResource(0);
+        this.ivPlace = (ImageView) findViewById(R.id.ivPlace);
+        this.ivPlace.setImageResource(0);
         this.tvName = (TextView) nvHeader.findViewById(R.id.tvName);
+        this.tvPlaceName = (TextView) findViewById(R.id.tvPlaceName);
+        this.tvPlaceAddress = (TextView) findViewById(R.id.place_address);
+        this.tvPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
         this.mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
@@ -158,6 +188,15 @@ public class HomeActivity extends AppCompatActivity {
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
+    private void setupSearchAutoComplete() {
+        // Retrieve the PlaceAutocompleteFragment
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        // Register a listener to receive callbacks when a place has been selected or an error has occured
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
@@ -200,7 +239,35 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDestination(View view) {
+    //Callback invoked when a place has been selected from the PlaceAutocompleteFragment.
+    @Override
+    public void onPlaceSelected(Place place) {
+        Log.i(TAG, "Place Selected: " + place.getName());
+
+        //Set place image and name
+        Glide.with(this).load("http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day")
+                .into(this.ivPlace);
+        tvPlaceName.setText(place.getName());
+        tvPlaceAddress.setText(place.getAddress());
+
+        CharSequence attributions = place.getAttributions();
+        if (!TextUtils.isEmpty(attributions)) {
+            tvPlaceAttribution.setText(Html.fromHtml(attributions.toString()));
+        } else {
+            tvPlaceAttribution.setText("");
+        }
+    }
+
+    //Callback invoked when PlaceAutocompleteFragment encounters an error.
+    @Override
+    public void onError(Status status) {
+        Log.e(TAG, "onError: Status = " + status.toString());
+
+        Toast.makeText(this, "Place selection failed: " + status.getStatusMessage(),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSearchedPlace(View view) {
         Intent intent = new Intent(this, CreateStoryActivity.class);
         startActivity(intent);
     }
