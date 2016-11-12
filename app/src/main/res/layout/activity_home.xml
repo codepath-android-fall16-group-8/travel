@@ -34,7 +34,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             android:layout_below="@id/toolbar"
-            android:scaleType="fitStart"
+            android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"
             android:onClick="onSearchedPlace"
             android:id="@+id/ivPlace" />
