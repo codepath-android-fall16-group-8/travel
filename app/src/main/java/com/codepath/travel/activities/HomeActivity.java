@@ -233,7 +233,7 @@ public class HomeActivity extends AppCompatActivity implements PlaceSelectionLis
     public void onPlaceSelected(Place place) {
         Log.i(TAG, "Place Selected: " + place.getName());
 
-        //Set place image and name
+        //Set place image and place details
         Glide.with(this).load("http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day")
                 .into(this.ivPlace);
         tvPlaceName.setText(place.getName());
