@@ -12,11 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.travel.Model.StoryPlace;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.helper.OnStartDragListener;
+import com.codepath.travel.models.StoryPlace;
 
 import java.util.Collections;
 import java.util.List;
@@ -110,7 +110,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         public void populate(StoryPlace storyPlace) {
             ivPlacePhoto.setImageResource(0);
             Glide.with(mContext)
-                    .load(storyPlace.getImageUrl())
+                    .load(storyPlace.getCoverPicUrl())
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
         }

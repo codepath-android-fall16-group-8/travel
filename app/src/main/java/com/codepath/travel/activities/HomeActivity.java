@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -139,6 +140,15 @@ public class HomeActivity extends AppCompatActivity implements PlaceSelectionLis
     }
 
     private void setUpClickListeners() {
+        lvMyTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Trip trip = mTripsAdapter.getItem(position);
+                Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
+                openStory.putExtra(StoryActivity.TRIP_ID_ARG, trip.getObjectId());
+                startActivity(openStory);
+            }
+        });
         btNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
