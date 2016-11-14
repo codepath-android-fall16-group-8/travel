@@ -20,14 +20,24 @@ import static com.codepath.travel.models.ParseModelConstants.RATING_KEY;
 import static com.codepath.travel.models.ParseModelConstants.STORY_PLACE_CLASS_NAME;
 import static com.codepath.travel.models.ParseModelConstants.TRIP_KEY;
 
+import org.parceler.Parcel;
+
 /**
  * Parse model for a travel story/trip.
  */
 @ParseClassName(STORY_PLACE_CLASS_NAME)
+@Parcel(analyze={StoryPlace.class})
 public class StoryPlace extends ParseObject {
 
     public StoryPlace() {
+        // empty constructor for parceler
+    }
+
+    // for testing, DELETE ME after we have API places
+    public StoryPlace(Trip trip, String name) {
         super();
+        setTrip(trip);
+        setName(name);
     }
 
     public StoryPlace(Trip trip, Place place) {

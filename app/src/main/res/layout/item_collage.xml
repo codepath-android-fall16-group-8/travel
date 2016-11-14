@@ -7,13 +7,13 @@
     android:background="@android:color/white" >
 
     <ImageView
-        android:id="@+id/ivCover"
+        android:id="@+id/ivCoverPhoto"
         android:layout_width="@dimen/item_collage_width"
         android:layout_height="@dimen/item_collage_height"
         tools:src="@mipmap/ic_launcher" />
 
     <TextView
-        android:id="@+id/tvName"
+        android:id="@+id/tvPlaceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

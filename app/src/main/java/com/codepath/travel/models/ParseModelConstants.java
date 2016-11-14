@@ -5,6 +5,8 @@ package com.codepath.travel.models;
  */
 public final class ParseModelConstants {
 
+    public static final String OBJECT_ID_KEY = "objectId";
+
     // User-specific values
     public static final String USER_CLASS_NAME = "_User";
     public static final String FB_UID_KEY = "fbUid";

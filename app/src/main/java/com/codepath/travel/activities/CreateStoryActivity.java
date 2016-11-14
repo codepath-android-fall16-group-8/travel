@@ -69,18 +69,14 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     }
 
     private void setUpTrip() {
-        mNewTrip = new Trip();
-        mNewTrip.setTitle(mDestination);
-        mNewTrip.setUser(ParseUser.getCurrentUser());
+        mNewTrip = new Trip(ParseUser.getCurrentUser(), mDestination);
     }
 
     private void setUpClickListeners() {
         btAddNewPlace.setOnClickListener((View view) -> {
             String placeOfInterest = etPlaceOfInterest.getText().toString();
             etPlaceOfInterest.setText("");
-            StoryPlace storyPlace = new StoryPlace();
-            storyPlace.setTrip(mNewTrip);
-            storyPlace.setName(placeOfInterest);
+            StoryPlace storyPlace = new StoryPlace(mNewTrip, placeOfInterest);
             mStoryPlaces.add(storyPlace);
             mAdapter.notifyDataSetChanged();
         });
