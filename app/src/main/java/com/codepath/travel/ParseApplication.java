@@ -28,7 +28,6 @@ public class ParseApplication extends Application {
         super.onCreate();
 
         // Register parse models
-        ParseUser.registerSubclass(User.class);
         ParseObject.registerSubclass(Trip.class);
         ParseObject.registerSubclass(StoryPlace.class);
         ParseObject.registerSubclass(SavedPlace.class);

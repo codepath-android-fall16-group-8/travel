@@ -1,7 +1,6 @@
 package com.codepath.travel.models;
 
 import com.parse.FindCallback;
-import com.parse.ParseClassName;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
@@ -11,94 +10,86 @@ import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
 import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
-import static com.codepath.travel.models.ParseModelConstants.USER_CLASS_NAME;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
 
 import android.text.TextUtils;
 
 /**
- * Parse user model.
+ * ParseUser helper methods for extended fields and relations.
  */
-@ParseClassName(USER_CLASS_NAME)
-public class User extends ParseUser {
+public final class User {
 
-    public User() {
-        super();
+    private User() {}
+
+    public static int getFbUid(ParseUser pUser) {
+        return pUser.getInt(FB_UID_KEY);
     }
 
-    public int getFbUid() {
-        return getInt(FB_UID_KEY);
+    public static void setFbUid(ParseUser pUser, int fbUid) {
+        pUser.put(FB_UID_KEY, fbUid);
     }
 
-    public void setFbUid(int fbUid) {
-        put(FB_UID_KEY, fbUid);
+    public static String getProfilePicUrl(ParseUser pUser) {
+        return pUser.getString(PROFILE_PIC_URL_KEY);
     }
 
-    public String getProfilePicUrl() {
-        return getString(PROFILE_PIC_URL_KEY);
+    public static void setProfilePicUrl(ParseUser pUser, String profilePicUrl) {
+        pUser.put(PROFILE_PIC_URL_KEY, profilePicUrl);
     }
 
-    public void setProfilePicUrl(String profilePicUrl) {
-        put(PROFILE_PIC_URL_KEY, profilePicUrl);
-    }
-
-    public String getCoverPicUrl() {
-        String coverUrl = getString(PHOTO_URL);
+    public static String getCoverPicUrl(ParseUser pUser) {
+        String coverUrl = pUser.getString(PHOTO_URL);
         if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
             return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
         }
         return coverUrl;
     }
 
-    public void setCoverPicUrl(String coverPicUrl) {
-        put(PHOTO_URL, coverPicUrl);
+    public static void setCoverPicUrl(ParseUser pUser, String coverPicUrl) {
+        pUser.put(PHOTO_URL, coverPicUrl);
     }
 
-    public void queryTrips(FindCallback<Trip> callback) {
+    public static void queryTrips(ParseUser pUser, FindCallback<Trip> callback) {
         ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        query.whereEqualTo(USER_KEY, this);
+        query.whereEqualTo(USER_KEY, pUser);
         query.findInBackground(callback);
     }
 
-    public ParseRelation<Trip> getFavoriteRelation() {
-        return getRelation(FAVORITES_RELATION_KEY);
+    public static ParseRelation<Trip> getFavoriteRelation(ParseUser pUser) {
+        return pUser.getRelation(FAVORITES_RELATION_KEY);
     }
 
-    public void addFavorite(Trip trip) {
-        getFavoriteRelation().add(trip);
-        saveInBackground();
+    public static void addFavorite(ParseUser pUser, Trip trip) {
+        getFavoriteRelation(pUser).add(trip);
     }
 
-    public void removeFavorite(Trip trip) {
-        getFavoriteRelation().remove(trip);
-        saveInBackground();
+    public static void removeFavorite(ParseUser pUser, Trip trip) {
+        getFavoriteRelation(pUser).remove(trip);
     }
 
-    public void queryFavorites(FindCallback<Trip> callback) {
-        getFavoriteRelation().getQuery().findInBackground(callback);
+    public static void queryFavorites(ParseUser pUser, FindCallback<Trip> callback) {
+        getFavoriteRelation(pUser).getQuery().findInBackground(callback);
     }
 
-    public ParseRelation<User> getFollowingRelation() {
-        return getRelation(FOLLOWING_RELATION_KEY);
+    public static ParseRelation<ParseUser> getFollowingRelation(ParseUser pUser) {
+        return pUser.getRelation(FOLLOWING_RELATION_KEY);
     }
 
-    public void follow(User user) {
-        getFollowingRelation().add(user);
-        saveInBackground();
+    public static void follow(ParseUser pUser, ParseUser otherUser) {
+        getFollowingRelation(pUser).add(otherUser);
     }
 
-    public void unFollow(User user) {
-        getFollowingRelation().remove(user);
-        saveInBackground();
+    public static void unFollow(ParseUser pUser, ParseUser otherUser) {
+        getFollowingRelation(pUser).remove(otherUser);
     }
 
-    public void queryFollowing(FindCallback<User> callback) {
-        getFollowingRelation().getQuery().findInBackground(callback);
+    public static void queryFollowing(ParseUser pUser, FindCallback<ParseUser> callback) {
+        getFollowingRelation(pUser).getQuery().findInBackground(callback);
     }
 
-    public void queryFollowers(FindCallback<User> callback) {
-        ParseQuery<User> query = ParseQuery.getQuery(USER_CLASS_NAME);
-        query.whereEqualTo(FOLLOWING_RELATION_KEY, this);
+    public static void queryFollowers(ParseUser pUser, FindCallback<ParseUser> callback) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo(FOLLOWING_RELATION_KEY, pUser);
         query.findInBackground(callback);
     }
 
