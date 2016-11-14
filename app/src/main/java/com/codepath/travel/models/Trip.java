@@ -81,5 +81,9 @@ public class Trip extends ParseObject {
         getSharedRelation().getQuery().findInBackground(callback);
     }
 
+    public String toString() {
+        return getTitle();
+    }
+
     // TODO: figure out how to query for all tags inside this trip (including storyPlace and media tags)
 }

@@ -9,6 +9,7 @@
     <!-- App related strings -->
     <string name="app_name">Travel</string>
     <string name="confirm_story">confirm to create story</string>
+    <string name="add_a_place">Add a place to trip</string>
     <string name="toolbar_title_create_story">My planned trip to</string>
     <string name="toolbar_title_story">Trip to</string>
     <string name="toolbar_title_story_collage">Story: </string>
@@ -18,5 +19,15 @@
     <!-- Navigation drawer -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <!-- Group strings by activity -->
+
+    <!-- Home screen strings -->
+    <string name="start_new_trip">Start a New Trip</string>
+    <string name="destination_hint">Where do you want to go?</string>
+    <string name="my_trips">My Trips</string>
+
+    <!-- Create Trip -->
+    <string name="hint_places_of_interest">visit place</string>
 
 </resources>

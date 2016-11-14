@@ -27,52 +27,32 @@
                 android:layout_height="wrap_content" />
         </android.support.v7.widget.Toolbar>
 
-        <!-- Debugging Views: feel free to change or delete -->
+        <EditText
+            android:id="@+id/etDestination"
+            android:layout_below="@+id/toolbar"
+            android:hint="@string/destination_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/toolbar"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
-            android:onClick="onSearchedPlace"
-            android:id="@+id/ivPlace" />
+        <Button
+            android:id="@+id/btStartNewTrip"
+            android:text="@string/start_new_trip"
+            android:layout_below="@+id/etDestination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <TextView
-            tools:text="Place X"
+            android:id="@+id/tvMyTrips"
+            android:text="@string/my_trips"
+            android:textStyle="bold"
+            android:layout_below="@+id/btStartNewTrip"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/tvPlaceName"
-            android:layout_alignTop="@+id/ivPlace"
-            android:layout_toRightOf="@+id/ivPlace"
-            android:layout_toEndOf="@+id/ivPlace"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/place_address"
-            tools:text="Place Address"
-            android:autoLink="all"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/ivPlace"
-            android:layout_toEndOf="@+id/ivPlace"
-            android:layout_below="@+id/tvPlaceName"/>
-
-        <TextView
-            android:id="@+id/place_attribution"
-            tools:text="Place attribution"
-            android:autoLink="all"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/place_address"
-            android:paddingTop="10dp" />
-
+            android:layout_height="wrap_content"/>
+        <ListView
+            android:id="@+id/lvMyTrips"
+            android:layout_below="@+id/tvMyTrips"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

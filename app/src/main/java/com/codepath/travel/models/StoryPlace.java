@@ -67,7 +67,8 @@ public class StoryPlace extends ParseObject {
     }
 
     public String getCoverPicUrl() {
-        return getString(COVER_PIC_URL_KEY);
+        return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+        //return getString(COVER_PIC_URL_KEY);
     }
 
     public void setCoverPicUrl(String coverPicUrl) {

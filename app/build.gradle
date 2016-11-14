@@ -46,6 +46,10 @@ dependencies {
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     testCompile 'junit:junit:4.12'
 
+    // Butterknife
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
     // Fabric
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;

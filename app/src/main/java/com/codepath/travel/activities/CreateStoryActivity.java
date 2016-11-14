@@ -9,42 +9,98 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.codepath.travel.Model.StoryPlace;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
+import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.Trip;
+import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener {
 
-    private RecyclerView rvStoryPlaces;
+    // intent arguments
+    public static final String DESTINATION_ARGS = "destination";
+
+    // Views
+    @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
+    @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
+    @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
+    @BindView(R.id.etPlacesOfInterest) EditText etPlaceOfInterest;
+
+    // Listeners
+    private ItemTouchHelper mItemTouchHelper;
+
+    // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
     private StoryPlaceArrayAdapter mAdapter;
-    private ItemTouchHelper mItemTouchHelper;
+    private String mDestination;
+    private Trip mNewTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
 
+        mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_create_story) + " X");
+        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_create_story) + mDestination);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        rvStoryPlaces = (RecyclerView) findViewById(R.id.rvStoryPlaces);
-        mStoryPlaces = StoryPlace.getTestStoryPlacesList(5);
-        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(),this, mStoryPlaces);
+        ButterKnife.bind(this);
 
+        setUpTrip();
         setUpRecyclerView();
+        setUpClickListeners();
+    }
+
+    private void setUpTrip() {
+        mNewTrip = new Trip();
+        mNewTrip.setTitle(mDestination);
+        mNewTrip.setUser(ParseUser.getCurrentUser());
+    }
+
+    private void setUpClickListeners() {
+        btAddNewPlace.setOnClickListener((View view) -> {
+            String placeOfInterest = etPlaceOfInterest.getText().toString();
+            etPlaceOfInterest.setText("");
+            StoryPlace storyPlace = new StoryPlace();
+            storyPlace.setTrip(mNewTrip);
+            storyPlace.setName(placeOfInterest);
+            mStoryPlaces.add(storyPlace);
+            mAdapter.notifyDataSetChanged();
+        });
+
+        btCreateMyTrip.setOnClickListener((View v) -> {
+            StoryPlace.saveAllInBackground(mStoryPlaces, (ParseException e) -> {
+                if (e == null) {
+                    Toast.makeText(CreateStoryActivity.this, "Trip saved", Toast.LENGTH_LONG);
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Toast.makeText(CreateStoryActivity.this, "Error saving", Toast.LENGTH_SHORT);
+                }
+            });
+        });
     }
 
     private void setUpRecyclerView() {
+        mStoryPlaces = new ArrayList<>();
+        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(),this, mStoryPlaces);
         rvStoryPlaces.setHasFixedSize(true);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));

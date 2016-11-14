@@ -9,17 +9,33 @@
     tools:context=".activities.CreateStoryActivity"
     tools:showIn="@layout/activity_create_story">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvStoryPlaces"
+    <EditText
+        android:id="@+id/etPlacesOfInterest"
+        android:hint="@string/hint_places_of_interest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btAddNewPlace"
+        android:layout_below="@+id/etPlacesOfInterest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/add_a_place"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvStoryPlaces"
+        android:layout_below="@+id/btAddNewPlace"
+        android:layout_above="@+id/btCreateTrip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
     <Button
-        android:id="@+id/btnConfirm"
+        android:id="@+id/btCreateTrip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rvStoryPlaces"
+        android:layout_alignParentBottom="true"
         android:textAllCaps="true"
         android:text="@string/confirm_story"
         android:onClick="onConfirm"/>
