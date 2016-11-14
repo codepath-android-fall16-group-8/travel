@@ -177,26 +177,23 @@ public class HomeActivity extends AppCompatActivity implements PlaceSelectionLis
     private void newFBAccountSetup(final User user) {
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            user.setFbUid(object.getInt("id"));
-                            user.setUsername(object.getString("name"));
-                            if (object.has("email")) {
-                                user.setEmail(object.getString("email"));
-                            }
-                            if (object.has("picture")) {
-                                user.setProfilePicUrl(object.getJSONObject("picture").getJSONObject("data").getString("url"));
-                            }
-                            if (object.has("cover")) {
-                                user.setCoverPicUrl(object.getJSONObject("cover").getString("source"));
-                            }
-                            user.saveInBackground();
-                            startWithCurrentUser();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                (object, response) -> {
+                    try {
+                        user.setFbUid(object.getInt("id"));
+                        user.setUsername(object.getString("name"));
+                        if (object.has("email")) {
+                            user.setEmail(object.getString("email"));
                         }
+                        if (object.has("picture")) {
+                            user.setProfilePicUrl(object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                        }
+                        if (object.has("cover")) {
+                            user.setCoverPicUrl(object.getJSONObject("cover").getString("source"));
+                        }
+                        user.saveInBackground();
+                        startWithCurrentUser();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 });
         Bundle parameters = new Bundle();

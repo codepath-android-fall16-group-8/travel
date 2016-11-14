@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.codepath.travel.Model.StoryPlace;
 import com.codepath.travel.R;
+import com.codepath.travel.models.StoryPlace;
 
 import java.util.List;
 
@@ -62,17 +62,17 @@ public class CollageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void configureViewHolder(CollageItemViewHolder viewHolder, int position) {
         StoryPlace storyPlace = this.mStoryPlaces.get(position);
 
-        ImageView ivCover = viewHolder.getCover();
-        ivCover.setImageResource(0);
-        String coverUrl = storyPlace.getImageUrl();
+        ImageView ivCoverPhoto = viewHolder.getCoverPhoto();
+        ivCoverPhoto.setImageResource(0);
+        String coverUrl = storyPlace.getCoverPicUrl();
         if (!TextUtils.isEmpty(coverUrl)) {
             Glide.with(getContext()).load(coverUrl)
                     .placeholder(android.R.drawable.ic_menu_slideshow)
                     .centerCrop()
-                    .into(ivCover);
+                    .into(ivCoverPhoto);
         }
-        TextView tvName = viewHolder.getName();
-        tvName.setText(storyPlace.getName());
+        TextView tvPlaceName = viewHolder.getPlaceName();
+        tvPlaceName.setText(storyPlace.getName());
     }
 
     @Override

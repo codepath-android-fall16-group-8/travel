@@ -1,31 +1,42 @@
 package com.codepath.travel.activities;
 
-import android.content.Intent;
+import static com.codepath.travel.activities.StoryActivity.TRIP_ID_ARG;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.codepath.travel.Model.StoryPlace;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.CollageAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.helper.SpacesItemDecoration;
-
-import org.parceler.Parcels;
+import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.Trip;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class StoryCollageActivity extends AppCompatActivity {
     private static final int GRID_NUM_COLUMNS = 2;
     private static final int GRID_SPACE_SIZE = 5;
 
-    private RecyclerView rvStoryPlaces;
+    // views
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
+
+    private String mTripID;
     private ArrayList<StoryPlace> mStoryPlaces;
     private CollageAdapter mCollageAdapter;
 
@@ -33,18 +44,27 @@ public class StoryCollageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_collage);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_story_collage) + " X");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.rvStoryPlaces = (RecyclerView) findViewById(R.id.rvStoryPlaces);
-        Intent intent = getIntent();
-        this.mStoryPlaces = Parcels.unwrap(intent.getParcelableExtra("storyPlaces"));
-        Collections.sort(this.mStoryPlaces, (p1, p2) -> p2.getRating() - p1.getRating());
-        this.mCollageAdapter = new CollageAdapter(getApplicationContext(), this.mStoryPlaces);
-        setUpRecyclerView();
+        mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
+        mStoryPlaces = new ArrayList<>();
+        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
+            @Override
+            public void done(List<StoryPlace> places, ParseException e) {
+                if (e == null) {
+                    mStoryPlaces.addAll(places);
+                    Collections.sort(mStoryPlaces, (p1, p2) -> p2.getRating() - p1.getRating());
+                    mCollageAdapter = new CollageAdapter(getApplicationContext(), mStoryPlaces);
+                    setUpRecyclerView();
+                } else {
+                    Log.d("story fetch failed", e.toString());
+                }
+            }
+        });
     }
 
     private void setUpRecyclerView() {

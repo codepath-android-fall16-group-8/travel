@@ -7,33 +7,35 @@ import android.widget.TextView;
 
 import com.codepath.travel.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * ViewHolder class for story place collage items.
  */
 public class CollageItemViewHolder extends RecyclerView.ViewHolder {
-    private ImageView ivCover;
-    private TextView tvName;
+    @BindView(R.id.ivCoverPhoto) ImageView ivCoverPhoto;
+    @BindView(R.id.tvPlaceName) TextView tvPlaceName;
 
     public CollageItemViewHolder(View itemView) {
         super(itemView);
-        this.ivCover = (ImageView) itemView.findViewById(R.id.ivCover);
-        this.tvName = (TextView) itemView.findViewById(R.id.tvName);
+            ButterKnife.bind(this, itemView);
     }
 
-    public ImageView getCover() {
-        return this.ivCover;
+    public ImageView getCoverPhoto() {
+        return this.ivCoverPhoto;
     }
 
-    public void setCover(ImageView cover) {
-        this.ivCover = cover;
+    public void setCoverPhoto(ImageView coverPhoto) {
+        this.ivCoverPhoto = coverPhoto;
     }
 
-    public TextView getName() {
-        return this.tvName;
+    public TextView getPlaceName() {
+        return this.tvPlaceName;
     }
 
-    public void setName(TextView name) {
-        this.tvName = name;
+    public void setPlaceName(TextView placeName) {
+        this.tvPlaceName = placeName;
     }
 }
 

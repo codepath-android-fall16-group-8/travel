@@ -199,7 +199,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     private void launchStoryCollageActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
-        intent.putExtra("storyPlaces", Parcels.wrap(mStoryPlaces));
+        intent.putExtra(TRIP_ID_ARG, mTripID);
         startActivity(intent);
     }
 
