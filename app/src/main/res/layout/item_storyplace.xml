@@ -8,6 +8,18 @@
     android:paddingBottom="10dp"
     >
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/ivPlacePhoto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <TextView
         android:text="Place 1"
         android:layout_width="wrap_content"
@@ -21,25 +33,34 @@
         android:layout_marginBottom="10dp"
         />
 
+    <ImageView
+        android:id="@+id/ivCamera"
+        android:src="@android:drawable/ic_menu_camera"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <ImageView
+        android:id="@+id/ivGallery"
+        android:src="@android:drawable/ic_menu_gallery"
+        android:layout_toLeftOf="@+id/ivCamera"
+        android:layout_marginRight="12dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMediaHolder"
+        android:layout_below="@+id/ivPlacePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"/>
+
     <View
         android:id="@+id/viewSeparator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/ivPlacePhoto"
+        android:layout_below="@id/rvMediaHolder"
         android:background="@android:color/darker_gray" />
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:scaleType="centerCrop"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/ivPlacePhoto"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 </RelativeLayout>

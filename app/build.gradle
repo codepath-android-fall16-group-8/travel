@@ -73,4 +73,8 @@ dependencies {
     compile 'org.parceler:parceler-api:1.1.1'
     apt 'org.parceler:parceler:1.1.1'
 
+    // Run time permissions disptacher
+    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
+    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+
 }

@@ -3,7 +3,9 @@ package com.codepath.travel.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,18 +15,26 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
+import com.codepath.travel.activities.StoryActivity;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.helper.OnStartDragListener;
+import com.codepath.travel.models.Media;
+import com.codepath.travel.models.ParseModelConstants;
 import com.codepath.travel.models.StoryPlace;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by aditikakadebansal on 11/9/16.
  */
-
 public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.StoryViewHolder> implements ItemTouchHelperAdapter {
 
     private List<StoryPlace> mStoryPlaces;
@@ -69,6 +79,16 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                 return false;
             }
         });
+
+        // ideal way should be do have an interface and listener for this
+        // doing this for a quick check to see if it works
+        holder.ivCamera.setOnClickListener((View view) -> {
+            ((StoryActivity)mContext).launchCameraActivity(position);
+        });
+
+        holder.ivGallery.setOnClickListener((View v) -> {
+            ((StoryActivity)mContext).launchGalleryActivity(position);
+        });
     }
 
     @Override
@@ -98,13 +118,26 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
 
     public class StoryViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
-        public ImageView ivPlacePhoto;
-        public TextView tvPlaceName;
+        // views
+        @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
+        @BindView(R.id.tvPlaceName) TextView tvPlaceName;
+        @BindView(R.id.ivCamera) ImageView ivCamera;
+        @BindView(R.id.ivGallery) ImageView ivGallery;
+        @BindView(R.id.rvMediaHolder) RecyclerView rvMediaItems;
+
+        // variables
+        private ArrayList<Media> mPlaceMediaItems;
+        private MediaItemAdapter mMediaItemAdapter;
 
         public StoryViewHolder(View itemView) {
             super(itemView);
-            ivPlacePhoto = (ImageView) itemView.findViewById(R.id.ivPlacePhoto);
-            tvPlaceName = (TextView) itemView.findViewById(R.id.tvPlaceName);
+            ButterKnife.bind(this, itemView);
+            mPlaceMediaItems = new ArrayList<>();
+            mMediaItemAdapter =
+                new MediaItemAdapter(StoryArrayAdapter.this.mContext, mPlaceMediaItems);
+            rvMediaItems.setAdapter(mMediaItemAdapter);
+            rvMediaItems.setLayoutManager(
+                new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         }
 
         public void populate(StoryPlace storyPlace) {
@@ -113,6 +146,17 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                     .load(storyPlace.getCoverPicUrl())
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
+            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery("Media");
+            mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);
+            mediaObjectsQuery.findInBackground((List<Media> mediaObjects, ParseException e) -> {
+                if (e == null) {
+                    mPlaceMediaItems.clear();
+                    mPlaceMediaItems.addAll(mediaObjects);
+                    mMediaItemAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("Media fetch failed", e.toString());
+                }
+            });
         }
 
         @Override
