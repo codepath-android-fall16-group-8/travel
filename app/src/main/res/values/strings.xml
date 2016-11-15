@@ -30,4 +30,7 @@
     <!-- Create Trip -->
     <string name="hint_places_of_interest">visit place</string>
 
+    <!-- Compose Note -->
+    <string name="hint_compose_note">Memories go here...</string>
+    <string name="save">Save</string>
 </resources>

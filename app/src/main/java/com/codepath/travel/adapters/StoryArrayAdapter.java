@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
-import com.codepath.travel.activities.StoryActivity;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.helper.OnStartDragListener;
@@ -39,12 +38,21 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
 
     private List<StoryPlace> mStoryPlaces;
     private final OnStartDragListener mDragStartListener;
-    public Context mContext;
+    private Context mContext;
+    private StoryPlaceMediaClickListener clickListener;
+
+    public interface StoryPlaceMediaClickListener {
+        void cameraOnClick(int position);
+        void galleryOnClick(int position);
+        void noteOnClick(int position);
+        void reviewOnClick(int position);
+    }
 
     public StoryArrayAdapter(Context context, OnStartDragListener dragStartListener, List<StoryPlace> storyPlaces) {
         mStoryPlaces = storyPlaces;
         mDragStartListener = dragStartListener;
         mContext = context;
+        clickListener = (StoryPlaceMediaClickListener) context;
     }
 
     private Context getContext() {
@@ -80,14 +88,20 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             }
         });
 
-        // ideal way should be do have an interface and listener for this
-        // doing this for a quick check to see if it works
+        holder.ivNote.setOnClickListener((View view) -> {
+            clickListener.noteOnClick(position);
+        });
+
+        holder.ivReview.setOnClickListener((View v) -> {
+            clickListener.reviewOnClick(position);
+        });
+
         holder.ivCamera.setOnClickListener((View view) -> {
-            ((StoryActivity)mContext).launchCameraActivity(position);
+            clickListener.cameraOnClick(position);
         });
 
         holder.ivGallery.setOnClickListener((View v) -> {
-            ((StoryActivity)mContext).launchGalleryActivity(position);
+            clickListener.galleryOnClick(position);
         });
     }
 
@@ -121,6 +135,8 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         // views
         @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
         @BindView(R.id.tvPlaceName) TextView tvPlaceName;
+        @BindView(R.id.ivReview) ImageView ivReview;
+        @BindView(R.id.ivNote) ImageView ivNote;
         @BindView(R.id.ivCamera) ImageView ivCamera;
         @BindView(R.id.ivGallery) ImageView ivGallery;
         @BindView(R.id.rvMediaHolder) RecyclerView rvMediaItems;

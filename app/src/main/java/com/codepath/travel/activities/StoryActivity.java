@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
+import com.codepath.travel.fragment.dialog.ComposeNoteDialogFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
@@ -29,8 +31,6 @@ import com.codepath.travel.models.Trip;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
-
-import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +45,9 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class StoryActivity extends AppCompatActivity implements OnStartDragListener {
+public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
+        StoryArrayAdapter.StoryPlaceMediaClickListener,
+        ComposeNoteDialogFragment.ComposeNoteListener {
 
     public final String APP_TAG = "TravelTrails";
     public static final int START_CAMERA_REQUEST_CODE = 123;
@@ -165,9 +167,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             if (e != null) {
                 Log.d("error", e.toString());
             }
-            Media media = new Media();
-            media.setType(Media.Type.PHOTO);
-            media.setStoryPlace(mStoryPlaces.get(mMediaLauncherStoryIndex));
+            Media media = new Media(mStoryPlaces.get(mMediaLauncherStoryIndex), Media.Type.PHOTO);
             media.setDataUrl(newImage.getUrl());
             media.saveInBackground((ParseException me) -> {
                 if (me != null) {
@@ -256,4 +256,41 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         return state.equals(Environment.MEDIA_MOUNTED);
     }
 
+    private void launchComposeNoteDialogFragment(int position) {
+        ComposeNoteDialogFragment fragment = ComposeNoteDialogFragment.newInstance(position,
+                mStoryPlaces.get(position).getName());
+        fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
+    }
+
+    @Override
+    public void cameraOnClick(int position) {
+        launchCameraActivity(position);
+    }
+
+    @Override
+    public void galleryOnClick(int position) {
+        launchGalleryActivity(position);
+    }
+
+    @Override
+    public void noteOnClick(int position) {
+        launchComposeNoteDialogFragment(position);
+    }
+
+    @Override
+    public void reviewOnClick(int position) {
+        Toast.makeText(this, "review! " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onComposeSave(int position, String noteText) {
+        Media media = new Media(mStoryPlaces.get(position), Media.Type.TEXT);
+        media.setCaption(noteText);
+        media.saveInBackground((ParseException e) -> {
+            if (e != null) {
+                Log.d("error", e.toString());
+            }
+            mAdapter.notifyDataSetChanged();
+        });
+    }
 }
