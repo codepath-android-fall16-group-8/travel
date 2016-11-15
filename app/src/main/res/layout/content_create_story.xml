@@ -37,7 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:textAllCaps="true"
-        android:text="@string/confirm_story"
-        android:onClick="onConfirm"/>
+        android:text="@string/confirm_story" />
 
 </RelativeLayout>

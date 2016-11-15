@@ -29,6 +29,7 @@
 
     <!-- Create Trip -->
     <string name="hint_places_of_interest">visit place</string>
+    <string name="delete_trip">Delete Trip</string>
 
     <!-- Compose Note -->
     <string name="hint_compose_note">Memories go here...</string>

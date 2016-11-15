@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,13 +24,11 @@ import com.codepath.travel.fragment.dialog.ComposeNoteDialogFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
-import com.codepath.travel.models.ParseModelConstants;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -55,6 +52,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     public static final int PICK_IMAGE_FROM_GALLERY_CODE = 456;
 
     // activity intent args
+    public static final String TRIP_POS_ARG = "trip_pos";
     public static final String TRIP_ID_ARG = "trip_id";
     public static final String TRIP_TITLE_ARG = "trip_title";
 
@@ -80,7 +78,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String tripTitle = getIntent().getStringExtra("trip_title");
+        String tripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
         toolbar.setTitle(
                 getApplicationContext().getResources().
                         getString(R.string.toolbar_title_story) + " " + tripTitle);
@@ -119,14 +117,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_story, menu);
-
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -171,31 +161,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 mAdapter.notifyDataSetChanged();
             });
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        } else if (id == R.id.miMap) {
-            // TODO: bring up a map view (fragment?)
-            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT);
-        } else if (id == R.id.miCollage) {
-            launchStoryCollageActivity();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void launchStoryCollageActivity() {
-        Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
-        intent.putExtra(TRIP_ID_ARG, mTripID);
-        startActivity(intent);
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -257,6 +222,14 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
     }
 
+    /* Navigation */
+    private void launchStoryCollageActivity() {
+        Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
+        intent.putExtra(TRIP_ID_ARG, mTripID);
+        startActivity(intent);
+    }
+
+    /* Listeners */
     @Override
     public void cameraOnClick(int position) {
         launchCameraActivity(position);
@@ -287,5 +260,40 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             }
             mAdapter.notifyDataSetChanged();
         });
+    }
+
+    /* Toolbar */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_story, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            setResult(RESULT_CANCELED);
+            finish();
+            return true;
+        } else if (id == R.id.miMap) {
+            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.miCollage) {
+            launchStoryCollageActivity();
+        } else if (id == R.id.miDelete) {
+            // TODO: add confirm dialog
+            Trip.deleteTrip(mTripID);
+            Intent data = new Intent();
+            data.putExtra(TRIP_POS_ARG, getIntent().getIntExtra(TRIP_POS_ARG, -1));
+            setResult(RESULT_OK, data);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
