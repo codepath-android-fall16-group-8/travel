@@ -26,6 +26,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
@@ -79,7 +80,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     }
 
     private void setUpTrip() {
-        mNewTrip = new Trip(ParseUser.getCurrentUser(), mDestination);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        currentUser.setACL(new ParseACL(currentUser));
+        currentUser.saveInBackground();
+        mNewTrip = new Trip(currentUser, mDestination);
+        mNewTrip.saveInBackground();
     }
 
     private void setUpClickListeners() {
@@ -102,7 +107,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(CreateStoryActivity.this, "Error saving", Toast.LENGTH_SHORT).show();
+                    Log.d("createStory", String.format("Failed: %s", e.getMessage()));
                 }
             });
         });
