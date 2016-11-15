@@ -1,6 +1,5 @@
 package com.codepath.travel.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -97,7 +95,6 @@ public class HomeActivity extends AppCompatActivity
             launchLoginActivity();
         }
         setUpClickListeners();
-        refreshMyTrips();
     }
 
     private void setupViews() {
@@ -118,7 +115,6 @@ public class HomeActivity extends AppCompatActivity
         mTrips = new ArrayList<>();
         mTripsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mTrips);
         lvMyTrips.setAdapter(mTripsAdapter);
-        refreshMyTrips();
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_new_trip);
     }
@@ -139,23 +135,18 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void setUpClickListeners() {
-        lvMyTrips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Trip trip = mTripsAdapter.getItem(position);
-                Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
-                openStory.putExtra(StoryActivity.TRIP_ID_ARG, trip.getObjectId());
-                startActivity(openStory);
-            }
+        lvMyTrips.setOnItemClickListener((adapterView, view, position, l) -> {
+            Trip trip = mTripsAdapter.getItem(position);
+            Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
+            openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, trip.getTitle());
+            openStory.putExtra(StoryActivity.TRIP_ID_ARG, trip.getObjectId());
+            startActivity(openStory);
         });
 
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                NewTripFragment newTripDialog = NewTripFragment.newInstance();
-                newTripDialog.show(fm, "New Trip");
-            }
+        mFab.setOnClickListener(view -> {
+            FragmentManager fm = getSupportFragmentManager();
+            NewTripFragment newTripDialog = NewTripFragment.newInstance();
+            newTripDialog.show(fm, "New Trip");
         });
     }
 
@@ -168,6 +159,7 @@ public class HomeActivity extends AppCompatActivity
                 .fitCenter()
                 .bitmapTransform(new CropCircleTransformation(this))
                 .into(this.ivProfileImage);
+        refreshMyTrips();
     }
 
     private void newFBAccountSetup(final User user) {

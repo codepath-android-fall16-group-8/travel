@@ -28,6 +28,7 @@ import com.codepath.travel.models.Media;
 import com.codepath.travel.models.ParseModelConstants;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -55,6 +56,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     // activity intent args
     public static final String TRIP_ID_ARG = "trip_id";
+    public static final String TRIP_TITLE_ARG = "trip_title";
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -78,6 +80,10 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        String tripTitle = getIntent().getStringExtra("trip_title");
+        toolbar.setTitle(
+                getApplicationContext().getResources().
+                        getString(R.string.toolbar_title_story) + " " + tripTitle);
 
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
         setUpRecyclerView();
@@ -85,28 +91,17 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     private void getPlacesInTrip() {
-        ParseQuery<Trip> tripQuery = ParseQuery.getQuery("Trip");
-        tripQuery.whereEqualTo("objectId", mTripID);
-        tripQuery.findInBackground((List<Trip> trip, ParseException e) -> {
-            if (e == null) {
-                ParseQuery<StoryPlace> storyQuery = ParseQuery.getQuery("StoryPlace");
-                storyQuery.whereEqualTo(ParseModelConstants.TRIP_KEY, trip.get(0));
-                toolbar.setTitle(
-                    getApplicationContext().
-                    getResources().
-                    getString(R.string.toolbar_title_story) + " " + trip.get(0).getTitle());
-                storyQuery.findInBackground((List<StoryPlace> places, ParseException se) -> {
-                    if (e == null) {
+        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
+                @Override
+                public void done(List<StoryPlace> places, ParseException se) {
+                    if (se == null) {
                         mStoryPlaces.addAll(places);
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        Log.d("story fetch failed", e.toString());
+                        Log.d("getPlacesInTrip", String.format("Failed: %s", se.getMessage()));
                     }
-                });
-            } else {
-                Log.d("trip query error", e.toString());
-            }
-        });
+                }
+            });
     }
 
     private void setUpRecyclerView() {
