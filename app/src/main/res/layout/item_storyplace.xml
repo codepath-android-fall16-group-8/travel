@@ -34,9 +34,25 @@
         />
 
     <ImageView
+        android:id="@+id/ivReview"
+        android:src="@android:drawable/ic_menu_myplaces"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <ImageView
+        android:id="@+id/ivNote"
+        android:src="@android:drawable/ic_menu_edit"
+        android:layout_toLeftOf="@+id/ivReview"
+        android:layout_marginRight="12dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <ImageView
         android:id="@+id/ivCamera"
         android:src="@android:drawable/ic_menu_camera"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/ivNote"
         android:layout_marginRight="12dp"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
