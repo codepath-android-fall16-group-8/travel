@@ -6,6 +6,9 @@ Members: Aditi.K ,Huyen.T, Raj Praveen
 ## Description
 The Explorer is your travel buddy. It stays with you throughout your journey. It lets you look for places, plan your trip, post pictures and add reviews/ratings. It lets you create a story out of your journey which you can share with your friends and family and cherish those moments.
 
+## Video Walkthrough
+The latest video walkthrough can be found [here](https://www.dropbox.com/s/f9d23vj1os9nhsi/device-2016-11-14-172152.mp4).
+
 ## Wireframes
 
 - Setup, Homescreen, Trip Planning
