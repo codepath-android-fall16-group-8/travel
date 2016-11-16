@@ -1,6 +1,7 @@
 package com.codepath.travel.activities;
 
 import static com.codepath.travel.activities.StoryActivity.TRIP_ID_ARG;
+import static com.codepath.travel.activities.StoryActivity.TRIP_TITLE_ARG;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,12 +26,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class StoryCollageActivity extends AppCompatActivity {
     private static final int GRID_NUM_COLUMNS = 2;
     private static final int GRID_SPACE_SIZE = 5;
+
+    // strings
+    @BindString(R.string.toolbar_title_story_collage) String toolbarTitle;
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -46,11 +51,12 @@ public class StoryCollageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_story_collage);
         ButterKnife.bind(this);
 
-        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_story_collage) + " X");
+        toolbar.setTitle(String.format(toolbarTitle, getIntent().getStringExtra(TRIP_TITLE_ARG)));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
+
         mStoryPlaces = new ArrayList<>();
         Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
             @Override

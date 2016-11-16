@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
@@ -58,11 +59,14 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     public static final String TRIP_ID_ARG = "trip_id";
     public static final String TRIP_TITLE_ARG = "trip_title";
 
+    private static final String TAG = StoryActivity.class.getSimpleName();
+
+    // strings
+    @BindString(R.string.toolbar_title_story) String toolbarTitle;
+
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
-
-    private static final String TAG = StoryActivity.class.getSimpleName();
 
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
@@ -71,6 +75,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     private int mMediaLauncherStoryIndex;
     private String mTripID;
+    private String mTripTitle;
     private String mPhotoURL;
 
     @Override
@@ -80,12 +85,10 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
         ButterKnife.bind(this);
 
+        mTripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
+        toolbar.setTitle(String.format(toolbarTitle, mTripTitle));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        String tripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
-        getSupportActionBar().setTitle(
-                getApplicationContext().getResources().
-                        getString(R.string.toolbar_title_story) + " " + tripTitle);
 
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
         setUpRecyclerView();
@@ -175,6 +178,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     private void launchStoryCollageActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
         intent.putExtra(TRIP_ID_ARG, mTripID);
+        intent.putExtra(TRIP_TITLE_ARG, mTripTitle);
         startActivity(intent);
     }
 

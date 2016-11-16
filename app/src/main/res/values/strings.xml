@@ -10,9 +10,9 @@
     <string name="app_name">Travel</string>
     <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
-    <string name="toolbar_title_create_story">My planned trip to</string>
-    <string name="toolbar_title_story">Trip to</string>
-    <string name="toolbar_title_story_collage">Story: </string>
+    <string name="toolbar_title_create_story">My planned trip to %1$s</string>
+    <string name="toolbar_title_story">Trip to %1$s</string>
+    <string name="toolbar_title_story_collage">Story: %1$s</string>
     <string name="view_map">View Map</string>
     <string name="view_collage">View Collage</string>
     <string name="share_story">Share Story</string>

@@ -33,6 +33,7 @@ import com.parse.ParseUser;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,7 +45,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     // intent arguments
     public static final String DESTINATION_ARGS = "destination";
 
+    // strings
+    @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
+
     // Views
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
     @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
     @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
@@ -63,14 +68,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
+        ButterKnife.bind(this);
 
         mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_create_story) + mDestination);
+        toolbar.setTitle(String.format(toolbarTitle, mDestination));
         setSupportActionBar(toolbar);
-
-        ButterKnife.bind(this);
 
         setUpTrip();
         setUpRecyclerView();
