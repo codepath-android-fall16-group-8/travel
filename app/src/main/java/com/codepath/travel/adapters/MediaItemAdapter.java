@@ -29,10 +29,17 @@ public class MediaItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private List<Media> mPlaceMediaItems;
     private Context mContext;
+    private MediaItemListener mListener;
 
-    public MediaItemAdapter(Context context, List<Media> placeMediaItems) {
+    public interface MediaItemListener {
+        void photoOnClick(int position);
+        void noteOnClick(int position);
+    }
+
+    public MediaItemAdapter(Context context, List<Media> placeMediaItems, MediaItemListener listener) {
         mPlaceMediaItems = placeMediaItems;
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -55,29 +62,35 @@ public class MediaItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        Media mediaItem = mPlaceMediaItems.get(position);
+
         switch (viewHolder.getItemViewType()) {
             case PHOTO:
                 MediaHolder photoVh = (MediaHolder) viewHolder;
-                configurePhotoViewHolder(photoVh, position);
+                configurePhotoViewHolder(photoVh, mediaItem);
                 break;
             default:
                 TextMediaViewHolder defaultVh = (TextMediaViewHolder) viewHolder;
-                configureTextViewHolder(defaultVh, position);
+                configureTextViewHolder(defaultVh, mediaItem);
                 break;
         }
     }
 
-    private void configurePhotoViewHolder(MediaHolder holder, int position) {
-        Media mediaItem = mPlaceMediaItems.get(position);
+    private void configurePhotoViewHolder(MediaHolder holder, Media mediaItem) {
         // populate the image here
         Glide.with(mContext)
                 .load(mediaItem.getDataUrl())
                 .into(holder.ivPlacePhoto);
+        holder.ivPlacePhoto.setOnClickListener(v -> {
+            mListener.photoOnClick(getRealPosition(mediaItem));
+        });
     }
 
-    private void configureTextViewHolder(TextMediaViewHolder holder, int position) {
-        Media mediaItem = mPlaceMediaItems.get(position);
+    private void configureTextViewHolder(TextMediaViewHolder holder, Media mediaItem) {
         holder.tvNoteMedia.setText(mediaItem.getCaption());
+        holder.tvNoteMedia.setOnClickListener(v -> {
+            mListener.noteOnClick(getRealPosition(mediaItem));
+        });
     }
 
     @Override
@@ -88,6 +101,11 @@ public class MediaItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemViewType(int position) {
         return mPlaceMediaItems.get(position).getType().ordinal();
+    }
+
+    // Needed in order to get the correct position of items
+    private int getRealPosition(Media media){
+        return mPlaceMediaItems.indexOf(media);
     }
 
     class MediaHolder extends RecyclerView.ViewHolder {

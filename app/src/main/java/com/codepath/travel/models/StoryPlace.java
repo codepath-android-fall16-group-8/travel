@@ -2,10 +2,8 @@ package com.codepath.travel.models;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
@@ -21,6 +19,7 @@ import android.util.Log;
  */
 @ParseClassName(STORY_PLACE_CLASS_NAME)
 public class StoryPlace extends ParseObject {
+    private static final String TAG = StoryPlace.class.getSimpleName();
 
     public StoryPlace() {
         super();
@@ -127,37 +126,43 @@ public class StoryPlace extends ParseObject {
     }
 
     /**
+     * Get the StoryPlace object for the given object id
+     *
+     * @param objectId the object id for the StoryPlace object to find
+     */
+    public static void getStoryPlaceForObjectId(String objectId, GetCallback<StoryPlace> callback) {
+        Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
+        ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
+        placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        placeQuery.getFirstInBackground(callback);
+    }
+
+    /**
      * Delete the story place and its associated media items.
      */
     public void deleteWithMedia() {
-        Log.d("deleteStoryPlace", String.format("Deleting story place: %s", getName()));
+        Log.d(TAG, String.format("Deleting story place: %s", getName()));
         ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
         mediaQuery.whereEqualTo(STORY_PLACE_KEY, this);
-        mediaQuery.findInBackground(new FindCallback<Media>() {
-                @Override
-                public void done(List<Media> mediaItems, ParseException e) {
-                    if (e == null) {
-                        ParseObject.deleteAllInBackground(mediaItems, new DeleteCallback() {
-                                @Override
-                                public void done(ParseException e1) {
-                                    if (e1 == null) {
-                                        deleteInBackground(new DeleteCallback() {
-                                                @Override
-                                                public void done(ParseException e2) {
-                                                    if (e2 != null) {
-                                                        Log.d("deleteStoryPlace", String.format("Failed to delete story place: %s", e2.getMessage()));
-                                                    }
-                                                }
-                                        });
-                                    } else {
-                                        Log.d("deleteStoryPlace", String.format("Failed to delete all media: %s", e1.getMessage()));
-                                    }
-                                }
+        mediaQuery.findInBackground((mediaItems, e) -> {
+            if (e == null) {
+                ParseObject.deleteAllInBackground(mediaItems, e1 -> {
+                    if (e1 == null) {
+                        deleteInBackground(e2 -> {
+                            if (e2 != null) {
+                                Log.d(TAG, String.format("Failed to delete story place: %s",
+                                        e2.getMessage()));
+                            }
                         });
                     } else {
-                        Log.d("deleteStoryPlace", String.format("Failed to find related media: %s", e.getMessage()));
+                        Log.d(TAG, String.format("Failed to delete all media for story place: %s",
+                                e1.getMessage()));
                     }
-                }
+                });
+            } else {
+                Log.d(TAG, String.format("Failed to find related media for story place delete: %s",
+                        e.getMessage()));
+            }
         });
     }
 }

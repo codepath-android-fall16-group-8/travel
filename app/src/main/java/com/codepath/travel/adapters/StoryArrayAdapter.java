@@ -34,7 +34,8 @@ import butterknife.ButterKnife;
 /**
  * Adapter for a trip's story places.
  */
-public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.StoryViewHolder> implements ItemTouchHelperAdapter {
+public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.StoryViewHolder>
+        implements ItemTouchHelperAdapter {
 
     private List<StoryPlace> mStoryPlaces;
     private final OnStartDragListener mDragStartListener;
@@ -48,6 +49,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         void reviewOnClick(int position);
         void storyPlaceMoved(int fromPosition, int toPosition);
         void storyPlaceDismissed(int position);
+        void mediaNoteOnClick(Media media, int mPos, int storyPos);
     }
 
     public StoryArrayAdapter(Context context, OnStartDragListener dragStartListener, List<StoryPlace> storyPlaces) {
@@ -131,7 +133,8 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         return mStoryPlaces.indexOf(storyPlace);
     }
 
-    public class StoryViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    public class StoryViewHolder extends RecyclerView.ViewHolder
+            implements ItemTouchHelperViewHolder, MediaItemAdapter.MediaItemListener {
 
         // views
         @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
@@ -145,25 +148,27 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         // variables
         private ArrayList<Media> mPlaceMediaItems;
         private MediaItemAdapter mMediaItemAdapter;
+        private StoryPlace mStoryPlace;
 
         public StoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mPlaceMediaItems = new ArrayList<>();
             mMediaItemAdapter =
-                new MediaItemAdapter(StoryArrayAdapter.this.mContext, mPlaceMediaItems);
+                new MediaItemAdapter(StoryArrayAdapter.this.mContext, mPlaceMediaItems, this);
             rvMediaItems.setAdapter(mMediaItemAdapter);
             rvMediaItems.setLayoutManager(
                 new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         }
 
         public void populate(StoryPlace storyPlace) {
+            mStoryPlace = storyPlace;
             ivPlacePhoto.setImageResource(0);
             Glide.with(mContext)
                     .load(storyPlace.getCoverPicUrl())
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
-            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery("Media");
+            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);
             mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);
             mediaObjectsQuery.findInBackground((List<Media> mediaObjects, ParseException e) -> {
                 if (e == null) {
@@ -184,6 +189,20 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(0);
+        }
+
+        @Override
+        public void photoOnClick(int position) {
+            Media mediaItem = mPlaceMediaItems.get(position);
+            Log.d("photoOnClick", mediaItem.getObjectId());
+            // TODO: notifiy activity
+        }
+
+        @Override
+        public void noteOnClick(int mPosition) {
+            Media mediaItem = mPlaceMediaItems.get(mPosition);
+            Log.d("noteOnClick", mediaItem.getCaption());
+            listener.mediaNoteOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
         }
     }
 

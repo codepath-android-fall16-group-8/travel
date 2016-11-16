@@ -62,6 +62,8 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
+    private static final String TAG = StoryActivity.class.getSimpleName();
+
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
     private StoryArrayAdapter mAdapter;
@@ -176,9 +178,9 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         startActivity(intent);
     }
 
-    private void launchComposeNoteDialogFragment(int position) {
+    private void launchComposeNoteDialogFragment(int position, String mediaId, String noteText) {
         ComposeNoteDialogFragment fragment = ComposeNoteDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName());
+                mStoryPlaces.get(position).getName(), mediaId, noteText);
         fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
     }
 
@@ -251,7 +253,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @Override
     public void noteOnClick(int position) {
-        launchComposeNoteDialogFragment(position);
+        launchComposeNoteDialogFragment(position, null, null);
     }
 
     @Override
@@ -261,27 +263,61 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @Override
     public void storyPlaceMoved(int fromPosition, int toPosition) {
-        Log.d("storyPlaceMoved", String.format("source pos: %d, target pos: %d", fromPosition, toPosition));
+        Log.d(TAG, String.format("story moved fromPos: %d, toPos: %d", fromPosition, toPosition));
         // TODO: save order in Parse
     }
 
     @Override
     public void storyPlaceDismissed(int position) {
-        Log.d("storyPlaceDismissed", String.format("dismissed pos: %d", position));
+        Log.d(TAG, String.format("dismissed story at pos: %d", position));
         StoryPlace storyPlace = mStoryPlaces.get(position);
         storyPlace.deleteWithMedia();
     }
 
     @Override
-    public void onComposeSave(int position, String noteText) {
-        Media media = new Media(mStoryPlaces.get(position), Media.Type.TEXT);
-        media.setCaption(noteText);
-        media.saveInBackground((ParseException e) -> {
-            if (e != null) {
-                Log.d("error", e.toString());
+    public void mediaNoteOnClick(Media media, int mPos, int storyPos) {
+        Log.d(TAG, String.format("mediaNoteOnClick, mPos %d, storyPos %d", mPos, storyPos));
+        launchComposeNoteDialogFragment(storyPos, media.getObjectId(), media.getCaption());
+    }
+
+    @Override
+    public void onComposeSave(int storyPos, String noteText, String mediaId) {
+        if (mediaId == null) { // new note
+            Media mediaItem = new Media(mStoryPlaces.get(storyPos), Media.Type.TEXT);
+            saveMediaNote(mediaItem, noteText, storyPos);
+        } else { // edited note
+            Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
+                if (e == null) {
+                    saveMediaNote(mediaItem, noteText, storyPos);
+                } else {
+                    Log.d(TAG, String.format("Get media error: %s", e.toString()));
+                }
+            });
+        }
+    }
+
+    private void saveMediaNote(Media mediaItem, String noteText, int storyPos) {
+        mediaItem.setCaption(noteText);
+        mediaItem.saveInBackground((ParseException e) -> {
+            if (e == null) {
+                mAdapter.notifyItemChanged(storyPos);
+            } else {
+                Log.d(TAG, String.format("Save media error: %s", e.toString()));
             }
-            mAdapter.notifyItemChanged(position);
         });
+    }
+
+    @Override
+    public void onComposeDelete(int storyPos, String mediaId) {
+        if (mediaId != null) {
+            Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
+                if (e == null) {
+                    mediaItem.deleteInBackground(e1 -> mAdapter.notifyItemChanged(storyPos));
+                } else {
+                    Log.d(TAG, String.format("Get media for delete error: %s", e.toString()));
+                }
+            });
+        }
     }
 
     @Override

@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:padding="@dimen/margin">
 
         <ImageButton
             android:id="@+id/btnCancel"
@@ -30,9 +31,19 @@
             android:id="@+id/tvPlaceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Place Name"
-            android:layout_marginEnd="@dimen/margin"
-            android:layout_marginRight="@dimen/margin" />
+            tools:text="Place Name" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            app:srcCompat="@android:drawable/ic_menu_delete"
+            android:background="@color/transparent" />
     </LinearLayout>
 
     <EditText
@@ -50,7 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="end"
+        android:padding="@dimen/margin">
 
         <Button
             android:id="@+id/btnSave"
