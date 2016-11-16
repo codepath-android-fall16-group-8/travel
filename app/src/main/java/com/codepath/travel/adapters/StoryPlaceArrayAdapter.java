@@ -21,7 +21,9 @@ import com.codepath.travel.models.StoryPlace;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Adapter for story places being added to a new trip.
+ */
 public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArrayAdapter.StoryPlaceViewHolder> implements ItemTouchHelperAdapter {
 
     private List<StoryPlace> mStoryPlaces;

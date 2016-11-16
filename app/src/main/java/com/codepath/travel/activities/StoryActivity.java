@@ -45,7 +45,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
-        StoryArrayAdapter.StoryPlaceMediaClickListener,
+        StoryArrayAdapter.StoryPlaceListener,
         ComposeNoteDialogFragment.ComposeNoteListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener {
 
@@ -81,7 +81,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String tripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
-        toolbar.setTitle(
+        getSupportActionBar().setTitle(
                 getApplicationContext().getResources().
                         getString(R.string.toolbar_title_story) + " " + tripTitle);
 
@@ -114,25 +114,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 }
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == START_CAMERA_REQUEST_CODE) {
-            // See code above
-            Uri takenPhotoUri = getPhotoFileUri(mPhotoURL);
-            Bitmap selectedImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
-            compressAndSaveImage(selectedImage);
-        } else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_FROM_GALLERY_CODE) {
-            Uri photoURI = data.getData();
-            try {
-                Bitmap selectedImage =
-                    MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
-                compressAndSaveImage(selectedImage);
-            } catch (Exception e) {
-                Log.d("Gallery Image failed", e.toString());
-            }
-        }
     }
 
     /* Camera and Photo helpers */
@@ -226,6 +207,25 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == START_CAMERA_REQUEST_CODE) {
+            // See code above
+            Uri takenPhotoUri = getPhotoFileUri(mPhotoURL);
+            Bitmap selectedImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
+            compressAndSaveImage(selectedImage);
+        } else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_FROM_GALLERY_CODE) {
+            Uri photoURI = data.getData();
+            try {
+                Bitmap selectedImage =
+                        MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
+                compressAndSaveImage(selectedImage);
+            } catch (Exception e) {
+                Log.d("Gallery Image failed", e.toString());
+            }
+        }
+    }
+
     private void showConfirmDeleteDialog() {
         ConfirmDeleteTripDialogFragment fragment =
                 ConfirmDeleteTripDialogFragment.newInstance();
@@ -235,6 +235,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     /* Listeners */
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        Log.d("onStartDrag", "dragging...");
         mItemTouchHelper.startDrag(viewHolder);
     }
 
@@ -259,6 +260,19 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     @Override
+    public void storyPlaceMoved(int fromPosition, int toPosition) {
+        Log.d("storyPlaceMoved", String.format("source pos: %d, target pos: %d", fromPosition, toPosition));
+        // TODO: save order in Parse
+    }
+
+    @Override
+    public void storyPlaceDismissed(int position) {
+        Log.d("storyPlaceDismissed", String.format("dismissed pos: %d", position));
+        StoryPlace storyPlace = mStoryPlaces.get(position);
+        storyPlace.deleteWithMedia();
+    }
+
+    @Override
     public void onComposeSave(int position, String noteText) {
         Media media = new Media(mStoryPlaces.get(position), Media.Type.TEXT);
         media.setCaption(noteText);
@@ -266,7 +280,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             if (e != null) {
                 Log.d("error", e.toString());
             }
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(position);
         });
     }
 

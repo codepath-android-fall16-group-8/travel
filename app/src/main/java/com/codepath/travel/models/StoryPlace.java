@@ -2,23 +2,19 @@ package com.codepath.travel.models;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.codepath.travel.models.ParseModelConstants.CHECK_IN_TIME_KEY;
-import static com.codepath.travel.models.ParseModelConstants.COVER_PIC_URL_KEY;
-import static com.codepath.travel.models.ParseModelConstants.LATITUDE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.LONGITUDE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.NAME_KEY;
-import static com.codepath.travel.models.ParseModelConstants.ORDER_POSITION_KEY;
-import static com.codepath.travel.models.ParseModelConstants.PLACE_ID_KEY;
-import static com.codepath.travel.models.ParseModelConstants.PLACE_TYPES_KEY;
-import static com.codepath.travel.models.ParseModelConstants.RATING_KEY;
-import static com.codepath.travel.models.ParseModelConstants.STORY_PLACE_CLASS_NAME;
-import static com.codepath.travel.models.ParseModelConstants.TRIP_KEY;
+import static com.codepath.travel.models.ParseModelConstants.*;
+
+import android.util.Log;
 
 /**
  * Parse model for a travel story/trip.
@@ -128,5 +124,40 @@ public class StoryPlace extends ParseObject {
 
     public void setOrderPosition(int orderPosition) {
         put(ORDER_POSITION_KEY, orderPosition);
+    }
+
+    /**
+     * Delete the story place and its associated media items.
+     */
+    public void deleteWithMedia() {
+        Log.d("deleteStoryPlace", String.format("Deleting story place: %s", getName()));
+        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
+        mediaQuery.whereEqualTo(STORY_PLACE_KEY, this);
+        mediaQuery.findInBackground(new FindCallback<Media>() {
+                @Override
+                public void done(List<Media> mediaItems, ParseException e) {
+                    if (e == null) {
+                        ParseObject.deleteAllInBackground(mediaItems, new DeleteCallback() {
+                                @Override
+                                public void done(ParseException e1) {
+                                    if (e1 == null) {
+                                        deleteInBackground(new DeleteCallback() {
+                                                @Override
+                                                public void done(ParseException e2) {
+                                                    if (e2 != null) {
+                                                        Log.d("deleteStoryPlace", String.format("Failed to delete story place: %s", e2.getMessage()));
+                                                    }
+                                                }
+                                        });
+                                    } else {
+                                        Log.d("deleteStoryPlace", String.format("Failed to delete all media: %s", e1.getMessage()));
+                                    }
+                                }
+                        });
+                    } else {
+                        Log.d("deleteStoryPlace", String.format("Failed to find related media: %s", e.getMessage()));
+                    }
+                }
+        });
     }
 }
