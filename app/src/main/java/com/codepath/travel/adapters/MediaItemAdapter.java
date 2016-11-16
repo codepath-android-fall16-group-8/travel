@@ -18,9 +18,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by rpraveen on 11/13/16.
+ * Adapter for media items.
  */
-
 public class MediaItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final int TEXT = 0;

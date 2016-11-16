@@ -20,7 +20,8 @@ import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
-import com.codepath.travel.fragment.dialog.ComposeNoteDialogFragment;
+import com.codepath.travel.fragments.dialog.ComposeNoteDialogFragment;
+import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
@@ -45,7 +46,8 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
         StoryArrayAdapter.StoryPlaceMediaClickListener,
-        ComposeNoteDialogFragment.ComposeNoteListener {
+        ComposeNoteDialogFragment.ComposeNoteListener,
+        ConfirmDeleteTripDialogFragment.DeleteTripListener {
 
     public final String APP_TAG = "TravelTrails";
     public static final int START_CAMERA_REQUEST_CODE = 123;
@@ -88,20 +90,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         getPlacesInTrip();
     }
 
-    private void getPlacesInTrip() {
-        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
-                @Override
-                public void done(List<StoryPlace> places, ParseException se) {
-                    if (se == null) {
-                        mStoryPlaces.addAll(places);
-                        mAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("getPlacesInTrip", String.format("Failed: %s", se.getMessage()));
-                    }
-                }
-            });
-    }
-
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
         mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces);
@@ -114,9 +102,18 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
     }
 
-    @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
+    private void getPlacesInTrip() {
+        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
+            @Override
+            public void done(List<StoryPlace> places, ParseException se) {
+                if (se == null) {
+                    mStoryPlaces.addAll(places);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d("getPlacesInTrip", String.format("Failed: %s", se.getMessage()));
+                }
+            }
+        });
     }
 
     @Override
@@ -138,6 +135,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         }
     }
 
+    /* Camera and Photo helpers */
     private void compressAndSaveImage(Bitmap selectedImage) {
 
         // scaling down for quick upload - may need a backend service to scale and keep mutiple
@@ -163,32 +161,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         });
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
-    public void launchCameraActivity(int position) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        mPhotoURL = "placeMedia" + '_' + timeStamp + ".jpg";
-        mMediaLauncherStoryIndex = position;
-        Intent startCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startCamera.putExtra(
-            MediaStore.EXTRA_OUTPUT, getPhotoFileUri(mPhotoURL)
-        );
-        if (startCamera.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startCamera, START_CAMERA_REQUEST_CODE);
-        }
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void launchGalleryActivity(int position) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        mMediaLauncherStoryIndex = position;
-        Intent startGallery =
-            new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (startGallery.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startGallery, PICK_IMAGE_FROM_GALLERY_CODE);
-        }
-    }
-
-
     // Returns the Uri for a photo stored on disk given the fileName
     public Uri getPhotoFileUri(String fileName) {
         // Only continue if the SD Card is mounted
@@ -197,7 +169,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             // Use `getExternalFilesDir` on Context to access package-specific directories.
             // This way, we don't need to request external read/write runtime permissions.
             File mediaStorageDir = new File(
-            getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
+                    getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
 
             // Create the storage directory if it does not exist
             if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
@@ -216,12 +188,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         return state.equals(Environment.MEDIA_MOUNTED);
     }
 
-    private void launchComposeNoteDialogFragment(int position) {
-        ComposeNoteDialogFragment fragment = ComposeNoteDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName());
-        fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
-    }
-
     /* Navigation */
     private void launchStoryCollageActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
@@ -229,7 +195,49 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         startActivity(intent);
     }
 
+    private void launchComposeNoteDialogFragment(int position) {
+        ComposeNoteDialogFragment fragment = ComposeNoteDialogFragment.newInstance(position,
+                mStoryPlaces.get(position).getName());
+        fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void launchCameraActivity(int position) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        mPhotoURL = "placeMedia" + '_' + timeStamp + ".jpg";
+        mMediaLauncherStoryIndex = position;
+        Intent startCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startCamera.putExtra(
+                MediaStore.EXTRA_OUTPUT, getPhotoFileUri(mPhotoURL)
+        );
+        if (startCamera.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(startCamera, START_CAMERA_REQUEST_CODE);
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void launchGalleryActivity(int position) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        mMediaLauncherStoryIndex = position;
+        Intent startGallery =
+                new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (startGallery.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(startGallery, PICK_IMAGE_FROM_GALLERY_CODE);
+        }
+    }
+
+    private void showConfirmDeleteDialog() {
+        ConfirmDeleteTripDialogFragment fragment =
+                ConfirmDeleteTripDialogFragment.newInstance();
+        fragment.show(getSupportFragmentManager(), "confirmDeleteTripDialogFragment");
+    }
+
     /* Listeners */
+    @Override
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
+    }
+
     @Override
     public void cameraOnClick(int position) {
         launchCameraActivity(position);
@@ -262,6 +270,15 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         });
     }
 
+    @Override
+    public void onDeleteTrip() {
+        Trip.deleteTrip(mTripID);
+        Intent data = new Intent();
+        data.putExtra(TRIP_POS_ARG, getIntent().getIntExtra(TRIP_POS_ARG, -1));
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     /* Toolbar */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -286,12 +303,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         } else if (id == R.id.miCollage) {
             launchStoryCollageActivity();
         } else if (id == R.id.miDelete) {
-            // TODO: add confirm dialog
-            Trip.deleteTrip(mTripID);
-            Intent data = new Intent();
-            data.putExtra(TRIP_POS_ARG, getIntent().getIntExtra(TRIP_POS_ARG, -1));
-            setResult(RESULT_OK, data);
-            finish();
+            showConfirmDeleteDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);

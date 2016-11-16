@@ -31,6 +31,11 @@
     <string name="hint_places_of_interest">visit place</string>
     <string name="delete_trip">Delete Trip</string>
 
+    <!-- Confirm Delete Trip Dialog -->
+    <string name="confirm_delete">Are you sure you want to delete this trip?</string>
+    <string name="delete">Delete Trip</string>
+    <string name="cancel">Cancel</string>
+
     <!-- Compose Note -->
     <string name="hint_compose_note">Memories go here...</string>
     <string name="save">Save</string>

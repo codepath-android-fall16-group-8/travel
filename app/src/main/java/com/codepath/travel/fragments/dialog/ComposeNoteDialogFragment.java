@@ -1,4 +1,4 @@
-package com.codepath.travel.fragment.dialog;
+package com.codepath.travel.fragments.dialog;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
