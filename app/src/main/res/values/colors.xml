@@ -6,4 +6,7 @@
 
     <color name="transparent">#00000000</color>
     <color name="colorTransparentBackground">#80FFFFFF</color>
+    <color name="green">#008000</color>
+    <color name="tango">#F07621</color>
+    <color name="dodger_blue">#1DA1F2</color>
 </resources>

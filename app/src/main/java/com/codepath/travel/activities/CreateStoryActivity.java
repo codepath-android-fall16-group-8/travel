@@ -76,9 +76,14 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
 
         mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
         toolbar.setTitle(String.format(toolbarTitle, mDestination));
+
+        //get an array list of story places from suggestion activity
+
+
         setSupportActionBar(toolbar);
 
         setUpTrip();
+        //Set trip to each of the story place object
         setUpRecyclerView();
         setUpClickListeners();
     }

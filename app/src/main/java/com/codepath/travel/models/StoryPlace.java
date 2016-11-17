@@ -7,6 +7,11 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +48,16 @@ public class StoryPlace extends ParseObject {
         setLatitude(latlng.latitude);
         setLongitude(latlng.longitude);
         setPlaceTypes(place.getPlaceTypes());
+    }
+
+    public StoryPlace(JSONObject jsonObject) {
+        super();
+        try {
+        setName(jsonObject.getString("name"));
+        setRating(jsonObject.getDouble("rating"));
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public Trip getTrip() {
@@ -113,11 +128,11 @@ public class StoryPlace extends ParseObject {
         put(CHECK_IN_TIME_KEY, checkInTime);
     }
 
-    public int getRating() {
-        return getInt(RATING_KEY);
+    public double getRating() {
+        return getDouble(RATING_KEY);
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         put(RATING_KEY, rating);
     }
 
@@ -125,8 +140,21 @@ public class StoryPlace extends ParseObject {
         return getInt(ORDER_POSITION_KEY);
     }
 
-    public void setOrderPosition(int orderPosition) {
-        put(ORDER_POSITION_KEY, orderPosition);
+    public void setOrderPosition(int orderPosition) { put(ORDER_POSITION_KEY, orderPosition);}
+
+    public static ArrayList<StoryPlace> getPlacesFromJSONArray(JSONArray jsonArray) {
+        ArrayList<StoryPlace> storyPlaces = new ArrayList<>();
+        for(int i = 0; i < jsonArray.length(); i++){
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                StoryPlace storyPlace = new StoryPlace(jsonObject);
+                storyPlaces.add(storyPlace);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                continue;
+            }
+        }
+        return storyPlaces;
     }
 
     /**

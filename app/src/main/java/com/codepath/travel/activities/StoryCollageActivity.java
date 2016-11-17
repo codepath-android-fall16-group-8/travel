@@ -63,7 +63,9 @@ public class StoryCollageActivity extends AppCompatActivity {
             public void done(List<StoryPlace> places, ParseException e) {
                 if (e == null) {
                     mStoryPlaces.addAll(places);
-                    Collections.sort(mStoryPlaces, (p1, p2) -> p2.getRating() - p1.getRating());
+                    Collections.sort(mStoryPlaces, (p1, p2) -> {
+                        return (int)p2.getRating() - (int)p1.getRating();
+                    });
                     mCollageAdapter = new CollageAdapter(getApplicationContext(), mStoryPlaces);
                     setUpRecyclerView();
                 } else {

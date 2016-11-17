@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    >
+
+    <TextView
+        android:text="Place name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:id="@+id/tvSuggestionPlaceName" />
+
+    <TextView
+        android:text="Rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSuggestionPlaceName"
+        android:layout_alignLeft="@+id/tvSuggestionPlaceName"
+        android:layout_alignStart="@+id/tvSuggestionPlaceName"
+        android:layout_marginTop="20dp"
+        android:drawableStart="@drawable/ic_rating"
+        android:drawableLeft="@drawable/ic_rating"
+        android:drawableTint="@color/green"
+        android:id="@+id/tvSuggestionPlaceRating" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add"
+        android:tint="@color/colorAccent"
+        android:id="@+id/ivAddSuggestionPlace"
+        android:layout_alignBottom="@+id/tvSuggestionPlaceRating"
+        android:layout_toRightOf="@+id/tvSuggestionPlaceRating"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp" />
+
+    <View
+        android:id="@+id/viewSeparator"
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@+id/ivAddSuggestionPlace"
+        android:layout_toEndOf="@+id/ivAddSuggestionPlace"
+        android:background="@android:color/darker_gray" />
+
+
+</RelativeLayout>

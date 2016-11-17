@@ -50,9 +50,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.HomeActivity" />
+        <activity android:name=".activities.HomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="traveltrails.com"
+                    android:scheme="oauth" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.CreateStoryActivity" />
-        <activity android:name=".activities.SearchActivity" />
+        <activity android:name=".activities.PlaceSuggestionActivity" />
         <activity android:name=".activities.StoryActivity" />
         <activity android:name=".activities.StoryCollageActivity" />
         <meta-data
