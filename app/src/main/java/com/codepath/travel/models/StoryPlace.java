@@ -2,29 +2,24 @@ package com.codepath.travel.models;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.codepath.travel.models.ParseModelConstants.CHECK_IN_TIME_KEY;
-import static com.codepath.travel.models.ParseModelConstants.COVER_PIC_URL_KEY;
-import static com.codepath.travel.models.ParseModelConstants.LATITUDE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.LONGITUDE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.NAME_KEY;
-import static com.codepath.travel.models.ParseModelConstants.ORDER_POSITION_KEY;
-import static com.codepath.travel.models.ParseModelConstants.PLACE_ID_KEY;
-import static com.codepath.travel.models.ParseModelConstants.PLACE_TYPES_KEY;
-import static com.codepath.travel.models.ParseModelConstants.RATING_KEY;
-import static com.codepath.travel.models.ParseModelConstants.STORY_PLACE_CLASS_NAME;
-import static com.codepath.travel.models.ParseModelConstants.TRIP_KEY;
+import static com.codepath.travel.models.ParseModelConstants.*;
+
+import android.util.Log;
 
 /**
  * Parse model for a travel story/trip.
  */
 @ParseClassName(STORY_PLACE_CLASS_NAME)
 public class StoryPlace extends ParseObject {
+    private static final String TAG = StoryPlace.class.getSimpleName();
 
     public StoryPlace() {
         super();
@@ -128,5 +123,46 @@ public class StoryPlace extends ParseObject {
 
     public void setOrderPosition(int orderPosition) {
         put(ORDER_POSITION_KEY, orderPosition);
+    }
+
+    /**
+     * Get the StoryPlace object for the given object id
+     *
+     * @param objectId the object id for the StoryPlace object to find
+     */
+    public static void getStoryPlaceForObjectId(String objectId, GetCallback<StoryPlace> callback) {
+        Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
+        ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
+        placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        placeQuery.getFirstInBackground(callback);
+    }
+
+    /**
+     * Delete the story place and its associated media items.
+     */
+    public void deleteWithMedia() {
+        Log.d(TAG, String.format("Deleting story place: %s", getName()));
+        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
+        mediaQuery.whereEqualTo(STORY_PLACE_KEY, this);
+        mediaQuery.findInBackground((mediaItems, e) -> {
+            if (e == null) {
+                ParseObject.deleteAllInBackground(mediaItems, e1 -> {
+                    if (e1 == null) {
+                        deleteInBackground(e2 -> {
+                            if (e2 != null) {
+                                Log.d(TAG, String.format("Failed to delete story place: %s",
+                                        e2.getMessage()));
+                            }
+                        });
+                    } else {
+                        Log.d(TAG, String.format("Failed to delete all media for story place: %s",
+                                e1.getMessage()));
+                    }
+                });
+            } else {
+                Log.d(TAG, String.format("Failed to find related media for story place delete: %s",
+                        e.getMessage()));
+            }
+        });
     }
 }

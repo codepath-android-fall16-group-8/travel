@@ -1,19 +1,20 @@
 package com.codepath.travel.models;
 
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
-import static com.codepath.travel.models.ParseModelConstants.CAPTION_KEY;
-import static com.codepath.travel.models.ParseModelConstants.DATA_URL_KEY;
-import static com.codepath.travel.models.ParseModelConstants.MEDIA_CLASS_NAME;
-import static com.codepath.travel.models.ParseModelConstants.STORY_PLACE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.TYPE_KEY;
+import static com.codepath.travel.models.ParseModelConstants.*;
+
+import android.util.Log;
 
 /**
  * Parse model for a media item, which can be text or media.
  */
 @ParseClassName(MEDIA_CLASS_NAME)
 public class Media extends ParseObject {
+    private static final String TAG = Media.class.getSimpleName();
 
     public enum Type {
         TEXT, REVIEW, PHOTO, VIDEO
@@ -59,5 +60,17 @@ public class Media extends ParseObject {
 
     public void setDataUrl(String dataUrl) {
         put(DATA_URL_KEY, dataUrl);
+    }
+
+    /**
+     * Get the Media object for the given object id
+     *
+     * @param objectId the object id for the Media object to find
+     */
+    public static void getMediaForObjectId(String objectId, GetCallback<Media> callback) {
+        Log.d(TAG, String.format("Querying Parse for Media with objectId: %s", objectId));
+        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
+        mediaQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        mediaQuery.getFirstInBackground(callback);
     }
 }

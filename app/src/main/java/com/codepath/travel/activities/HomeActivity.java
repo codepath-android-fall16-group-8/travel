@@ -1,5 +1,7 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.activities.StoryActivity.TRIP_POS_ARG;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -52,10 +54,7 @@ public class HomeActivity extends AppCompatActivity
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int LOGIN_REQUEST = 0;
     private static final int CREATE_STORY_REQUEST = 1;
-    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
-
-    // intent arguments
-    public static final String CREATED_TRIP_ID = "trip_id";
+    private static final int STORY_REQUEST = 2;
 
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar)  Toolbar toolbar;
@@ -67,7 +66,6 @@ public class HomeActivity extends AppCompatActivity
     private TextView tvProfileName;
     private ArrayList<Trip> mTrips;
     private ArrayAdapter<Trip> mTripsAdapter;
-
 
     private ActionBarDrawerToggle drawerToggle;
     private FloatingActionButton mFab;
@@ -87,6 +85,7 @@ public class HomeActivity extends AppCompatActivity
 
         setupViews();
         setupDrawerContent(nvDrawer);
+        setUpClickListeners();
 
         // User login
         if (ParseUser.getCurrentUser() != null) { // start with existing user
@@ -94,7 +93,6 @@ public class HomeActivity extends AppCompatActivity
         } else {
             launchLoginActivity();
         }
-        setUpClickListeners();
     }
 
     private void setupViews() {
@@ -119,6 +117,16 @@ public class HomeActivity extends AppCompatActivity
         mFab = (FloatingActionButton) findViewById(R.id.fab_new_trip);
     }
 
+    private void setUpClickListeners() {
+        lvMyTrips.setOnItemClickListener((adapterView, view, position, l) -> {
+            launchStoryActivity(position);
+        });
+
+        mFab.setOnClickListener(view -> {
+            launchNewTripFragment();
+        });
+    }
+
     private void refreshMyTrips() {
         ParseQuery<Trip> myTripsQuery = ParseQuery.getQuery("Trip");
         mTrips.clear();
@@ -131,22 +139,6 @@ public class HomeActivity extends AppCompatActivity
             } else {
                 Log.d("Fetch Trips error", e.toString());
             }
-        });
-    }
-
-    private void setUpClickListeners() {
-        lvMyTrips.setOnItemClickListener((adapterView, view, position, l) -> {
-            Trip trip = mTripsAdapter.getItem(position);
-            Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
-            openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, trip.getTitle());
-            openStory.putExtra(StoryActivity.TRIP_ID_ARG, trip.getObjectId());
-            startActivity(openStory);
-        });
-
-        mFab.setOnClickListener(view -> {
-            FragmentManager fm = getSupportFragmentManager();
-            NewTripFragment newTripDialog = NewTripFragment.newInstance();
-            newTripDialog.show(fm, "New Trip");
         });
     }
 
@@ -190,9 +182,25 @@ public class HomeActivity extends AppCompatActivity
         request.executeAsync();
     }
 
+    /* Navigation */
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
         startActivityForResult(builder.build(), LOGIN_REQUEST);
+    }
+
+    private void launchStoryActivity(int tripPosition) {
+        Trip trip = mTripsAdapter.getItem(tripPosition);
+        Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
+        openStory.putExtra(TRIP_POS_ARG, tripPosition);
+        openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, trip.getTitle());
+        openStory.putExtra(StoryActivity.TRIP_ID_ARG, trip.getObjectId());
+        startActivityForResult(openStory, STORY_REQUEST);
+    }
+
+    private void launchNewTripFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        NewTripFragment newTripDialog = NewTripFragment.newInstance();
+        newTripDialog.show(fm, "New Trip");
     }
 
     private void logout() {
@@ -210,6 +218,29 @@ public class HomeActivity extends AppCompatActivity
         launchLoginActivity();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
+            ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+            User user = (User) ParseUser.getCurrentUser();
+            // update user fields if this is a new facebook login
+            if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
+                newFBAccountSetup(user);
+            }
+            startWithCurrentUser();
+        } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
+            refreshMyTrips(); // TODO: return trip instead of requerying for trips
+        } else if (resultCode == RESULT_OK && requestCode == STORY_REQUEST) {
+            // trip delete from story activity
+            int deletedPos = data.getIntExtra(StoryActivity.TRIP_POS_ARG, -1);
+            if (deletedPos >= 0) {
+                mTrips.remove(deletedPos);
+                mTripsAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    /* Navigation Drawer */
     // Initialize the navigation drawer listener
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
@@ -224,21 +255,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
-            ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-            User user = (User) ParseUser.getCurrentUser();
-            // update user fields if this is a new facebook login
-            if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
-                newFBAccountSetup(user);
-            }
-            startWithCurrentUser();
-        } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
-            refreshMyTrips();
-        }
-    }
-
-    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -250,21 +266,6 @@ public class HomeActivity extends AppCompatActivity
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
-                return true;
-        }
-
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // Assign action to perform for different navigation drawer item
@@ -282,6 +283,22 @@ public class HomeActivity extends AppCompatActivity
         menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
+    }
+
+    /* Toolbar */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

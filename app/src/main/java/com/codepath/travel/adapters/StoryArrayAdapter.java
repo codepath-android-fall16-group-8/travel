@@ -32,27 +32,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by aditikakadebansal on 11/9/16.
+ * Adapter for a trip's story places.
  */
-public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.StoryViewHolder> implements ItemTouchHelperAdapter {
+public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.StoryViewHolder>
+        implements ItemTouchHelperAdapter {
 
     private List<StoryPlace> mStoryPlaces;
     private final OnStartDragListener mDragStartListener;
     private Context mContext;
-    private StoryPlaceMediaClickListener clickListener;
+    private StoryPlaceListener listener;
 
-    public interface StoryPlaceMediaClickListener {
+    public interface StoryPlaceListener {
         void cameraOnClick(int position);
         void galleryOnClick(int position);
         void noteOnClick(int position);
         void reviewOnClick(int position);
+        void storyPlaceMoved(int fromPosition, int toPosition);
+        void storyPlaceDismissed(int position);
+        void mediaNoteOnClick(Media media, int mPos, int storyPos);
     }
 
     public StoryArrayAdapter(Context context, OnStartDragListener dragStartListener, List<StoryPlace> storyPlaces) {
         mStoryPlaces = storyPlaces;
         mDragStartListener = dragStartListener;
         mContext = context;
-        clickListener = (StoryPlaceMediaClickListener) context;
+        listener = (StoryPlaceListener) context;
     }
 
     private Context getContext() {
@@ -88,31 +92,26 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             }
         });
 
-        holder.ivNote.setOnClickListener((View view) -> {
-            clickListener.noteOnClick(position);
-        });
-
-        holder.ivReview.setOnClickListener((View v) -> {
-            clickListener.reviewOnClick(position);
-        });
-
-        holder.ivCamera.setOnClickListener((View view) -> {
-            clickListener.cameraOnClick(position);
-        });
-
-        holder.ivGallery.setOnClickListener((View v) -> {
-            clickListener.galleryOnClick(position);
-        });
+        holder.ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(storyPlace)));
+        holder.ivReview.setOnClickListener(v -> listener.reviewOnClick(getRealPosition(storyPlace)));
+        holder.ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(storyPlace)));
+        holder.ivGallery.setOnClickListener(v -> listener.galleryOnClick(getRealPosition(storyPlace)));
     }
 
     @Override
     public void onItemDismiss(int position) {
+        StoryPlace storyPlace = mStoryPlaces.get(position);
+        Log.d("onItemDismiss", String.format("pos: %d, storyPlace: %s", position, storyPlace.getName()));
+        listener.storyPlaceDismissed(position);
         mStoryPlaces.remove(position);
         notifyItemRemoved(position);
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
+        StoryPlace storyPlace = mStoryPlaces.get(fromPosition);
+        Log.d("onItemMove", String.format("pos: %d - %d, storyPlace: %s", fromPosition, toPosition, storyPlace.getName()));
+        listener.storyPlaceMoved(fromPosition, toPosition);
         Collections.swap(mStoryPlaces, fromPosition, toPosition);
         notifyItemMoved(fromPosition, toPosition);
         return true;
@@ -128,9 +127,14 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         return mStoryPlaces.size();
     }
 
+    // Needed in order to get the correct position of items
+    // on drag/dismiss doesn't update the "position" of the recycler view
+    private int getRealPosition(StoryPlace storyPlace){
+        return mStoryPlaces.indexOf(storyPlace);
+    }
 
-
-    public class StoryViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    public class StoryViewHolder extends RecyclerView.ViewHolder
+            implements ItemTouchHelperViewHolder, MediaItemAdapter.MediaItemListener {
 
         // views
         @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
@@ -144,25 +148,27 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         // variables
         private ArrayList<Media> mPlaceMediaItems;
         private MediaItemAdapter mMediaItemAdapter;
+        private StoryPlace mStoryPlace;
 
         public StoryViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             mPlaceMediaItems = new ArrayList<>();
             mMediaItemAdapter =
-                new MediaItemAdapter(StoryArrayAdapter.this.mContext, mPlaceMediaItems);
+                new MediaItemAdapter(StoryArrayAdapter.this.mContext, mPlaceMediaItems, this);
             rvMediaItems.setAdapter(mMediaItemAdapter);
             rvMediaItems.setLayoutManager(
                 new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         }
 
         public void populate(StoryPlace storyPlace) {
+            mStoryPlace = storyPlace;
             ivPlacePhoto.setImageResource(0);
             Glide.with(mContext)
                     .load(storyPlace.getCoverPicUrl())
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
-            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery("Media");
+            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);
             mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);
             mediaObjectsQuery.findInBackground((List<Media> mediaObjects, ParseException e) -> {
                 if (e == null) {
@@ -183,6 +189,20 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(0);
+        }
+
+        @Override
+        public void photoOnClick(int position) {
+            Media mediaItem = mPlaceMediaItems.get(position);
+            Log.d("photoOnClick", mediaItem.getObjectId());
+            // TODO: notifiy activity
+        }
+
+        @Override
+        public void noteOnClick(int mPosition) {
+            Media mediaItem = mPlaceMediaItems.get(mPosition);
+            Log.d("noteOnClick", mediaItem.getCaption());
+            listener.mediaNoteOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
         }
     }
 

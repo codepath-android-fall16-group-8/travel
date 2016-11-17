@@ -1,7 +1,9 @@
-package com.codepath.travel.fragment.dialog;
+package com.codepath.travel.fragments.dialog;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,31 +24,43 @@ import butterknife.Unbinder;
  * Modal overlay for composing notes.
  */
 public class ComposeNoteDialogFragment extends DialogFragment {
-    private static final String POSITION_KEY = "position";
+    private static final String TAG = ComposeNoteDialogFragment.class.getSimpleName();
+    private static final String STORY_POSITION_KEY = "storyPosition";
     private static final String PLACE_NAME_KEY = "placeName";
+    private static final String MEDIA_ID_KEY = "mediaId";
+    private static final String NOTE_TEXT_KEY = "noteText";
 
     @BindView(R.id.etBody) EditText etBody;
     @BindView(R.id.tvPlaceName) TextView tvPlaceName;
     @BindView(R.id.btnCancel) ImageButton btnCancel;
+    @BindView(R.id.btnDelete) ImageButton btnDelete;
     @BindView(R.id.btnSave) Button btnSave;
     private Unbinder unbinder;
 
     private ComposeNoteListener listener;
     private int position;
+    boolean editing;
 
     public interface ComposeNoteListener {
-        void onComposeSave(int position, String noteText);
+        void onComposeSave(int position, String noteText, String mediaId);
+        void onComposeDelete(int position, String mediaId);
     }
 
     public ComposeNoteDialogFragment() {
         // empty constructor
     }
 
-    public static ComposeNoteDialogFragment newInstance(int position, String placeName) {
+    // Todo: EDITING needs media item id, to get get the media item
+    // then can extract the note text, and place name?
+
+    public static ComposeNoteDialogFragment newInstance(int position, String placeName,
+            String mediaId, String noteText) {
         ComposeNoteDialogFragment fragment = new ComposeNoteDialogFragment();
         Bundle args = new Bundle();
-        args.putInt(POSITION_KEY, position);
+        args.putInt(STORY_POSITION_KEY, position);
         args.putString(PLACE_NAME_KEY, placeName);
+        args.putString(MEDIA_ID_KEY, mediaId);
+        args.putString(NOTE_TEXT_KEY, noteText);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,19 +72,41 @@ public class ComposeNoteDialogFragment extends DialogFragment {
         unbinder = ButterKnife.bind(this, view);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         listener = (ComposeNoteListener) getActivity();
-        position = getArguments().getInt(POSITION_KEY);
+        position = getArguments().getInt(STORY_POSITION_KEY);
         setupViews();
         return view;
     }
 
     private void setupViews() {
         tvPlaceName.setText(getArguments().getString(PLACE_NAME_KEY));
+        // if mediaId and noteText were provided, this is an existing note being edited
+        Bundle args = getArguments();
+        String mediaId = args.getString(MEDIA_ID_KEY);
+        String noteText = args.getString(NOTE_TEXT_KEY);
+        if (mediaId != null && !TextUtils.isEmpty(mediaId)
+                && noteText != null && !TextUtils.isEmpty(noteText)) {
+            Log.d(TAG, String.format("populating note text for editing (mediaId: %s)", mediaId));
+            etBody.setText(noteText);
+            etBody.setSelection(noteText.length());
+            editing = true;
+            btnDelete.setVisibility(View.VISIBLE);
+        } else {
+            Log.d(TAG, "new note");
+            editing = false;
+            btnDelete.setVisibility(View.INVISIBLE);
+        }
+
         btnSave.setOnClickListener(v -> {
-            listener.onComposeSave(position, etBody.getText().toString());
+            listener.onComposeSave(position, etBody.getText().toString(), mediaId);
             dismiss();
         });
 
         btnCancel.setOnClickListener(v -> {
+            dismiss();
+        });
+
+        btnDelete.setOnClickListener(v -> {
+            listener.onComposeDelete(position, mediaId);
             dismiss();
         });
     }

@@ -16,4 +16,11 @@
         android:title="@string/view_collage"
         android:icon="@android:drawable/ic_menu_gallery"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/miDelete"
+        android:orderInCategory="30"
+        android:title="@string/delete_trip"
+        android:icon="@android:drawable/ic_menu_delete"
+        app:showAsAction="ifRoom" />
 </menu>

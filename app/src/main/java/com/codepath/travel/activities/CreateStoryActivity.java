@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,10 +31,9 @@ import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import org.parceler.Parcels;
-
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,7 +45,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     // intent arguments
     public static final String DESTINATION_ARGS = "destination";
 
+    // strings
+    @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
+
     // Views
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
     @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
     @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
@@ -64,15 +68,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
+        ButterKnife.bind(this);
 
         mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_create_story) + mDestination);
+        toolbar.setTitle(String.format(toolbarTitle, mDestination));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ButterKnife.bind(this);
 
         setUpTrip();
         setUpRecyclerView();
@@ -176,16 +176,18 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         }
     }
 
-
-    public void onConfirm(View view) {
-        Intent intent = new Intent(this, StoryActivity.class);
-        intent.putExtra("storyPlaces", Parcels.wrap(mStoryPlaces));
-        startActivity(intent);
-    }
-
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    /* Toolbar */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_create_story, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -195,7 +197,8 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == android.R.id.home) {
+        if (id == R.id.miDelete) {
+            mNewTrip.deleteInBackground();
             finish();
             return true;
         }
