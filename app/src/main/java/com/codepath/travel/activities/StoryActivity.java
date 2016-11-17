@@ -1,6 +1,7 @@
 package com.codepath.travel.activities;
 
 import android.Manifest;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
+import com.codepath.travel.fragments.TripDatesFragment;
 import com.codepath.travel.fragments.dialog.ComposeNoteDialogFragment;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.helper.OnStartDragListener;
@@ -35,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +51,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
         StoryArrayAdapter.StoryPlaceListener,
         ComposeNoteDialogFragment.ComposeNoteListener,
-        ConfirmDeleteTripDialogFragment.DeleteTripListener {
+        ConfirmDeleteTripDialogFragment.DeleteTripListener,
+        TripDatesFragment.TripDatesListener {
 
     public final String APP_TAG = "TravelTrails";
     public static final int START_CAMERA_REQUEST_CODE = 123;
@@ -75,6 +79,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     private int mMediaLauncherStoryIndex;
     private String mTripID;
+    private Trip mTrip;
     private String mTripTitle;
     private String mPhotoURL;
 
@@ -91,8 +96,25 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
+        Trip.getTripForObjectId(mTripID, (trip, e) -> {
+            if (e == null) {
+                mTrip = trip;
+                setupTripDatesFragment();
+            } else {
+                Log.d(TAG, String.format("Failed to get trip for id %s", mTrip));
+            }
+
+        });
         setUpRecyclerView();
         getPlacesInTrip();
+    }
+
+    private void setupTripDatesFragment() {
+        // note that this is not using support v4 because the datepicker library doesn't support it
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.flContainer,
+                TripDatesFragment.newInstance(mTrip.getStartDate(), mTrip.getEndDate()));
+        ft.commit();
     }
 
     private void setUpRecyclerView() {
@@ -115,7 +137,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                     mStoryPlaces.addAll(places);
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    Log.d("getPlacesInTrip", String.format("Failed: %s", se.getMessage()));
+                    Log.d(TAG, String.format("Failed getPlacesInTrip: %s", se.getMessage()));
                 }
             }
         });
@@ -331,6 +353,16 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         data.putExtra(TRIP_POS_ARG, getIntent().getIntExtra(TRIP_POS_ARG, -1));
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    @Override
+    public void tripDatesOnSet(Calendar startDate, Calendar endDate) {
+        Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
+        Trip.getTripForObjectId(mTripID, (trip, e) -> {
+            trip.setStartDate(startDate.getTime());
+            trip.setEndDate(endDate.getTime());
+            trip.saveInBackground();
+        });
     }
 
     /* Toolbar */

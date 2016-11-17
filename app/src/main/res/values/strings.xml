@@ -39,4 +39,7 @@
     <!-- Compose Note -->
     <string name="hint_compose_note">Memories go here...</string>
     <string name="save">Save</string>
+
+    <!-- Trip Date Selection -->
+    <string name="hint_trip_dates">Set Trip Dates</string>
 </resources>

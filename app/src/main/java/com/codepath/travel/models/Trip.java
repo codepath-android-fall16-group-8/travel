@@ -13,6 +13,8 @@ import static com.codepath.travel.models.ParseModelConstants.*;
 
 import android.util.Log;
 
+import java.util.Date;
+
 /**
  * Parse model for a travel story/trip.
  */
@@ -68,6 +70,22 @@ public class Trip extends ParseObject {
 
     public void setCoverPicUrl(String coverPicUrl) {
         put(COVER_PIC_URL_KEY, coverPicUrl);
+    }
+
+    public Date getStartDate() {
+        return getDate(START_DATE_KEY);
+    }
+
+    public void setStartDate(Date startDate) {
+        put(START_DATE_KEY, startDate);
+    }
+
+    public Date getEndDate() {
+        return getDate(END_DATE_KEY);
+    }
+
+    public void setEndDate(Date endDate) {
+        put(END_DATE_KEY, endDate);
     }
 
     public ParseRelation<User> getSharedRelation() {

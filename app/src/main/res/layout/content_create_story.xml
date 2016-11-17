@@ -9,8 +9,15 @@
     tools:context=".activities.CreateStoryActivity"
     tools:showIn="@layout/activity_create_story">
 
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
+
     <EditText
         android:id="@+id/etPlacesOfInterest"
+        android:layout_below="@+id/flContainer"
         android:hint="@string/hint_places_of_interest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
