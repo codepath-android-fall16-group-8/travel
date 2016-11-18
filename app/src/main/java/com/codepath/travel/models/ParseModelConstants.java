@@ -18,6 +18,8 @@ public final class ParseModelConstants {
     public static final String TRIP_CLASS_NAME = "Trip";
     public static final String TITLE_KEY = "title";
     public static final String DESTINATION_PLACE_ID_KEY = "destinationPlaceId";
+    public static final String START_DATE_KEY = "startDate";
+    public static final String END_DATE_KEY = "endDate";
     public static final String SHARED_RELATION_KEY = "shared";
 
     // StoryPlace-specific values

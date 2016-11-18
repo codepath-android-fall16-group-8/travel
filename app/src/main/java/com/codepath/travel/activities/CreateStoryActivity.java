@@ -1,5 +1,6 @@
 package com.codepath.travel.activities;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
+import com.codepath.travel.fragments.TripDatesFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.StoryPlace;
@@ -32,12 +34,14 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener {
+public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener,
+        TripDatesFragment.TripDatesListener {
     //Class variables
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
@@ -84,7 +88,21 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         currentUser.setACL(new ParseACL(currentUser));
         currentUser.saveInBackground();
         mNewTrip = new Trip(currentUser, mDestination);
-        mNewTrip.saveInBackground();
+        mNewTrip.saveInBackground(e -> {
+            if (e == null) {
+                setupTripDatesFragment();
+            } else {
+                Log.d(TAG, String.format("Failed to setup trip: %s", e.getMessage()));
+            }
+        });
+    }
+
+    private void setupTripDatesFragment() {
+        // note that this is not using support v4 because the datepicker library doesn't support it
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.flContainer,
+                TripDatesFragment.newInstance(mNewTrip.getStartDate(), mNewTrip.getEndDate()));
+        ft.commit();
     }
 
     private void setUpClickListeners() {
@@ -176,9 +194,18 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         }
     }
 
+    /* Listeners */
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
         mItemTouchHelper.startDrag(viewHolder);
+    }
+
+    @Override
+    public void tripDatesOnSet(Calendar startDate, Calendar endDate) {
+        Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
+        mNewTrip.setStartDate(startDate.getTime());
+        mNewTrip.setEndDate(endDate.getTime());
+        mNewTrip.saveInBackground();
     }
 
     /* Toolbar */

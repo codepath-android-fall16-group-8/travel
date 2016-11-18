@@ -73,4 +73,7 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
+    // Material DateTime Range Picker
+    compile 'com.borax12.materialdaterangepicker:library:1.9'
+
 }
