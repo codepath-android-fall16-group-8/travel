@@ -100,7 +100,9 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<PlaceSugge
 
         public void populate(SuggestionPlace suggestionPlace) {
             tvSuggestionPlaceName.setText(suggestionPlace.getName());
-            tvSuggestionPlaceRating.setText(String.valueOf(suggestionPlace.getRating()));
+            tvSuggestionPlaceRating.setText(suggestionPlace.getRating() != null
+            ? String.valueOf(suggestionPlace.getRating())
+            : "0.0");
             if(suggestionPlace.isSelected()) {
                 ivAddSuggestionPlace.setImageResource(R.drawable.ic_tick);
             }else {
@@ -143,7 +145,6 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<PlaceSugge
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try { clear();
-                        //addAll(StoryPlace.getPlacesFromJSONArray(response.getJSONArray("results")));
                         addAll(SuggestionPlace.getPlacesFromJSONArray(response.getJSONArray("results")));
 
                     } catch (JSONException e) {
