@@ -79,7 +79,6 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     private Place mNewSelectedPlace;
     private String mDestination;
     private String mPhotoReference;
-    private int index = 0;
     private Trip mNewTrip;
 
     @Override
