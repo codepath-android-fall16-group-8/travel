@@ -12,6 +12,7 @@ import java.util.List;
 
 import static com.codepath.travel.models.ParseModelConstants.*;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -69,8 +70,11 @@ public class StoryPlace extends ParseObject {
     }
 
     public String getCoverPicUrl() {
-        return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
-        //return getString(COVER_PIC_URL_KEY);
+        String coverUrl = getString(COVER_PIC_URL_KEY);
+        if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
+            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+        }
+        return coverUrl;
     }
 
     public void setCoverPicUrl(String coverPicUrl) {

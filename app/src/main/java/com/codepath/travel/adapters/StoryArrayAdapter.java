@@ -49,7 +49,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         void reviewOnClick(int position);
         void storyPlaceMoved(int fromPosition, int toPosition);
         void storyPlaceDismissed(int position);
-        void mediaNoteOnClick(Media media, int mPos, int storyPos);
+        void mediaOnClick(Media media, int mPos, int storyPos);
     }
 
     public StoryArrayAdapter(Context context, OnStartDragListener dragStartListener, List<StoryPlace> storyPlaces) {
@@ -192,17 +192,17 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         }
 
         @Override
-        public void photoOnClick(int position) {
-            Media mediaItem = mPlaceMediaItems.get(position);
+        public void photoOnClick(int mPosition) {
+            Media mediaItem = mPlaceMediaItems.get(mPosition);
             Log.d("photoOnClick", mediaItem.getObjectId());
-            // TODO: notifiy activity
+            listener.mediaOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
         }
 
         @Override
         public void noteOnClick(int mPosition) {
             Media mediaItem = mPlaceMediaItems.get(mPosition);
             Log.d("noteOnClick", mediaItem.getCaption());
-            listener.mediaNoteOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
+            listener.mediaOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
         }
     }
 
