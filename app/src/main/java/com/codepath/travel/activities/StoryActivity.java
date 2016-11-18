@@ -22,16 +22,18 @@ import android.widget.Toast;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
 import com.codepath.travel.fragments.TripDatesFragment;
-import com.codepath.travel.fragments.dialog.ComposeNoteDialogFragment;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
+import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +52,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
         StoryArrayAdapter.StoryPlaceListener,
-        ComposeNoteDialogFragment.ComposeNoteListener,
+        EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         TripDatesFragment.TripDatesListener {
 
@@ -203,10 +205,11 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         startActivity(intent);
     }
 
-    private void launchComposeNoteDialogFragment(int position, String mediaId, String noteText) {
-        ComposeNoteDialogFragment fragment = ComposeNoteDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName(), mediaId, noteText);
-        fragment.show(getSupportFragmentManager(), "composeNoteDialogFragment");
+    private void launchComposeNoteDialogFragment(int position, String mediaId,
+            String caption, String data) {
+        EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
+                mStoryPlaces.get(position).getName(), mediaId, caption, data);
+        fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -278,7 +281,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @Override
     public void noteOnClick(int position) {
-        launchComposeNoteDialogFragment(position, null, null);
+        launchComposeNoteDialogFragment(position, null, null, null);
     }
 
     @Override
@@ -300,20 +303,21 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     @Override
-    public void mediaNoteOnClick(Media media, int mPos, int storyPos) {
-        Log.d(TAG, String.format("mediaNoteOnClick, mPos %d, storyPos %d", mPos, storyPos));
-        launchComposeNoteDialogFragment(storyPos, media.getObjectId(), media.getCaption());
+    public void mediaOnClick(Media media, int mPos, int storyPos) {
+        Log.d(TAG, String.format("mediaOnClick, mPos %d, storyPos %d", mPos, storyPos));
+        launchComposeNoteDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
+                media.getDataUrl());
     }
 
     @Override
-    public void onComposeSave(int storyPos, String noteText, String mediaId) {
+    public void onSaveCaption(int storyPos, String caption, String mediaId) {
         if (mediaId == null) { // new note
             Media mediaItem = new Media(mStoryPlaces.get(storyPos), Media.Type.TEXT);
-            saveMediaNote(mediaItem, noteText, storyPos);
-        } else { // edited note
+            saveMediaNote(mediaItem, caption, storyPos);
+        } else { // edited media
             Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
                 if (e == null) {
-                    saveMediaNote(mediaItem, noteText, storyPos);
+                    saveMediaNote(mediaItem, caption, storyPos);
                 } else {
                     Log.d(TAG, String.format("Get media error: %s", e.toString()));
                 }
@@ -321,8 +325,8 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         }
     }
 
-    private void saveMediaNote(Media mediaItem, String noteText, int storyPos) {
-        mediaItem.setCaption(noteText);
+    private void saveMediaNote(Media mediaItem, String caption, int storyPos) {
+        mediaItem.setCaption(caption);
         mediaItem.saveInBackground((ParseException e) -> {
             if (e == null) {
                 mAdapter.notifyItemChanged(storyPos);
@@ -333,7 +337,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     @Override
-    public void onComposeDelete(int storyPos, String mediaId) {
+    public void onDelete(int storyPos, String mediaId) {
         if (mediaId != null) {
             Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
                 if (e == null) {
@@ -343,6 +347,26 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 }
             });
         }
+    }
+
+    @Override
+    public void onSetStoryPlaceCoverPhoto(int storyPos, String coverUrl) {
+        StoryPlace storyPlace = mStoryPlaces.get(storyPos);
+        storyPlace.setCoverPicUrl(coverUrl);
+        storyPlace.saveInBackground();
+    }
+
+    @Override
+    public void onSetTripCoverPhoto(String coverUrl) {
+        mTrip.setCoverPicUrl(coverUrl);
+        mTrip.saveInBackground();
+    }
+
+    @Override
+    public void onSetUserCoverPhoto(String coverUrl) {
+        User user = (User) ParseUser.getCurrentUser();
+        user.setCoverPicUrl(coverUrl);
+        user.saveInBackground();
     }
 
     @Override

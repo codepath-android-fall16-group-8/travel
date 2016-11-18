@@ -14,6 +14,8 @@ import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY
 import static com.codepath.travel.models.ParseModelConstants.USER_CLASS_NAME;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
 
+import android.text.TextUtils;
+
 /**
  * Parse user model.
  */
@@ -41,7 +43,11 @@ public class User extends ParseUser {
     }
 
     public String getCoverPicUrl() {
-        return getString(COVER_PIC_URL_KEY);
+        String coverUrl = getString(COVER_PIC_URL_KEY);
+        if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
+            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+        }
+        return coverUrl;
     }
 
     public void setCoverPicUrl(String coverPicUrl) {
