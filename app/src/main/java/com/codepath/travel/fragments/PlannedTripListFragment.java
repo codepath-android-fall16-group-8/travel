@@ -22,10 +22,11 @@ public class PlannedTripListFragment extends TripListFragment {
 
     @Override
     public void populateTrips() {
+        if (mUserId == null) {
+            return;
+        }
         mTrips.clear();
-        String userId = getArguments().getString(USER_ID_ARG);
-
-        Trip.getPlannedTripsForUser(userId, fetchUser, (trips, e) -> {
+        Trip.getPlannedTripsForUser(mUserId, fetchUser, (trips, e) -> {
             if (e == null) {
                 mTrips.addAll(trips);
                 mTripsAdapter.notifyDataSetChanged();

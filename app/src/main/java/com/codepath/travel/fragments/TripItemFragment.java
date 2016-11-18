@@ -37,7 +37,9 @@ public class TripItemFragment extends Fragment {
     @BindView(R.id.btnShare) ImageButton btnShare;
 
     private Unbinder unbinder;
+    private String mUserId;
     private Trip mTrip;
+    private boolean fetchUser;
     private TripClickListener listener;
 
     public static TripItemFragment newInstance(String userId, boolean fetchUser) {
@@ -53,6 +55,9 @@ public class TripItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         listener = (TripClickListener) getContext();
+        Bundle args = getArguments();
+        mUserId = args.getString(USER_ID_ARG);
+        fetchUser = args.getBoolean(FETCH_USER_ARG);
     }
 
     @Override
@@ -75,11 +80,13 @@ public class TripItemFragment extends Fragment {
     }
 
     public void populateTrip() {
-        String userId = getArguments().getString(USER_ID_ARG);
-        Trip.getCurrentTripForUser(userId, false, (trip, e) -> {
+        if (mUserId == null) {
+            return;
+        }
+        Trip.getCurrentTripForUser(mUserId, fetchUser, (trip, e) -> {
             if (e == null) {
                 mTrip = trip;
-                if (getArguments().getBoolean(FETCH_USER_ARG)) {
+                if (fetchUser) {
                     ImageUtils.loadImageCircle(ivProfilePhoto, ((User) trip.getUser()).getProfilePicUrl(),
                             R.drawable.com_facebook_profile_picture_blank_portrait);
                 } else {
@@ -90,9 +97,14 @@ public class TripItemFragment extends Fragment {
                 tvTripDates.setText(DateUtils.getDateRangeString(
                         trip.getStartDate(), trip.getEndDate()));
             } else {
-                Log.d(TAG, String.format("Failed to find current trip for user %s: %s", userId, e.getMessage()));
+                Log.d(TAG, String.format("Failed to find current trip for user %s: %s", mUserId, e.getMessage()));
             }
         });
+    }
+
+    public void setUser(String userId) {
+        mUserId = userId;
+        populateTrip();
     }
 
     // When binding a fragment in onCreateView, set the views to null in onDestroyView.
