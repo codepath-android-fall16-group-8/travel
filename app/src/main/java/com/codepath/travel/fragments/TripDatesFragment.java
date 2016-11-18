@@ -41,6 +41,8 @@ public class TripDatesFragment extends Fragment implements DatePickerDialog.OnDa
         void tripDatesOnSet(Calendar startDate, Calendar endDate);
     }
 
+    public TripDatesFragment() {}
+
     public static TripDatesFragment newInstance(Date startDate, Date endDate) {
         TripDatesFragment fragment = new TripDatesFragment();
         Bundle args = new Bundle();
@@ -51,8 +53,6 @@ public class TripDatesFragment extends Fragment implements DatePickerDialog.OnDa
         fragment.setArguments(args);
         return fragment;
     }
-
-    public TripDatesFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -113,10 +113,9 @@ public class TripDatesFragment extends Fragment implements DatePickerDialog.OnDa
     }
 
     private void setTripDatesText() {
-        String startDateString = DateUtils.getStringFromCalendar(startDate);
-        String endDateString = DateUtils.getStringFromCalendar(endDate);
-        tvTripDates.setText(String.format("%s - %s", startDateString, endDateString));
-        Log.d(TAG, String.format("Set trip dates: %s - %s", startDateString, endDateString));
+        String formattedDateString = DateUtils.getDateRangeString(startDate.getTime(), endDate.getTime());
+        tvTripDates.setText(formattedDateString);
+        Log.d(TAG, String.format("Set trip dates string: %s", formattedDateString));
     }
 
     // When binding a fragment in onCreateView, set the views to null in onDestroyView.

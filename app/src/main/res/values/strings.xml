@@ -25,7 +25,9 @@
     <!-- Home screen strings -->
     <string name="start_new_trip">Start a New Trip</string>
     <string name="destination_hint">Where do you want to go?</string>
-    <string name="my_trips">My Trips</string>
+    <string name="planned_trips">Planned Trips</string>
+    <string name="past_trips">Past Trips</string>
+    <string name="current_trip">Current Trip</string>
 
     <!-- Create Trip -->
     <string name="hint_places_of_interest">visit place</string>

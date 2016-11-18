@@ -13,6 +13,7 @@ import static com.codepath.travel.models.ParseModelConstants.*;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -65,7 +66,8 @@ public class Trip extends ParseObject {
     }
 
     public String getCoverPicUrl() {
-        return getString(COVER_PIC_URL_KEY);
+//        return getString(COVER_PIC_URL_KEY);
+        return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
     }
 
     public void setCoverPicUrl(String coverPicUrl) {
@@ -116,11 +118,93 @@ public class Trip extends ParseObject {
      * Get the Trip object for the given object id
      *
      * @param objectId the object id for the Trip object to find
+     * @param callback the callback function to call
      */
     public static void getTripForObjectId(String objectId, GetCallback<Trip> callback) {
         Log.d(TAG, String.format("Querying Parse for Trip with objectId: %s", objectId));
         ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
         tripQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        tripQuery.getFirstInBackground(callback);
+    }
+
+    /**
+     * Find all trips for a user ordered by descending start date.
+     *
+     * @param userId the user object id
+     * @param includeUser flag to include the user object in the result
+     * @param callback the callback function to call
+     */
+    public static void getAllTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
+        ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
+        tripQuery.addDescendingOrder(START_DATE_KEY);
+        if (includeUser) {
+            tripQuery.include(USER_KEY);
+        }
+        tripQuery.findInBackground(callback);
+    }
+
+    /**
+     * Find all past trips for a user, ordered by descending start date.
+     *
+     * @param userId the user object id
+     * @param includeUser flag to include the user object in the result
+     * @param callback the callback function to call
+     */
+    public static void getPastTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
+        ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
+        tripQuery.whereLessThan(END_DATE_KEY, new Date());
+        tripQuery.addDescendingOrder(START_DATE_KEY);
+        if (includeUser) {
+            tripQuery.include(USER_KEY);
+        }
+        tripQuery.findInBackground(callback);
+    }
+
+    /**
+     * Find all planned trips for a user ordered by ascending start date.
+     * Planned trips encompass trips with no dates and trips with future dates. Trips with no dates
+     * will get sorted to the beginning of the results.
+     *
+     * @param userId the user object id
+     * @param includeUser flag to include the user object in the results
+     * @param callback the callback function to call
+     */
+    public static void getPlannedTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
+        ParseQuery<Trip> futureTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        futureTrips.whereGreaterThan(START_DATE_KEY, new Date()); // starts after today
+        ParseQuery<Trip> datelessTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        datelessTrips.whereDoesNotExist(START_DATE_KEY); // has no start date
+        ArrayList<ParseQuery<Trip>> queries = new ArrayList<>();
+        queries.add(futureTrips);
+        queries.add(datelessTrips);
+
+        ParseQuery<Trip> tripQuery = ParseQuery.or(queries);
+        tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
+        tripQuery.addAscendingOrder(START_DATE_KEY);
+        if (includeUser) {
+            tripQuery.include(USER_KEY);
+        }
+        tripQuery.findInBackground(callback);
+    }
+
+    /**
+     * Find current trip for a user, i.e. whose start and end dates contain today's date.
+     *
+     * @param userId the user object id
+     * @param includeUser flag to include the user object in the result
+     * @param callback the callback function to call
+     */
+    public static void getCurrentTripForUser(String userId, boolean includeUser, GetCallback<Trip> callback) {
+        ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
+        Date today = new Date();
+        tripQuery.whereLessThanOrEqualTo(START_DATE_KEY, today);
+        tripQuery.whereGreaterThanOrEqualTo(END_DATE_KEY, today);
+        if (includeUser) {
+            tripQuery.include(USER_KEY);
+        }
         tripQuery.getFirstInBackground(callback);
     }
 

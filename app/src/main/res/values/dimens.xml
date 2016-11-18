@@ -7,6 +7,11 @@
     <!-- Navigation Drawer-->
     <dimen name="profile_pic_size">48dp</dimen>
 
+    <!-- Trips List -->
+    <dimen name="trip_horizontal_list_height">175dp</dimen>
+    <dimen name="trip_horizontal_list_width">150dp</dimen>
+    <dimen name="single_trip_height">100dp</dimen>
+
     <!-- Collage Activity -->
     <dimen name="item_collage_width">200dp</dimen>
     <dimen name="item_collage_height">100dp</dimen>

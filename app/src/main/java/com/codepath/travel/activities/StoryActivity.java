@@ -59,7 +59,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     public static final int PICK_IMAGE_FROM_GALLERY_CODE = 456;
 
     // activity intent args
-    public static final String TRIP_POS_ARG = "trip_pos";
     public static final String TRIP_ID_ARG = "trip_id";
     public static final String TRIP_TITLE_ARG = "trip_title";
 
@@ -349,9 +348,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @Override
     public void onDeleteTrip() {
         Trip.deleteTrip(mTripID);
-        Intent data = new Intent();
-        data.putExtra(TRIP_POS_ARG, getIntent().getIntExtra(TRIP_POS_ARG, -1));
-        setResult(RESULT_OK, data);
+        setResult(RESULT_OK);
         finish();
     }
 
