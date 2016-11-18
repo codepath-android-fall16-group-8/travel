@@ -9,20 +9,6 @@
     tools:context=".activities.PlaceSuggestionActivity"
     tools:showIn="@layout/activity_place_suggestion">
 
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_cart"
-        android:tint="@color/tango"
-        android:text="Button"
-        android:id="@+id/btnCart"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp" />
-
     <TextView
         android:text="@string/places_to_eat"
         android:layout_width="wrap_content"
@@ -33,14 +19,48 @@
         android:layout_marginLeft="20dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:id="@+id/textView" />
+        android:id="@+id/tvRestaurantLabel" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvSuggestionPlaces"
-        android:layout_below="@+id/btnCart"
+        android:id="@+id/rvRestaurantPlaces"
+        android:layout_below="@+id/tvRestaurantLabel"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="120dp"/>
+        android:layout_height="180dp"
+        android:background="@color/white"/>
+
+    <TextView
+        android:text="@string/sights_to_see"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rvRestaurantPlaces"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="10dp"
+        android:id="@+id/tvSightLabel" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSightPlaces"
+        android:layout_below="@+id/tvSightLabel"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/white"/>
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_cart"
+        android:tint="@color/tango"
+        android:text="Button"
+        android:id="@+id/btnCart"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

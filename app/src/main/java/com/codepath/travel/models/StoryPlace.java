@@ -48,16 +48,15 @@ public class StoryPlace extends ParseObject {
         setLatitude(latlng.latitude);
         setLongitude(latlng.longitude);
         setPlaceTypes(place.getPlaceTypes());
+        setRating(place.getRating());
     }
 
-    public StoryPlace(JSONObject jsonObject) {
-        super();
-        try {
-        setName(jsonObject.getString("name"));
-        setRating(jsonObject.getDouble("rating"));
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public StoryPlace(Trip trip, SuggestionPlace suggestionPlace) {
+        setTrip(trip);
+        setName(suggestionPlace.getName());
+        setPlaceId(suggestionPlace.getPlaceId());
+        setRating(suggestionPlace.getRating() != null ? suggestionPlace.getRating() : 0.0);
+        setThumbnail(suggestionPlace.getThumbnail());
     }
 
     public Trip getTrip() {
@@ -142,32 +141,9 @@ public class StoryPlace extends ParseObject {
 
     public void setOrderPosition(int orderPosition) { put(ORDER_POSITION_KEY, orderPosition);}
 
-    public static ArrayList<StoryPlace> getPlacesFromJSONArray(JSONArray jsonArray) {
-        ArrayList<StoryPlace> storyPlaces = new ArrayList<>();
-        for(int i = 0; i < jsonArray.length(); i++){
-            try {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                StoryPlace storyPlace = new StoryPlace(jsonObject);
-                storyPlaces.add(storyPlace);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                continue;
-            }
-        }
-        return storyPlaces;
-    }
+    public String getThumbnail() { return getString(THUMBNAIL); }
 
-    /**
-     * Get the StoryPlace object for the given object id
-     *
-     * @param objectId the object id for the StoryPlace object to find
-     */
-    public static void getStoryPlaceForObjectId(String objectId, GetCallback<StoryPlace> callback) {
-        Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
-        ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
-        placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
-        placeQuery.getFirstInBackground(callback);
-    }
+    public void setThumbnail(String url) { put(THUMBNAIL, url); }
 
     /**
      * Delete the story place and its associated media items.

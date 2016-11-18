@@ -16,12 +16,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.fragments.TripDatesFragment;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.Trip;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -29,9 +31,14 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,15 +46,18 @@ import java.util.Calendar;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener,
         TripDatesFragment.TripDatesListener {
+
     //Class variables
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
 
     // intent arguments
     public static final String DESTINATION_ARGS = "destination";
+    public static final String SUGGESTION_PLACES_LIST_ARGS = "suggestion_places_list";
 
     // strings
     @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
@@ -64,8 +74,12 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
 
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
+    private ArrayList<SuggestionPlace> mSelectedSuggestionPlaces;
     private StoryPlaceArrayAdapter mAdapter;
+    private Place mNewSelectedPlace;
     private String mDestination;
+    private String mPhotoReference;
+    private int index = 0;
     private Trip mNewTrip;
 
     @Override
@@ -75,17 +89,14 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         ButterKnife.bind(this);
 
         mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
+        //Get list of selected places from suggestions screen
+        mSelectedSuggestionPlaces = getIntent().getParcelableArrayListExtra(SUGGESTION_PLACES_LIST_ARGS);
         toolbar.setTitle(String.format(toolbarTitle, mDestination));
-
-        //get an array list of story places from suggestion activity
-
-
         setSupportActionBar(toolbar);
 
-        setUpTrip();
-        //Set trip to each of the story place object
         setUpRecyclerView();
         setUpClickListeners();
+        setUpTrip();
     }
 
     private void setUpTrip() {
@@ -108,6 +119,16 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         ft.replace(R.id.flContainer,
                 TripDatesFragment.newInstance(mNewTrip.getStartDate(), mNewTrip.getEndDate()));
         ft.commit();
+        mNewTrip.saveInBackground();
+        addSuggestionPlacesToTrip();
+    }
+
+    private void addSuggestionPlacesToTrip() {
+        for(SuggestionPlace suggestionPlace : mSelectedSuggestionPlaces) {
+            StoryPlace storyPlace = new StoryPlace(mNewTrip, suggestionPlace);
+            mStoryPlaces.add(storyPlace);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setUpClickListeners() {
@@ -115,9 +136,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
             String placeOfInterest = etPlaceOfInterest.getText().toString();
             if(!placeOfInterest.isEmpty()) {
                 etPlaceOfInterest.setText("");
-                StoryPlace storyPlace = new StoryPlace(mNewTrip, placeOfInterest);
-                mStoryPlaces.add(storyPlace);
-                mAdapter.notifyDataSetChanged();
+                addSelectedPlaceInTrip(mNewSelectedPlace, mPhotoReference);
             }else {
                 Toast.makeText(CreateStoryActivity.this, "Please add a place of interest", Toast.LENGTH_LONG).show();
             }
@@ -136,6 +155,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         });
 
         etPlaceOfInterest.setOnClickListener((View view) -> {
+            mPhotoReference = "";
             openAutocompleteActivity();
         });
     }
@@ -150,6 +170,38 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
+    }
+
+    private void addSelectedPlaceInTrip(Place place, String photoReference) {
+        StoryPlace storyPlace = new StoryPlace(mNewTrip, place);
+        storyPlace.setThumbnail(photoReference);
+        mStoryPlaces.add(storyPlace);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void addPhotoReferenceByPlaceID(String placeID) {
+        {   //To get photo reference for a place in create story view
+            RequestParams params = new RequestParams();
+            params.put("placeid", placeID);
+            params.put("key", GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY);
+            GoogleAsyncHttpClient.get(GoogleAsyncHttpClient.PLACE_DETAILS_URL, params, new JsonHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        mPhotoReference = response.getJSONObject("result").getJSONArray("photos").getJSONObject(0).getString("photo_reference");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                    //Show error snackbar
+                    Log.e("ERROR", t.toString());
+                }
+            });
+        }
     }
 
     private void openAutocompleteActivity() {
@@ -185,10 +237,12 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             if (resultCode == RESULT_OK) {
-                // Get the user's selected place from the Intent.
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                Log.i(TAG, "Place Selected: " + place.getName());
-                etPlaceOfInterest.setText(place.getName());
+                // Get the user's selected place from the edit text.
+                mNewSelectedPlace = PlaceAutocomplete.getPlace(this, data);
+                //Get photo reference for it by querying api
+                addPhotoReferenceByPlaceID(mNewSelectedPlace.getId());
+                Log.i(TAG, "Place Selected: " + mNewSelectedPlace.getName());
+                etPlaceOfInterest.setText(mNewSelectedPlace.getName());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
@@ -237,4 +291,5 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
 
         return super.onOptionsItemSelected(item);
     }
+
 }

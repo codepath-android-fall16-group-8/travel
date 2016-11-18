@@ -30,6 +30,7 @@ public final class ParseModelConstants {
     public static final String CHECK_IN_TIME_KEY = "checkInTime";
     public static final String RATING_KEY = "rating";
     public static final String ORDER_POSITION_KEY = "orderPosition";
+    public static final String THUMBNAIL = "thumbnail";
 
     // SavedPlace-specific values
     public static final String SAVED_PLACE_CLASS_NAME = "SavedPlace";

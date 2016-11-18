@@ -1,30 +1,25 @@
 package com.codepath.travel.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.codepath.travel.GoogleClient;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
-import com.codepath.travel.models.StoryPlace;
-import com.loopj.android.http.AsyncHttpClient;
+import com.codepath.travel.helper.PlacesCartListener;
+import com.codepath.travel.models.SuggestionPlace;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlaceSuggestionActivity extends AppCompatActivity {
+public class PlaceSuggestionActivity extends AppCompatActivity implements PlacesCartListener {
 
     private static final int CREATE_STORY_REQUEST = 1;
 
@@ -34,32 +29,43 @@ public class PlaceSuggestionActivity extends AppCompatActivity {
 
     //Views
     @BindView(R.id.btnCart) ImageButton mStoryCart;
-    @BindView(R.id.rvSuggestionPlaces) RecyclerView mRvSuggestionPlaces;
+    @BindView(R.id.rvRestaurantPlaces) RecyclerView mRvRestaurantPlaces;
+    @BindView(R.id.rvSightPlaces) RecyclerView mRvSightPlaces;
+
 
     //Member variable
     private String mDestination;
     private String mLatLng;
 
-    AsyncHttpClient googleClient;
-    private ArrayList<StoryPlace> mStoryPlaces;
-    private ArrayList<StoryPlace> mSelectedStoryPlaces;
-    private PlaceSuggestionArrayAdapter mPlaceSuggestionArrayAdapter;
-    private LinearLayoutManager mLinearLayoutManager;
+    private ArrayList<SuggestionPlace> mRestaurants;
+    private ArrayList<SuggestionPlace> mSights;
+    private ArrayList<SuggestionPlace> mSuggestionPlaces;
+    private PlaceSuggestionArrayAdapter mRestaurantsSuggestionArrayAdapter;
+    private PlaceSuggestionArrayAdapter mSightsSuggestionArrayAdapter;
+
+    private LinearLayoutManager mRestaurantLinearLayoutManager;
+    private LinearLayoutManager mSightLinearLayoutManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_suggestion);
         ButterKnife.bind(this);
+        mSuggestionPlaces = new ArrayList<>();
 
-        googleClient = GoogleClient.getInstance();
-        mStoryPlaces = new ArrayList<>();
-        mSelectedStoryPlaces = new ArrayList<>();
-        mPlaceSuggestionArrayAdapter = new PlaceSuggestionArrayAdapter(this, googleClient, mStoryPlaces);
-        mRvSuggestionPlaces.setAdapter(mPlaceSuggestionArrayAdapter);
+        mRestaurants = new ArrayList<>();
+        mRestaurantsSuggestionArrayAdapter = new PlaceSuggestionArrayAdapter(mRestaurants, this, getApplicationContext());
+        mRvRestaurantPlaces.setAdapter(mRestaurantsSuggestionArrayAdapter);
+        mRestaurantLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRvRestaurantPlaces.setLayoutManager(mRestaurantLinearLayoutManager);
 
-        mLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        mRvSuggestionPlaces.setLayoutManager(mLinearLayoutManager);
+        mSights = new ArrayList<>();
+        mSightsSuggestionArrayAdapter = new PlaceSuggestionArrayAdapter(mSights, this, getApplicationContext());
+        mRvSightPlaces.setAdapter(mSightsSuggestionArrayAdapter);
+        mSightLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRvSightPlaces.setLayoutManager(mSightLinearLayoutManager);
 
         mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
         mLatLng = getIntent().getStringExtra(LATLNG_ARGS);
@@ -68,7 +74,8 @@ public class PlaceSuggestionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpClickListeners();
-        showPlacesToEat(mLatLng);
+        showPlacesToEat();
+        showPointsOfInterest();
     }
 
     private void setUpClickListeners() {
@@ -78,18 +85,34 @@ public class PlaceSuggestionActivity extends AppCompatActivity {
                     CreateStoryActivity.DESTINATION_ARGS,
                     mDestination
             );
-            //Send array list of story places selected by user
+            createTrip.putParcelableArrayListExtra(CreateStoryActivity.SUGGESTION_PLACES_LIST_ARGS, mSuggestionPlaces);
+
             startActivityForResult(createTrip, CREATE_STORY_REQUEST);
             setResult(RESULT_OK);
             finish();
         });
     }
 
-    private void showPlacesToEat(String latLng) {
-        //Displays set of places to eat which are near to a given place
-        //Call Google Client api
-        mPlaceSuggestionArrayAdapter.populatePlacesToEat(googleClient, mLatLng, "restaurant", "cruise");
+    private void showPlacesToEat() {
+        //Get set of places to eat near to a given place
+        //Call Google AsyncHttpClient api
+         mRestaurantsSuggestionArrayAdapter.populatePlacesNearby(mLatLng, "restaurant|cafe|food");
+    }
 
+    private void showPointsOfInterest() {
+        //Get set of sights to see near to a given place
+        mSightsSuggestionArrayAdapter.populatePlacesNearby(mLatLng, "point_of_interest|establishment|museum|amusement_park|art_gallery|casino|zoo");
+    }
+
+    @Override
+    public void addPlace(SuggestionPlace suggestionPlace) {
+        mSuggestionPlaces.add(suggestionPlace);
 
     }
+
+    @Override
+    public void removePlace(SuggestionPlace suggestionPlace) {
+        mSuggestionPlaces.remove(suggestionPlace);
+    }
+
 }
