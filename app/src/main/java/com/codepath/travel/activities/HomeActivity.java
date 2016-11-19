@@ -1,7 +1,5 @@
 package com.codepath.travel.activities;
 
-import static com.parse.ParseUser.getCurrentUser;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +39,8 @@ import org.json.JSONException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.parse.ParseUser.getCurrentUser;
 
 public class HomeActivity extends AppCompatActivity implements TripClickListener {
     //Class variables
@@ -289,6 +288,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             case R.id.nav_delete_account:
                     deleteAccount();
                 break;
+            case R.id.nav_profile:
+                    showUserProfile(ParseUser.getCurrentUser().getObjectId());
+                break;
             default: break;
         }
 
@@ -311,5 +313,12 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // all private methods below
+    private void showUserProfile(String userID) {
+        Intent intent = new Intent(this, ProfileViewActivity.class);
+        intent.putExtra(ProfileViewActivity.USER_ID, userID);
+        startActivity(intent);
     }
 }
