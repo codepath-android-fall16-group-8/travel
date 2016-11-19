@@ -1,5 +1,7 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.models.User.setCoverPicUrl;
+
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -29,7 +31,6 @@ import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
-import com.codepath.travel.models.User;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -364,8 +365,8 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @Override
     public void onSetUserCoverPhoto(String coverUrl) {
-        User user = (User) ParseUser.getCurrentUser();
-        user.setCoverPicUrl(coverUrl);
+        ParseUser user = ParseUser.getCurrentUser();
+        setCoverPicUrl(user, coverUrl);
         user.saveInBackground();
     }
 

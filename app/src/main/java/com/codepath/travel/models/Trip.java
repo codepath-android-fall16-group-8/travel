@@ -14,8 +14,6 @@ import static com.codepath.travel.models.ParseModelConstants.*;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -96,23 +94,23 @@ public class Trip extends ParseObject {
         put(END_DATE_KEY, endDate);
     }
 
-    public ParseRelation<User> getSharedRelation() {
+    public ParseRelation<ParseUser> getSharedRelation() {
         return getRelation(SHARED_RELATION_KEY);
     }
 
-    public void shareWith(User user) {
-        getSharedRelation().add(user);
+    public void shareWith(ParseUser pUser) {
+        getSharedRelation().add(pUser);
         saveInBackground();
     }
 
-    public void unShareWith(User user) {
-        getSharedRelation().remove(user);
+    public void unShareWith(ParseUser pUser) {
+        getSharedRelation().remove(pUser);
         saveInBackground();
     }
 
-    public void queryFavorites(FindCallback<User> callback) {
-        getSharedRelation().getQuery().findInBackground(callback);
-    }
+//    public void queryFavorites(FindCallback<ParseUser> callback) {
+//        getSharedRelation().getQuery().findInBackground(callback);
+//    }
 
     public String toString() {
         return getTitle();

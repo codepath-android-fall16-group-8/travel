@@ -2,6 +2,7 @@ package com.codepath.travel.fragments;
 
 import static com.codepath.travel.fragments.TripListFragment.FETCH_USER_ARG;
 import static com.codepath.travel.fragments.TripListFragment.USER_ID_ARG;
+import static com.codepath.travel.models.User.getProfilePicUrl;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,6 @@ import com.codepath.travel.R;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.Trip;
-import com.codepath.travel.models.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,13 +81,15 @@ public class TripItemFragment extends Fragment {
 
     public void populateTrip() {
         if (mUserId == null) {
+            rlBackground.setVisibility(View.INVISIBLE);
             return;
         }
+        rlBackground.setVisibility(View.VISIBLE);
         Trip.getCurrentTripForUser(mUserId, fetchUser, (trip, e) -> {
             if (e == null) {
                 mTrip = trip;
                 if (fetchUser) {
-                    ImageUtils.loadImageCircle(ivProfilePhoto, ((User) trip.getUser()).getProfilePicUrl(),
+                    ImageUtils.loadImageCircle(ivProfilePhoto, getProfilePicUrl(trip.getUser()),
                             R.drawable.com_facebook_profile_picture_blank_portrait);
                 } else {
                     ivProfilePhoto.setVisibility(View.GONE);
@@ -98,6 +100,7 @@ public class TripItemFragment extends Fragment {
                         trip.getStartDate(), trip.getEndDate()));
             } else {
                 Log.d(TAG, String.format("Failed to find current trip for user %s: %s", mUserId, e.getMessage()));
+                rlBackground.setVisibility(View.INVISIBLE);
             }
         });
     }

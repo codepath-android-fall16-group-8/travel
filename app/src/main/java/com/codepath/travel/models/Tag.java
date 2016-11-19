@@ -20,19 +20,19 @@ public class Tag extends ParseObject {
         super();
     }
 
-    public Tag(User user, Trip trip) {
+    public Tag(ParseUser user, Trip trip) {
         super();
         setUser(user);
         setTrip(trip);
     }
 
-    public Tag(User user, StoryPlace storyPlace) {
+    public Tag(ParseUser user, StoryPlace storyPlace) {
         super();
         setUser(user);
         setStoryPlace(storyPlace);
     }
 
-    public Tag(User user, Media media) {
+    public Tag(ParseUser user, Media media) {
         super();
         setUser(user);
         setMedia(media);
