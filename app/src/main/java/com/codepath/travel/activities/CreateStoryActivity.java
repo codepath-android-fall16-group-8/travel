@@ -173,7 +173,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
 
     private void addSelectedPlaceInTrip(Place place, String photoReference) {
         StoryPlace storyPlace = new StoryPlace(mNewTrip, place);
-        storyPlace.setThumbnail(photoReference);
+        storyPlace.setPhotoUrl(photoReference);
         mStoryPlaces.add(storyPlace);
         mAdapter.notifyDataSetChanged();
     }

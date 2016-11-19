@@ -64,9 +64,9 @@ public class CollageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ImageView ivCoverPhoto = viewHolder.getCoverPhoto();
         ivCoverPhoto.setImageResource(0);
-        String coverUrl = storyPlace.getCoverPicUrl();
-        if (!TextUtils.isEmpty(coverUrl)) {
-            Glide.with(getContext()).load(coverUrl)
+        String photoUrl = storyPlace.getPhotoUrl();
+        if (!TextUtils.isEmpty(photoUrl)) {
+            Glide.with(getContext()).load(photoUrl)
                     .placeholder(android.R.drawable.ic_menu_slideshow)
                     .centerCrop()
                     .into(ivCoverPhoto);

@@ -56,7 +56,7 @@ public class StoryPlace extends ParseObject {
         setName(suggestionPlace.getName());
         setPlaceId(suggestionPlace.getPlaceId());
         setRating(suggestionPlace.getRating() != null ? suggestionPlace.getRating() : 0.0);
-        setThumbnail(suggestionPlace.getThumbnail());
+        setPhotoUrl(suggestionPlace.getPhotoUrl());
     }
 
     public Trip getTrip() {
@@ -81,18 +81,6 @@ public class StoryPlace extends ParseObject {
 
     public void setName(String name) {
         put(NAME_KEY, name);
-    }
-
-    public String getCoverPicUrl() {
-        String coverUrl = getString(COVER_PIC_URL_KEY);
-        if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
-            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
-        }
-        return coverUrl;
-    }
-
-    public void setCoverPicUrl(String coverPicUrl) {
-        put(COVER_PIC_URL_KEY, coverPicUrl);
     }
 
     public double getLatitude() {
@@ -141,9 +129,27 @@ public class StoryPlace extends ParseObject {
 
     public void setOrderPosition(int orderPosition) { put(ORDER_POSITION_KEY, orderPosition);}
 
-    public String getThumbnail() { return getString(THUMBNAIL); }
+    public String getPhotoUrl() {
+        String photoUrl = getString(PHOTO_URL);
+        if (photoUrl == null || TextUtils.isEmpty(photoUrl)) {
+            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+        }
+        return photoUrl;
+    }
 
-    public void setThumbnail(String url) { put(THUMBNAIL, url); }
+    public void setPhotoUrl(String url) { put(PHOTO_URL, url); }
+
+    /**
+     * Get the StoryPlace object for the given object id
+     *
+     * @param objectId the object id for the StoryPlace object to find
+     */
+    public static void getStoryPlaceForObjectId(String objectId, GetCallback<StoryPlace> callback) {
+        Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
+        ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
+        placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        placeQuery.getFirstInBackground(callback);
+    }
 
     /**
      * Delete the story place and its associated media items.

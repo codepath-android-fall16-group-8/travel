@@ -21,6 +21,12 @@ public class GoogleAsyncHttpClient {
         return client;
     }
 
+    public static String getPlacePhotoUrl(String reference) {
+        return GoogleAsyncHttpClient.PLACE_PHOTO_URL
+                + "&photoreference=" + reference
+                + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY;
+    }
+
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.get(url, params, responseHandler);
     }

@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
@@ -53,9 +54,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar)  Toolbar toolbar;
     @BindView(R.id.nvView) NavigationView nvDrawer;
+    @BindView(R.id.fab_new_trip) FloatingActionButton mFab;
 
     private ActionBarDrawerToggle drawerToggle;
-    private FloatingActionButton mFab;
 
     // Fragments
     private PastTripListFragment pastTripsFragment;
@@ -65,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     // Views in Navigation view
     private ImageView ivProfileImage;
     private TextView tvProfileName;
+    private RelativeLayout nvHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,21 +104,15 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     }
 
     private void setupViews() {
-        this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        View nvHeader = nvDrawer.getHeaderView(0);
+        nvHeader = (RelativeLayout)nvDrawer.getHeaderView(0);
         this.ivProfileImage = (ImageView) nvHeader.findViewById(R.id.ivProfilePic);
         this.ivProfileImage.setImageResource(0);
-
         this.tvProfileName = (TextView) nvHeader.findViewById(R.id.tvName);
 
-        this.mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(drawerToggle);
-
-        mFab = (FloatingActionButton) findViewById(R.id.fab_new_trip);
     }
 
     private void setUpClickListeners() {
@@ -158,6 +154,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         this.tvProfileName.setText(user.getUsername());
         ImageUtils.loadImageCircle(this.ivProfileImage, user.getProfilePicUrl(),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
+        ImageUtils.loadBackground(nvHeader, user.getCoverPicUrl());
     }
 
     private void newFBAccountSetup(final User user) {
