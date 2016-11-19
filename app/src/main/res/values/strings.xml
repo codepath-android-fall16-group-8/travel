@@ -10,12 +10,18 @@
     <string name="app_name">Travel</string>
     <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
+
     <string name="toolbar_title_create_story">My planned trip to %1$s</string>
     <string name="toolbar_title_story">Trip to %1$s</string>
     <string name="toolbar_title_story_collage">Story: %1$s</string>
+    <string name="toolbar_title_place_suggestion">Plan my trip to</string>
+
     <string name="view_map">View Map</string>
     <string name="view_collage">View Collage</string>
     <string name="share_story">Share Story</string>
+    <string name="places_to_eat">Places To Eat</string>
+    <string name="sights_to_see">Sights To See</string>
+
     <!-- Navigation drawer -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

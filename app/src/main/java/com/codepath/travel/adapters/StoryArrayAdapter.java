@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
@@ -57,10 +58,6 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         mDragStartListener = dragStartListener;
         mContext = context;
         listener = (StoryPlaceListener) context;
-    }
-
-    private Context getContext() {
-        return mContext;
     }
 
     @Override
@@ -165,7 +162,10 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             mStoryPlace = storyPlace;
             ivPlacePhoto.setImageResource(0);
             Glide.with(mContext)
-                    .load(storyPlace.getCoverPicUrl())
+                    .load(GoogleAsyncHttpClient.PLACE_PHOTO_URL
+                            + "&photoreference=" + storyPlace.getThumbnail()
+                            + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY)
+                    .placeholder(R.drawable.ic_photoholder)
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
             ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);

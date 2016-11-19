@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.activities.CreateStoryActivity;
+import com.codepath.travel.activities.PlaceSuggestionActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -35,6 +36,7 @@ public class NewTripFragment extends DialogFragment implements PlaceSelectionLis
     //Member variables
     private TextView mTvDestination;
     private Button mBtnNewTrip;
+    private String LatLng;
 
     public NewTripFragment() {
         // Empty constructor is required for DialogFragment
@@ -81,13 +83,15 @@ public class NewTripFragment extends DialogFragment implements PlaceSelectionLis
 
     private void setUpClickListeners() {
         mBtnNewTrip.setOnClickListener((View view) -> {
-            Intent createTrip = new Intent(getActivity(), CreateStoryActivity.class);
+            Intent createTrip = new Intent(getActivity(), PlaceSuggestionActivity.class);
             String destination = mTvDestination.getText().toString();
-            if(!destination.isEmpty()) {
+            if(!destination.isEmpty() && !LatLng.isEmpty()) {
                 createTrip.putExtra(
-                        CreateStoryActivity.DESTINATION_ARGS,
-                        mTvDestination.getText().toString()
+                        PlaceSuggestionActivity.DESTINATION_ARGS,
+                        destination
                 );
+                createTrip.putExtra(PlaceSuggestionActivity.LATLNG_ARGS,
+                        LatLng);
                 mTvDestination.setText("");
                 getActivity().startActivityForResult(createTrip, CREATE_STORY_REQUEST);
             }else {
@@ -110,6 +114,7 @@ public class NewTripFragment extends DialogFragment implements PlaceSelectionLis
     public void onPlaceSelected(Place place) {
         Log.i(TAG, "Place Selected: " + place.getName());
         mTvDestination.setText(place.getName());
+        LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
     }
 
     //Callback invoked when PlaceAutocompleteFragment encounters an error.

@@ -7,6 +7,11 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +48,15 @@ public class StoryPlace extends ParseObject {
         setLatitude(latlng.latitude);
         setLongitude(latlng.longitude);
         setPlaceTypes(place.getPlaceTypes());
+        setRating(place.getRating());
+    }
+
+    public StoryPlace(Trip trip, SuggestionPlace suggestionPlace) {
+        setTrip(trip);
+        setName(suggestionPlace.getName());
+        setPlaceId(suggestionPlace.getPlaceId());
+        setRating(suggestionPlace.getRating() != null ? suggestionPlace.getRating() : 0.0);
+        setThumbnail(suggestionPlace.getThumbnail());
     }
 
     public Trip getTrip() {
@@ -113,11 +127,11 @@ public class StoryPlace extends ParseObject {
         put(CHECK_IN_TIME_KEY, checkInTime);
     }
 
-    public int getRating() {
-        return getInt(RATING_KEY);
+    public double getRating() {
+        return getDouble(RATING_KEY);
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         put(RATING_KEY, rating);
     }
 
@@ -125,21 +139,11 @@ public class StoryPlace extends ParseObject {
         return getInt(ORDER_POSITION_KEY);
     }
 
-    public void setOrderPosition(int orderPosition) {
-        put(ORDER_POSITION_KEY, orderPosition);
-    }
+    public void setOrderPosition(int orderPosition) { put(ORDER_POSITION_KEY, orderPosition);}
 
-    /**
-     * Get the StoryPlace object for the given object id
-     *
-     * @param objectId the object id for the StoryPlace object to find
-     */
-    public static void getStoryPlaceForObjectId(String objectId, GetCallback<StoryPlace> callback) {
-        Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
-        ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
-        placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
-        placeQuery.getFirstInBackground(callback);
-    }
+    public String getThumbnail() { return getString(THUMBNAIL); }
+
+    public void setThumbnail(String url) { put(THUMBNAIL, url); }
 
     /**
      * Delete the story place and its associated media items.

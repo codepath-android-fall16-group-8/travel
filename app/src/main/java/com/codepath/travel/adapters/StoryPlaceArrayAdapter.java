@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
@@ -108,8 +109,10 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
 
         public void populate(StoryPlace storyPlace) {
             ivPlacePhoto.setImageResource(0);
-            Glide.with(mContext)
-                    .load(storyPlace.getCoverPicUrl())
+            Glide.with(mContext).load(GoogleAsyncHttpClient.PLACE_PHOTO_URL
+                    + "&photoreference=" + storyPlace.getThumbnail()
+                    + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY)
+                    .placeholder(R.drawable.ic_photoholder)
                     .into(ivPlacePhoto);
             tvPlaceName.setText(storyPlace.getName());
         }
