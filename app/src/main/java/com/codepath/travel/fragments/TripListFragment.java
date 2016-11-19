@@ -35,6 +35,7 @@ public class TripListFragment extends Fragment {
     protected ArrayList<Trip> mTrips;
     protected TripsAdapter mTripsAdapter;
     protected TripClickListener listener;
+    protected String mUserId;
     protected boolean fetchUser;
 
     public static TripListFragment newInstance(String userId, boolean fetchUser) {
@@ -52,7 +53,9 @@ public class TripListFragment extends Fragment {
         mTrips = new ArrayList<>();
         mTripsAdapter = new TripsAdapter(getContext(), mTrips, fetchUser);
         listener = (TripClickListener) getContext();
-        fetchUser = getArguments().getBoolean(FETCH_USER_ARG);
+        Bundle args = getArguments();
+        mUserId = args.getString(USER_ID_ARG);
+        fetchUser = args.getBoolean(FETCH_USER_ARG);
     }
 
     @Override
@@ -80,10 +83,11 @@ public class TripListFragment extends Fragment {
     }
 
     public void populateTrips() {
+        if (mUserId == null) {
+            return;
+        }
         mTrips.clear();
-        String userId = getArguments().getString(USER_ID_ARG);
-
-        Trip.getAllTripsForUser(userId, fetchUser, (trips, e) -> {
+        Trip.getAllTripsForUser(mUserId, fetchUser, (trips, e) -> {
             if (e == null) {
                 mTrips.addAll(trips);
                 mTripsAdapter.notifyDataSetChanged();
@@ -91,6 +95,11 @@ public class TripListFragment extends Fragment {
                 Log.d(TAG, String.format("Failed to populate all trips: %s", e.getMessage()));
             }
         });
+    }
+
+    public void setUser(String userId) {
+        mUserId = userId;
+        populateTrips();
     }
 
     // When binding a fragment in onCreateView, set the views to null in onDestroyView.

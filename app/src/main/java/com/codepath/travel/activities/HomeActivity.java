@@ -66,8 +66,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private ImageView ivProfileImage;
     private TextView tvProfileName;
 
-    private String userId;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,8 +86,18 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         // User login
         if (getCurrentUser() != null) { // start with existing user
             startWithCurrentUser();
+
         } else {
             launchLoginActivity();
+        }
+
+        if (savedInstanceState == null) {
+            setupTripFragments();
+        } else {
+            FragmentManager fm = getSupportFragmentManager();
+            plannedTripsFragment = (PlannedTripListFragment) fm.findFragmentByTag("plannedTripsFragment");
+            currentTripFragment = (TripItemFragment) fm.findFragmentByTag("currentTripFragment");
+            pastTripsFragment = (PastTripListFragment) fm.findFragmentByTag("pastTripsFragment");
         }
     }
 
@@ -117,16 +125,18 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         });
     }
 
-    // needs to be called after there is a parse user
-    private void setupFragments() {
-        userId = ParseUser.getCurrentUser().getObjectId();
+    private void setupTripFragments() {
+        String userId = null;
+        if (getCurrentUser() != null) {
+            userId = getCurrentUser().getObjectId();
+        }
         plannedTripsFragment = PlannedTripListFragment.newInstance(userId, false);
         currentTripFragment = TripItemFragment.newInstance(userId, false);
         pastTripsFragment = PastTripListFragment.newInstance(userId, false);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.flPlannedContainer, plannedTripsFragment);
-        ft.add(R.id.flCurrentContainer, currentTripFragment);
-        ft.add(R.id.flPastContainer, pastTripsFragment);
+        ft.replace(R.id.flPlannedContainer, plannedTripsFragment, "plannedTripsFragment");
+        ft.replace(R.id.flCurrentContainer, currentTripFragment, "currentTripFragment");
+        ft.replace(R.id.flPastContainer, pastTripsFragment, "pastTripsFragment");
         ft.commit();
     }
 
@@ -136,16 +146,23 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         pastTripsFragment.populateTrips();
     }
 
+    private void setTripFragmentsUser(String userId) {
+        plannedTripsFragment.setUser(userId);
+        currentTripFragment.setUser(userId);
+        pastTripsFragment.setUser(userId);
+    }
+
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
         User user = (User) getCurrentUser();
         this.tvProfileName.setText(user.getUsername());
         ImageUtils.loadImageCircle(this.ivProfileImage, user.getProfilePicUrl(),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
-        setupFragments();
     }
 
     private void newFBAccountSetup(final User user) {
+        Log.d(TAG, String.format("New FB Account setup for: %s",
+                user.getUsername()));
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 (object, response) -> {
@@ -161,8 +178,11 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
                         if (object.has("cover")) {
                             user.setCoverPicUrl(object.getJSONObject("cover").getString("source"));
                         }
-                        user.saveInBackground();
-                        startWithCurrentUser();
+                        user.saveInBackground(e -> {
+                            if (e == null) {
+                                startWithCurrentUser();
+                            }
+                        });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -216,8 +236,10 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             // update user fields if this is a new facebook login
             if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
                 newFBAccountSetup(user);
+            } else {
+                setTripFragmentsUser(user.getObjectId());
+                startWithCurrentUser();
             }
-            startWithCurrentUser();
         } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
             // trip added
             refreshMyTrips();
