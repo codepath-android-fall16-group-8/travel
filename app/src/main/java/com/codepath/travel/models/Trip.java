@@ -69,7 +69,7 @@ public class Trip extends ParseObject {
     }
 
     public String getCoverPicUrl() {
-        String coverUrl = getString(COVER_PIC_URL_KEY);
+        String coverUrl = getString(PHOTO_URL);
         if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
             return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
         }
@@ -77,7 +77,7 @@ public class Trip extends ParseObject {
     }
 
     public void setCoverPicUrl(String coverPicUrl) {
-        put(COVER_PIC_URL_KEY, coverPicUrl);
+        put(PHOTO_URL, coverPicUrl);
     }
 
     public Date getStartDate() {

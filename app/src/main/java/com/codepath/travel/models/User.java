@@ -6,10 +6,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-import static com.codepath.travel.models.ParseModelConstants.COVER_PIC_URL_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FAVORITES_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_KEY;
+import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
 import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
 import static com.codepath.travel.models.ParseModelConstants.USER_CLASS_NAME;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
@@ -43,7 +43,7 @@ public class User extends ParseUser {
     }
 
     public String getCoverPicUrl() {
-        String coverUrl = getString(COVER_PIC_URL_KEY);
+        String coverUrl = getString(PHOTO_URL);
         if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
             return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
         }
@@ -51,7 +51,7 @@ public class User extends ParseUser {
     }
 
     public void setCoverPicUrl(String coverPicUrl) {
-        put(COVER_PIC_URL_KEY, coverPicUrl);
+        put(PHOTO_URL, coverPicUrl);
     }
 
     public void queryTrips(FindCallback<Trip> callback) {

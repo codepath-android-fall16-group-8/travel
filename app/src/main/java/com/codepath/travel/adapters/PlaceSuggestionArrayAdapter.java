@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
+import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.helper.PlacesCartListener;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.SuggestionPlace;
@@ -109,11 +110,10 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<PlaceSugge
                 ivAddSuggestionPlace.setImageResource(R.drawable.ic_add);
             }
             ivSuggestionPlacePhoto.setImageResource(0);
-            Glide.with(mContext).load(GoogleAsyncHttpClient.PLACE_PHOTO_URL
-                    + "&photoreference=" + suggestionPlace.getThumbnail()
-                    + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY)
-                    .placeholder(R.drawable.ic_photoholder)
-                    .into(this.ivSuggestionPlacePhoto);
+
+            ImageUtils.loadImage(this.ivSuggestionPlacePhoto
+                    , GoogleAsyncHttpClient.getPlacePhotoUrl(suggestionPlace.getPhotoUrl())
+                    , R.drawable.ic_photoholder);
         }
 
         public void listeners(SuggestionPlace suggestionPlace) {

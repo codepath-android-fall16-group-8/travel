@@ -352,7 +352,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @Override
     public void onSetStoryPlaceCoverPhoto(int storyPos, String coverUrl) {
         StoryPlace storyPlace = mStoryPlaces.get(storyPos);
-        storyPlace.setCoverPicUrl(coverUrl);
+        storyPlace.setPhotoUrl(coverUrl);
         storyPlace.saveInBackground();
     }
 

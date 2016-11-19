@@ -19,7 +19,7 @@ public class SuggestionPlace implements Parcelable {
     private String name;
     private Double rating;
     private String placeId;
-    private String thumbnail;
+    private String photoUrl;
 
     public String getName() {
         return name;
@@ -45,12 +45,12 @@ public class SuggestionPlace implements Parcelable {
         this.placeId = placeId;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public boolean selected;
@@ -69,7 +69,7 @@ public class SuggestionPlace implements Parcelable {
             setName(jsonObject.getString("name"));
             setPlaceId(jsonObject.getString("place_id"));
             setRating(jsonObject.getDouble("rating"));
-            setThumbnail(jsonObject.getJSONArray("photos").getJSONObject(0)!=null
+            setPhotoUrl(jsonObject.getJSONArray("photos").getJSONObject(0)!=null
                     ? jsonObject.getJSONArray("photos").getJSONObject(0).getString("photo_reference")
                     : null);
         }catch (JSONException e) {
@@ -107,7 +107,7 @@ public class SuggestionPlace implements Parcelable {
         dest.writeString(this.name);
         dest.writeValue(this.rating);
         dest.writeString(this.placeId);
-        dest.writeString(this.thumbnail);
+        dest.writeString(this.photoUrl);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
 
@@ -115,7 +115,7 @@ public class SuggestionPlace implements Parcelable {
         this.name = in.readString();
         this.rating = (Double) in.readValue(Double.class.getClassLoader());
         this.placeId = in.readString();
-        this.thumbnail = in.readString();
+        this.photoUrl = in.readString();
         this.selected = in.readByte() != 0;
     }
 
