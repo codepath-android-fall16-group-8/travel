@@ -1,5 +1,7 @@
 package com.codepath.travel.adapters;
 
+import static com.codepath.travel.models.User.getProfilePicUrl;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,7 +60,7 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageUtils.loadBackground(rlBackground, trip.getCoverPicUrl());
         ImageView ivProfilePhoto = viewHolder.getProfilePhoto();
         if (showProfilePhoto) {
-            ImageUtils.loadImageCircle(ivProfilePhoto, ((User) trip.getUser()).getProfilePicUrl(),
+            ImageUtils.loadImageCircle(ivProfilePhoto, getProfilePicUrl(trip.getUser()),
                     R.drawable.com_facebook_profile_picture_blank_portrait);
         } else {
             ivProfilePhoto.setVisibility(View.GONE);

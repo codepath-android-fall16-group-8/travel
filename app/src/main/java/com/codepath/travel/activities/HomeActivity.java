@@ -1,5 +1,12 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.models.User.getCoverPicUrl;
+import static com.codepath.travel.models.User.getProfilePicUrl;
+import static com.codepath.travel.models.User.setCoverPicUrl;
+import static com.codepath.travel.models.User.setFbUid;
+import static com.codepath.travel.models.User.setProfilePicUrl;
+import static com.parse.ParseUser.getCurrentUser;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -25,7 +32,6 @@ import com.codepath.travel.fragments.PlannedTripListFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.TripItemFragment;
 import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.User;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
@@ -40,8 +46,6 @@ import org.json.JSONException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.parse.ParseUser.getCurrentUser;
-
 public class HomeActivity extends AppCompatActivity implements TripClickListener {
     //Class variables
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -55,14 +59,13 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.nvView) NavigationView nvDrawer;
     @BindView(R.id.fab_new_trip) FloatingActionButton mFab;
 
-    private ActionBarDrawerToggle drawerToggle;
-
     // Fragments
     private PastTripListFragment pastTripsFragment;
     private PlannedTripListFragment plannedTripsFragment;
     private TripItemFragment currentTripFragment;
 
     // Views in Navigation view
+    private ActionBarDrawerToggle drawerToggle;
     private ImageView ivProfileImage;
     private TextView tvProfileName;
     private RelativeLayout nvHeader;
@@ -84,14 +87,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         setupDrawerContent(nvDrawer);
         setUpClickListeners();
 
-        // User login
-        if (getCurrentUser() != null) { // start with existing user
-            startWithCurrentUser();
-
-        } else {
-            launchLoginActivity();
-        }
-
         if (savedInstanceState == null) {
             setupTripFragments();
         } else {
@@ -99,6 +94,14 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             plannedTripsFragment = (PlannedTripListFragment) fm.findFragmentByTag("plannedTripsFragment");
             currentTripFragment = (TripItemFragment) fm.findFragmentByTag("currentTripFragment");
             pastTripsFragment = (PastTripListFragment) fm.findFragmentByTag("pastTripsFragment");
+        }
+
+        // User login
+        if (getCurrentUser() != null) { // start with existing user
+            startWithCurrentUser();
+
+        } else {
+            launchLoginActivity();
         }
     }
 
@@ -149,32 +152,32 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
-        User user = (User) getCurrentUser();
-        this.tvProfileName.setText(user.getUsername());
-        ImageUtils.loadImageCircle(this.ivProfileImage, user.getProfilePicUrl(),
+        ParseUser pUser = getCurrentUser();
+        this.tvProfileName.setText(pUser.getUsername());
+        ImageUtils.loadImageCircle(this.ivProfileImage, getProfilePicUrl(pUser),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
-        ImageUtils.loadBackground(nvHeader, user.getCoverPicUrl());
+        ImageUtils.loadBackground(nvHeader, getCoverPicUrl(pUser));
     }
 
-    private void newFBAccountSetup(final User user) {
+    private void newFBAccountSetup(ParseUser pUser) {
         Log.d(TAG, String.format("New FB Account setup for: %s",
-                user.getUsername()));
+                pUser.getUsername()));
         GraphRequest request = GraphRequest.newMeRequest(
                 AccessToken.getCurrentAccessToken(),
                 (object, response) -> {
                     try {
-                        user.setFbUid(object.getInt("id"));
-                        user.setUsername(object.getString("name"));
+                        setFbUid(pUser, object.getInt("id"));
+                        pUser.setUsername(object.getString("name"));
                         if (object.has("email")) {
-                            user.setEmail(object.getString("email"));
+                            pUser.setEmail(object.getString("email"));
                         }
                         if (object.has("picture")) {
-                            user.setProfilePicUrl(object.getJSONObject("picture").getJSONObject("data").getString("url"));
+                            setProfilePicUrl(pUser, object.getJSONObject("picture").getJSONObject("data").getString("url"));
                         }
                         if (object.has("cover")) {
-                            user.setCoverPicUrl(object.getJSONObject("cover").getString("source"));
+                            setCoverPicUrl(pUser, object.getJSONObject("cover").getString("source"));
                         }
-                        user.saveInBackground(e -> {
+                        pUser.saveInBackground(e -> {
                             if (e == null) {
                                 startWithCurrentUser();
                             }
@@ -228,12 +231,12 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == LOGIN_REQUEST) {
             ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
-            User user = (User) getCurrentUser();
+            ParseUser pUser = getCurrentUser();
             // update user fields if this is a new facebook login
-            if (user.isNew() && ParseFacebookUtils.isLinked(user)) {
-                newFBAccountSetup(user);
+            if (pUser.isNew() && ParseFacebookUtils.isLinked(pUser)) {
+                newFBAccountSetup(pUser);
             } else {
-                setTripFragmentsUser(user.getObjectId());
+                setTripFragmentsUser(pUser.getObjectId());
                 startWithCurrentUser();
             }
         } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
@@ -289,7 +292,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
                     deleteAccount();
                 break;
             case R.id.nav_profile:
-                    showUserProfile(ParseUser.getCurrentUser().getObjectId());
+                showUserProfile(ParseUser.getCurrentUser().getObjectId());
                 break;
             default: break;
         }

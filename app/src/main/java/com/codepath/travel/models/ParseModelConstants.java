@@ -8,7 +8,6 @@ public final class ParseModelConstants {
     public static final String OBJECT_ID_KEY = "objectId";
 
     // User-specific values
-    public static final String USER_CLASS_NAME = "_User";
     public static final String FB_UID_KEY = "fbUid";
     public static final String PROFILE_PIC_URL_KEY = "profilePicUrl";
     public static final String FOLLOWING_RELATION_KEY = "following";

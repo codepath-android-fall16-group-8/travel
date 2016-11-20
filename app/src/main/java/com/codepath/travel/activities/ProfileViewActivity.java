@@ -9,6 +9,7 @@ import com.codepath.travel.callbacks.ParseQueryCallback;
 import com.codepath.travel.fragments.pickers.ImagePickerFragment;
 import com.codepath.travel.models.User;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import butterknife.BindView;
 
@@ -31,7 +32,7 @@ public class ProfileViewActivity
   @BindView(R.id.tvProfileUserName) TextView tvProfileUserName;
 
   // member variables
-  private User mUser;
+  private ParseUser mUser;
 
   @Override
   public void onCreate(Bundle savedInstance) {
@@ -47,9 +48,9 @@ public class ProfileViewActivity
     }
 
     // get the user and load all fragments
-    User.getUserByID(userID, new ParseQueryCallback<User>() {
+    User.getUserByID(userID, new ParseQueryCallback<ParseUser>() {
       @Override
-      public void onQuerySuccess(User data) {
+      public void onQuerySuccess(ParseUser data) {
         mUser = data;
         initializeViews(data);
         initializeAllFragments(data);
@@ -68,9 +69,9 @@ public class ProfileViewActivity
       (ImagePickerFragment) (getSupportFragmentManager().findFragmentByTag(tag));
     switch (tag) {
       case COVER_PIC:
-        User.saveCoverPicURL(mUser, imageURL, new ParseQueryCallback<User>() {
+        User.saveCoverPicURL(mUser, imageURL, new ParseQueryCallback<ParseUser>() {
           @Override
-          public void onQuerySuccess(User data) {
+          public void onQuerySuccess(ParseUser data) {
             // load the image in the fragment
             imagePicker.loadImage(imageURL);
           }
@@ -83,9 +84,9 @@ public class ProfileViewActivity
         });
         break;
       case PROFILE_PIC:
-        User.saveProfilePicURL(mUser, imageURL, new ParseQueryCallback<User>() {
+        User.saveProfilePicURL(mUser, imageURL, new ParseQueryCallback<ParseUser>() {
           @Override
-          public void onQuerySuccess(User data) {
+          public void onQuerySuccess(ParseUser data) {
             // load the image in the fragment
             imagePicker.loadImage(imageURL);
           }
@@ -102,23 +103,23 @@ public class ProfileViewActivity
 
   // all private methods below
 
-  private void initializeViews(User user) {
+  private void initializeViews(ParseUser user) {
     tvProfileUserName.setText(user.getUsername());
     setActionBarTitle(user.getUsername());
   }
 
-   private void initializeAllFragments(User user) {
+   private void initializeAllFragments(ParseUser user) {
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
     fragmentTransaction.replace(
       R.id.flCoverPicContainer,
-      ImagePickerFragment.newInstance(user.getCoverPicUrl()),
+      ImagePickerFragment.newInstance(User.getCoverPicUrl(user)),
       COVER_PIC
     );
 
      fragmentTransaction.replace(
       R.id.flUserPicContainer,
-      ImagePickerFragment.newInstance(user.getProfilePicUrl()),
+      ImagePickerFragment.newInstance(User.getProfilePicUrl(user)),
       PROFILE_PIC
      );
 
