@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.helper.PlacesCartListener;
-import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.SuggestionPlace;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -27,7 +25,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 
 /**
@@ -113,7 +110,7 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<PlaceSugge
 
             ImageUtils.loadImage(this.ivSuggestionPlacePhoto
                     , GoogleAsyncHttpClient.getPlacePhotoUrl(suggestionPlace.getPhotoUrl())
-                    , R.drawable.ic_photoholder);
+                    , R.drawable.ic_photoholder, null);
         }
 
         public void listeners(SuggestionPlace suggestionPlace) {

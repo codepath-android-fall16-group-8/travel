@@ -16,13 +16,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.codepath.travel.R;
 import com.codepath.travel.callbacks.ImageUploadCallback;
-import com.codepath.travel.utils.ImageUtils;
+import com.codepath.travel.helper.ImageUtils;
 import com.parse.ParseException;
 
 import butterknife.BindView;
@@ -96,24 +92,20 @@ public class ImagePickerFragment extends Fragment {
     mImagePickerListener = (ImagePickerFragmentListener) context;
   }
 
+  @Override
+  public void onDetach() {
+    super.onDetach();
+    this.mImagePickerListener = null;
+  }
+
   public void loadImage(String imageSource) {
     // populate the image here
-    Glide.with(getActivity())
-    .load(imageSource)
-    .listener(new RequestListener<String, GlideDrawable>() {
-      @Override
-      public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-        pbImageUploading.setVisibility(View.GONE);
-        return false;
-      }
-
-      @Override
-      public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-        pbImageUploading.setVisibility(View.GONE);
-        return false;
-      }
-    })
-    .into(ivImageHolder);
+    ImageUtils.loadImage(
+      ivImageHolder,
+      imageSource,
+      R.drawable.com_facebook_profile_picture_blank_portrait,
+      pbImageUploading
+    );
   }
 
   public void onActivityResult(int requestCode, int resultCode, Intent data) {

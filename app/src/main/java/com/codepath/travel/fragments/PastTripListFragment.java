@@ -1,7 +1,6 @@
 package com.codepath.travel.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.codepath.travel.models.Trip;
 
@@ -27,12 +26,7 @@ public class PastTripListFragment extends TripListFragment {
         }
         mTrips.clear();
         Trip.getPastTripsForUser(mUserId, fetchUser, (trips, e) -> {
-            if (e == null) {
-                mTrips.addAll(trips);
-                mTripsAdapter.notifyDataSetChanged();
-            } else {
-                Log.d(TAG, String.format("Failed to populate past trips: %s", e.getMessage()));
-            }
+            resetTripAdapter(trips, e);
         });
     }
 }

@@ -3,12 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlBackground"
-    android:layout_width="@dimen/trip_horizontal_list_width"
-    android:layout_height="@dimen/trip_horizontal_list_height"
-    android:padding="@dimen/margin"
-    android:layout_marginRight="@dimen/margin"
-    android:layout_marginEnd="@dimen/margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:backgroundTint="@color/colorTransparentBackground"
     android:backgroundTintMode="src_over">
 
@@ -40,12 +36,32 @@
         android:layout_toEndOf="@+id/ivProfilePhoto"
         android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-    <ImageButton
-        android:id="@+id/btnShare"
-        android:src="@android:drawable/ic_menu_share"
-        android:layout_alignParentBottom="true"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
-        android:layout_centerHorizontal="true"
-        android:background="@color/transparent"/>
+    <RelativeLayout
+        android:layout_marginTop="4dp"
+        android:layout_below="@id/tvTripDates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ivTripCoverPhoto"
+            android:background="@color/cardview_dark_background"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+        <ProgressBar
+            android:id="@+id/pbImageLoading"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/btnShare"
+            android:src="@android:drawable/ic_menu_share"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_margin="10dp"
+            android:layout_alignRight="@+id/ivTripCoverPhoto"
+            android:layout_alignBottom="@+id/ivTripCoverPhoto"
+            android:background="@color/transparent"/>
+    </RelativeLayout>
 </RelativeLayout>

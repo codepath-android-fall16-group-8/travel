@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ImageUtils;
@@ -164,7 +163,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(ivPlacePhoto
                     , GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl())
-                    , R.drawable.ic_photoholder);
+                    , R.drawable.ic_photoholder, null);
             tvPlaceName.setText(storyPlace.getName());
             ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);
             mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);
