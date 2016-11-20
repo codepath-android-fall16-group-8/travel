@@ -15,7 +15,7 @@ public class GoogleAsyncHttpClient {
     public static String NEARBY_SEARCH_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
     public static String PLACE_PHOTO_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400";
     public static String PLACE_DETAILS_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
-    public static String GOOGLE_PLACES_SEARCH_API_KEY = "AIzaSyDz0MqPxbq6yNnwVpLQ6wd8iHHWMmpHi2A";
+    public static String GOOGLE_PLACES_SEARCH_API_KEY = "AIzaSyBu7ILXPyx6eFeI70xfYAzp-k2xksqhzfI";
 
     public static AsyncHttpClient getInstance() {
         return client;
