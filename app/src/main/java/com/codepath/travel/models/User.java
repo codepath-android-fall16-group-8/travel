@@ -1,9 +1,15 @@
 package com.codepath.travel.models;
 
+import android.text.TextUtils;
+
+import com.codepath.travel.callbacks.ParseQueryCallback;
 import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 import static com.codepath.travel.models.ParseModelConstants.FAVORITES_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
@@ -11,8 +17,6 @@ import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_
 import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
 import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
-
-import android.text.TextUtils;
 
 /**
  * ParseUser helper methods for extended fields and relations.
@@ -94,5 +98,38 @@ public final class User {
     }
 
     // TODO: figure out how to query for all tags of this user (trip/storyPlace/media)
+    // static query methods
+    public static void getUserByID(String userId, ParseQueryCallback<ParseUser> callback) {
+        ParseQuery<ParseUser> userQuery = ParseQuery.getQuery(ParseUser.class);
+        userQuery.whereEqualTo("objectId", userId);
+        userQuery.findInBackground((List<ParseUser> objects, ParseException e) -> {
+            if (e != null || objects.size() == 0) {
+                callback.onQueryError(e);
+                return;
+            }
+            callback.onQuerySuccess(objects.get(0));
+        });
+    }
 
+    public static void saveCoverPicURL(ParseUser pUser, String coverPicURL, ParseQueryCallback<ParseUser> callback) {
+        pUser.put(PHOTO_URL, coverPicURL);
+        pUser.saveInBackground((ParseException e) -> {
+            if (e != null) {
+                callback.onQueryError(e);
+                return;
+            }
+            callback.onQuerySuccess(pUser);
+        });
+    }
+
+    public static void saveProfilePicURL(ParseUser pUser, String profilePicURL, ParseQueryCallback<ParseUser> callback) {
+        pUser.put(PROFILE_PIC_URL_KEY, profilePicURL);
+        pUser.saveInBackground((ParseException e) -> {
+            if (e != null) {
+                callback.onQueryError(e);
+                return;
+            }
+            callback.onQuerySuccess(pUser);
+        });
+    }
 }

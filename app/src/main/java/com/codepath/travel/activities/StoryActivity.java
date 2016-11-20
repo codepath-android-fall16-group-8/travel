@@ -229,7 +229,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void launchGalleryActivity(int position) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         mMediaLauncherStoryIndex = position;
         Intent startGallery =
                 new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

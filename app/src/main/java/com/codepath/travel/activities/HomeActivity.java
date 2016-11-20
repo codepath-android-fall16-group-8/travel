@@ -291,6 +291,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             case R.id.nav_delete_account:
                     deleteAccount();
                 break;
+            case R.id.nav_profile:
+                showUserProfile(ParseUser.getCurrentUser().getObjectId());
+                break;
             default: break;
         }
 
@@ -313,5 +316,12 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // all private methods below
+    private void showUserProfile(String userID) {
+        Intent intent = new Intent(this, ProfileViewActivity.class);
+        intent.putExtra(ProfileViewActivity.USER_ID, userID);
+        startActivity(intent);
     }
 }

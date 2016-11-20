@@ -16,4 +16,9 @@
     <dimen name="item_collage_width">200dp</dimen>
     <dimen name="item_collage_height">100dp</dimen>
     <dimen name="margin">10dp</dimen>
+
+    <!-- Profile View -->
+    <dimen name="profile_cover_pic_height">200dp</dimen>
+    <dimen name="profile_view_user_pic_width">60dp</dimen>
+    <dimen name="profile_view_user_pic_height">60dp</dimen>
 </resources>
