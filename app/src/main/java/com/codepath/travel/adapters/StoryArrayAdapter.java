@@ -178,7 +178,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             mStoryPlace = storyPlace;
             ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(ivPlacePhoto,
-                    GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()), R.drawable.ic_photoholder);
+                    GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()), R.drawable.ic_photoholder, null);
             tvPlaceName.setText(storyPlace.getName());
             ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);
             mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);

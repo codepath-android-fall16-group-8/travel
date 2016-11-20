@@ -1,11 +1,16 @@
 package com.codepath.travel.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
+import com.codepath.travel.adapters.ProfilePagerAdapter;
 import com.codepath.travel.callbacks.ParseQueryCallback;
+import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.pickers.ImagePickerFragment;
 import com.codepath.travel.models.User;
 import com.parse.ParseException;
@@ -19,7 +24,7 @@ import butterknife.BindView;
 
 public class ProfileViewActivity
   extends BaseActivity
-  implements ImagePickerFragment.ImagePickerFragmentListener {
+  implements ImagePickerFragment.ImagePickerFragmentListener, TripClickListener {
 
   // Intent variables
   public static final String USER_ID = "user_id";
@@ -30,9 +35,12 @@ public class ProfileViewActivity
 
   // views
   @BindView(R.id.tvProfileUserName) TextView tvProfileUserName;
+  @BindView(R.id.tabLayout) TabLayout tabLayout;
+  @BindView(R.id.tabViewPager) ViewPager tabViewPager;
 
   // member variables
   private ParseUser mUser;
+  private ProfilePagerAdapter mProfilePagerAdapter;
 
   @Override
   public void onCreate(Bundle savedInstance) {
@@ -101,11 +109,28 @@ public class ProfileViewActivity
     }
   }
 
+  @Override
+  public void onTripClick(String tripId, String tripTitle) {
+    Intent openStory = new Intent(ProfileViewActivity.this, StoryActivity.class);
+    openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, tripTitle);
+    openStory.putExtra(StoryActivity.TRIP_ID_ARG, tripId);
+    startActivity(openStory);
+  }
+
   // all private methods below
 
   private void initializeViews(ParseUser user) {
     tvProfileUserName.setText(user.getUsername());
     setActionBarTitle(user.getUsername());
+
+    tabViewPager.setAdapter(
+      new ProfilePagerAdapter(
+        getSupportFragmentManager(),
+        this,
+        user.getObjectId()
+      )
+    );
+    tabLayout.setupWithViewPager(tabViewPager);
   }
 
    private void initializeAllFragments(ParseUser user) {

@@ -1,20 +1,14 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.models.User.getCoverPicUrl;
-import static com.codepath.travel.models.User.getProfilePicUrl;
-import static com.codepath.travel.models.User.setCoverPicUrl;
-import static com.codepath.travel.models.User.setFbUid;
-import static com.codepath.travel.models.User.setProfilePicUrl;
-import static com.parse.ParseUser.getCurrentUser;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,10 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
+import com.codepath.travel.adapters.HomePagerAdapter;
 import com.codepath.travel.fragments.NewTripFragment;
 import com.codepath.travel.fragments.PastTripListFragment;
 import com.codepath.travel.fragments.PlannedTripListFragment;
-import com.codepath.travel.fragments.SearchUserFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.TripItemFragment;
 import com.codepath.travel.helper.ImageUtils;
@@ -47,6 +41,13 @@ import org.json.JSONException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.travel.models.User.getCoverPicUrl;
+import static com.codepath.travel.models.User.getProfilePicUrl;
+import static com.codepath.travel.models.User.setCoverPicUrl;
+import static com.codepath.travel.models.User.setFbUid;
+import static com.codepath.travel.models.User.setProfilePicUrl;
+import static com.parse.ParseUser.getCurrentUser;
+
 public class HomeActivity extends AppCompatActivity implements TripClickListener {
     //Class variables
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -59,6 +60,8 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.toolbar)  Toolbar toolbar;
     @BindView(R.id.nvView) NavigationView nvDrawer;
     @BindView(R.id.fab_new_trip) FloatingActionButton mFab;
+    @BindView(R.id.tabLayout) TabLayout tabLayout;
+    @BindView(R.id.tabViewPager) ViewPager tabViewPager;
 
     // Fragments
     private PastTripListFragment pastTripsFragment;
@@ -88,15 +91,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         setupDrawerContent(nvDrawer);
         setUpClickListeners();
 
-        if (savedInstanceState == null) {
-            setupTripFragments();
-        } else {
-            FragmentManager fm = getSupportFragmentManager();
-            plannedTripsFragment = (PlannedTripListFragment) fm.findFragmentByTag("plannedTripsFragment");
-            currentTripFragment = (TripItemFragment) fm.findFragmentByTag("currentTripFragment");
-            pastTripsFragment = (PastTripListFragment) fm.findFragmentByTag("pastTripsFragment");
-        }
-
         // User login
         if (getCurrentUser() != null) { // start with existing user
             startWithCurrentUser();
@@ -116,27 +110,21 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
         drawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(drawerToggle);
+
+        tabViewPager.setAdapter(
+            new HomePagerAdapter(
+                getSupportFragmentManager(),
+                this,
+                getCurrentUser().getObjectId()
+            )
+        );
+        tabLayout.setupWithViewPager(tabViewPager);
     }
 
     private void setUpClickListeners() {
         mFab.setOnClickListener(view -> {
             launchNewTripFragment();
         });
-    }
-
-    private void setupTripFragments() {
-        String userId = null;
-        if (getCurrentUser() != null) {
-            userId = getCurrentUser().getObjectId();
-        }
-        plannedTripsFragment = PlannedTripListFragment.newInstance(userId, false);
-        currentTripFragment = TripItemFragment.newInstance(userId, false);
-        pastTripsFragment = PastTripListFragment.newInstance(userId, false);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.flPlannedContainer, plannedTripsFragment, "plannedTripsFragment");
-        ft.replace(R.id.flCurrentContainer, currentTripFragment, "currentTripFragment");
-        ft.replace(R.id.flPastContainer, pastTripsFragment, "pastTripsFragment");
-        ft.commit();
     }
 
     private void refreshMyTrips() {
@@ -286,9 +274,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     // Assign action to perform for different navigation drawer item
     public void selectDrawerItem(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
-            case R.id.nav_search:
-                launchSearchUserFragment();
-                    break;
             case R.id.nav_logout:
                     logout();
                 break;
@@ -305,17 +290,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
     }
-
-    private void launchSearchUserFragment() {
-        String userId = null;
-        if (getCurrentUser() != null) {
-            userId = getCurrentUser().getObjectId();
-        }
-        FragmentManager fm = getSupportFragmentManager();
-        SearchUserFragment searchUserDialog = SearchUserFragment.newInstance(userId);
-        searchUserDialog.show(fm, "Search");
-    }
-
 
     /* Toolbar */
     @Override

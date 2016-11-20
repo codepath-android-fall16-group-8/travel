@@ -1,14 +1,11 @@
 package com.codepath.travel.adapters;
 
-import static com.codepath.travel.models.User.getProfilePicUrl;
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
@@ -17,6 +14,8 @@ import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.Trip;
 
 import java.util.List;
+
+import static com.codepath.travel.models.User.getProfilePicUrl;
 
 /**
  * Adapter for trips.
@@ -55,8 +54,13 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void configureViewHolder(TripViewHolder viewHolder, int position) {
         Trip trip = this.mTrips.get(position);
 
-        RelativeLayout rlBackground = viewHolder.getCoverPhoto();
-        ImageUtils.loadBackground(rlBackground, trip.getCoverPicUrl());
+        ImageView ivCoverPhoto = viewHolder.getCoverPhoto();
+        ImageUtils.loadImage(
+            ivCoverPhoto,
+            trip.getCoverPicUrl(),
+            R.drawable.com_facebook_profile_picture_blank_portrait,
+            viewHolder.getProgressBar()
+        );
         ImageView ivProfilePhoto = viewHolder.getProfilePhoto();
         if (showProfilePhoto) {
             ImageUtils.loadImageCircle(ivProfilePhoto, getProfilePicUrl(trip.getUser()),

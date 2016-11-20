@@ -124,7 +124,7 @@ public class EditMediaDialogFragment extends DialogFragment {
         // photo-specific
         String data = args.getString(DATA_KEY);
         if (data != null && !TextUtils.isEmpty(data)) {
-            ImageUtils.loadImage(ivPhoto, data, android.R.drawable.gallery_thumb);
+            ImageUtils.loadImage(ivPhoto, data, android.R.drawable.gallery_thumb, null);
             btnSetStoryPlaceCover.setOnClickListener(v -> {
                 listener.onSetStoryPlaceCoverPhoto(position, data);
             });

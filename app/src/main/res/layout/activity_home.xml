@@ -22,49 +22,11 @@
             android:background="?attr/colorPrimaryDark">
         </android.support.v7.widget.Toolbar>
 
-        <TextView
-            android:id="@+id/tvPlannedTrips"
-            android:text="@string/planned_trips"
-            android:textStyle="bold"
-            android:layout_below="@id/toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:id="@+id/flPlannedContainer"
-            android:layout_below="@+id/tvPlannedTrips"
+        <include
+            android:layout_below="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/trip_horizontal_list_height"
-            android:layout_marginBottom="@dimen/margin"/>
-
-        <TextView
-            android:id="@+id/tvCurrentTrip"
-            android:text="@string/current_trip"
-            android:textStyle="bold"
-            android:layout_below="@+id/flPlannedContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:id="@+id/flCurrentContainer"
-            android:layout_below="@+id/tvCurrentTrip"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/single_trip_height"
-            android:layout_marginBottom="@dimen/margin"/>
-
-        <TextView
-            android:id="@+id/tvPastTrips"
-            android:text="@string/past_trips"
-            android:textStyle="bold"
-            android:layout_below="@+id/flCurrentContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <FrameLayout
-            android:id="@+id/flPastContainer"
-            android:layout_below="@+id/tvPastTrips"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/trip_horizontal_list_height"/>
+            android:layout_height="match_parent"
+            layout="@layout/layout_tabs"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_new_trip"
