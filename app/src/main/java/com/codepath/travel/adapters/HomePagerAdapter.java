@@ -47,4 +47,8 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     // Generate title based on item position
     return mTabs[position];
   }
+
+  public int getItemPosition(Object object){
+    return POSITION_NONE;
+  }
 }
