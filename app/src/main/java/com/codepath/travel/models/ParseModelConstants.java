@@ -12,6 +12,7 @@ public final class ParseModelConstants {
     public static final String PROFILE_PIC_URL_KEY = "profilePicUrl";
     public static final String FOLLOWING_RELATION_KEY = "following";
     public static final String FAVORITES_RELATION_KEY = "favorites";
+    public static final String KEY_USERNAME = "username";
 
     // Trip-specific values
     public static final String TRIP_CLASS_NAME = "Trip";
