@@ -54,6 +54,11 @@
     <!-- Trip Date Selection -->
     <string name="hint_trip_dates">Set Trip Dates</string>
 
+
     <!-- Navigation View Strings -->
     <string name="nav_profile">Profile</string>
+
+    <!-- Search User DialogFrgament -->
+    <string name="search_user">Find Friends</string>
+
 </resources>

@@ -29,6 +29,7 @@ import com.codepath.travel.R;
 import com.codepath.travel.fragments.NewTripFragment;
 import com.codepath.travel.fragments.PastTripListFragment;
 import com.codepath.travel.fragments.PlannedTripListFragment;
+import com.codepath.travel.fragments.SearchUserFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.TripItemFragment;
 import com.codepath.travel.helper.ImageUtils;
@@ -285,6 +286,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     // Assign action to perform for different navigation drawer item
     public void selectDrawerItem(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
+            case R.id.nav_search:
+                launchSearchUserFragment();
+                    break;
             case R.id.nav_logout:
                     logout();
                 break;
@@ -301,6 +305,17 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
     }
+
+    private void launchSearchUserFragment() {
+        String userId = null;
+        if (getCurrentUser() != null) {
+            userId = getCurrentUser().getObjectId();
+        }
+        FragmentManager fm = getSupportFragmentManager();
+        SearchUserFragment searchUserDialog = SearchUserFragment.newInstance(userId);
+        searchUserDialog.show(fm, "Search");
+    }
+
 
     /* Toolbar */
     @Override

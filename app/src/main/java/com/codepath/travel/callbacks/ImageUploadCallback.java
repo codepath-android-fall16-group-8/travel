@@ -7,6 +7,6 @@ import com.parse.ParseException;
  */
 
 public interface ImageUploadCallback {
-  void onImageUploadSuccess(String uploadedImageURL);
-  void onImageUploadError(ParseException imageUploadError);
+    void onImageUploadSuccess(String uploadedImageURL);
+    void onImageUploadError(ParseException imageUploadError);
 }

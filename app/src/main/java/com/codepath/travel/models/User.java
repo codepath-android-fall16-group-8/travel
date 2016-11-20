@@ -14,6 +14,7 @@ import java.util.List;
 import static com.codepath.travel.models.ParseModelConstants.FAVORITES_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_KEY;
+import static com.codepath.travel.models.ParseModelConstants.KEY_USERNAME;
 import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
 import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
@@ -56,6 +57,17 @@ public final class User {
     public static void queryTrips(ParseUser pUser, FindCallback<Trip> callback) {
         ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
         query.whereEqualTo(USER_KEY, pUser);
+        query.findInBackground(callback);
+    }
+
+        /**
+         * Fetches the users with searched name
+         * @param name
+         * @param callback
+         */
+    public static void queryUsers(String name, FindCallback<ParseUser> callback) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereMatches(KEY_USERNAME, "("+name+")", "i");
         query.findInBackground(callback);
     }
 
