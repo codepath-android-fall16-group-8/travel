@@ -2,31 +2,19 @@ package com.codepath.travel.models;
 
 import android.text.TextUtils;
 
-<<<<<<< 9ac9c56677b35bb4f9928e2faded63ae9d7c651c
 import com.codepath.travel.callbacks.ParseQueryCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
-=======
-import com.parse.FindCallback;
-import com.parse.ParseClassName;
-import com.parse.ParseException;
-import com.parse.ParseObject;
->>>>>>> work-in-progress
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
-<<<<<<< 9ac9c56677b35bb4f9928e2faded63ae9d7c651c
-=======
-import java.util.ArrayList;
->>>>>>> work-in-progress
 import java.util.List;
 
 import static com.codepath.travel.models.ParseModelConstants.FAVORITES_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
 import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_KEY;
 import static com.codepath.travel.models.ParseModelConstants.KEY_USERNAME;
-import static com.codepath.travel.models.ParseModelConstants.OBJECT_ID_KEY;
 import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
 import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
 import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
@@ -66,24 +54,20 @@ public final class User {
         pUser.put(PHOTO_URL, coverPicUrl);
     }
 
-<<<<<<< 9ac9c56677b35bb4f9928e2faded63ae9d7c651c
     public static void queryTrips(ParseUser pUser, FindCallback<Trip> callback) {
-=======
-    /**
-     * Fetches the users with searched name
-     * @param name
-     * @param callback
-     */
-    public static void queryUsers(String name, FindCallback<ParseUser> callback) {
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereMatches(KEY_USERNAME, "("+name+")", "i");
+        ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
+        query.whereEqualTo(USER_KEY, pUser);
         query.findInBackground(callback);
     }
 
-    public void queryTrips(FindCallback<Trip> callback) {
->>>>>>> work-in-progress
-        ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        query.whereEqualTo(USER_KEY, pUser);
+        /**
+         * Fetches the users with searched name
+         * @param name
+         * @param callback
+         */
+    public static void queryUsers(String name, FindCallback<ParseUser> callback) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereMatches(KEY_USERNAME, "("+name+")", "i");
         query.findInBackground(callback);
     }
 

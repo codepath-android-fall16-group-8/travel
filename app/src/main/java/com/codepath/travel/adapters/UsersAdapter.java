@@ -28,12 +28,12 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private final int DEFAULT = 0;
 
-    private ArrayList<User> mUsers;
-    private ArrayList<User> mFollowingList;
+    private ArrayList<ParseUser> mUsers;
+    private ArrayList<ParseUser> mFollowingList;
     private Context mContext;
     private boolean showProfilePhoto;
 
-    public UsersAdapter(Context context, ArrayList<User> users, ArrayList<User> mFollowingList,  boolean showProfilePhoto) {
+    public UsersAdapter(Context context, ArrayList<ParseUser> users, ArrayList<ParseUser> mFollowingList,  boolean showProfilePhoto) {
         this.mUsers = users;
         this.mFollowingList = mFollowingList;
         this.mContext = context;
@@ -58,11 +58,11 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void configureViewHolder(UserViewHolder viewHolder, int position) {
-        User user = this.mUsers.get(position);
+        ParseUser user = this.mUsers.get(position);
 
         ImageView ivProfilePhoto = viewHolder.getProfilePhoto();
         if (showProfilePhoto) {
-            ImageUtils.loadImageCircle(ivProfilePhoto, user.getProfilePicUrl(),
+            ImageUtils.loadImageCircle(ivProfilePhoto, User.getProfilePicUrl(user),
                     R.drawable.com_facebook_profile_picture_blank_portrait);
         } else {
             ivProfilePhoto.setVisibility(View.GONE);
@@ -90,11 +90,11 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 if(isFollowingUser(user, mFollowingList)) {
                     setFollowRelationImageResource(ivFollowUser, View.VISIBLE, R.drawable.ic_person_add);
-                    ((User)ParseUser.getCurrentUser()).unFollow(user);
+                    User.unFollow(ParseUser.getCurrentUser(), user);
                     mFollowingList.remove(user);
                 }else {
                     setFollowRelationImageResource(ivFollowUser, View.VISIBLE, R.drawable.ic_person_friend);
-                    ((User)ParseUser.getCurrentUser()).follow(user);
+                    User.follow(ParseUser.getCurrentUser(), user);
                     mFollowingList.add(user);
                 }
             }
@@ -106,9 +106,9 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         imageView.setImageResource(resource);
     }
 
-    private boolean isFollowingUser(User user, ArrayList<User> list) {
+    private boolean isFollowingUser(ParseUser user, ArrayList<ParseUser> list) {
         //Check if userID is present in mfollowinglist
-        for(User followingUser : mFollowingList) {
+        for(ParseUser followingUser : mFollowingList) {
             if(user.hasSameId(followingUser)) {
                 return true;
             }

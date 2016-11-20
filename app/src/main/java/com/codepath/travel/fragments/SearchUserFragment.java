@@ -42,8 +42,8 @@ public class SearchUserFragment extends DialogFragment {
 
     protected Unbinder unbinder;
 
-    protected ArrayList<User> mUsers;
-    protected ArrayList<User> mFollowingList;
+    protected ArrayList<ParseUser> mUsers;
+    protected ArrayList<ParseUser> mFollowingList;
     protected UsersAdapter mUsersAdapter;
     protected String mUserId;
     protected boolean fetchUser;
@@ -99,7 +99,7 @@ public class SearchUserFragment extends DialogFragment {
         User.queryUsers(name, (parseUsers, e) -> {
             if (e == null) {
                 for(ParseUser parseUser : parseUsers) {
-                    mUsers.add((User)parseUser);
+                    mUsers.add(parseUser);
                 }
                 mUsersAdapter.notifyDataSetChanged();
             } else {
@@ -107,7 +107,7 @@ public class SearchUserFragment extends DialogFragment {
             }
         });
         mFollowingList.clear();
-        ((User)ParseUser.getCurrentUser()).queryFollowing((users, e) -> {
+        User.queryFollowing(ParseUser.getCurrentUser(),(users, e) -> {
             if (e == null) {
                 mFollowingList.addAll(users);
                 mUsersAdapter.notifyDataSetChanged();
