@@ -96,7 +96,7 @@ public class TripItemFragment extends Fragment {
                 }
                 ImageUtils.loadBackground(rlBackground, trip.getCoverPicUrl());
                 tvTripTitle.setText(trip.getTitle());
-                tvTripDates.setText(DateUtils.getDateRangeString(
+                tvTripDates.setText(DateUtils.formatDateRange(getContext(),
                         trip.getStartDate(), trip.getEndDate()));
             } else {
                 Log.d(TAG, String.format("Failed to find current trip for user %s: %s", mUserId, e.getMessage()));

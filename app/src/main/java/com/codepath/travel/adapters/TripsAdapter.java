@@ -71,7 +71,7 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView tvTripTitle = viewHolder.getTripTitle();
         tvTripTitle.setText(trip.getTitle());
         TextView tvTripDates = viewHolder.getTripDates();
-        tvTripDates.setText(DateUtils.getDateRangeString(trip.getStartDate(), trip.getEndDate()));
+        tvTripDates.setText(DateUtils.formatDateRange(mContext, trip.getStartDate(), trip.getEndDate()));
     }
 
     @Override

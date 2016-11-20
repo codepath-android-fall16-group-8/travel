@@ -7,11 +7,6 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,19 +26,12 @@ public class StoryPlace extends ParseObject {
         super();
     }
 
-    // for testing, DELETE ME after we have API places
-    public StoryPlace(Trip trip, String name) {
-        super();
-        setTrip(trip);
-        setName(name);
-    }
-
-    public StoryPlace(Trip trip, Place place) {
+    public StoryPlace(Trip trip, Place place, String photoUrl) {
         super();
         setTrip(trip);
         setPlaceId(place.getId());
         setName(place.getName().toString());
-//        setCoverPicUrl();
+        setPhotoUrl(photoUrl);
         LatLng latlng = place.getLatLng();
         setLatitude(latlng.latitude);
         setLongitude(latlng.longitude);
