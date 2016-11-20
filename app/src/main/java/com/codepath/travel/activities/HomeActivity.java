@@ -22,10 +22,7 @@ import android.widget.TextView;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.HomePagerAdapter;
 import com.codepath.travel.fragments.NewTripFragment;
-import com.codepath.travel.fragments.PastTripListFragment;
-import com.codepath.travel.fragments.PlannedTripListFragment;
 import com.codepath.travel.fragments.TripClickListener;
-import com.codepath.travel.fragments.TripItemFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
@@ -62,11 +59,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.fab_new_trip) FloatingActionButton mFab;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
-
-    // Fragments
-    private PastTripListFragment pastTripsFragment;
-    private PlannedTripListFragment plannedTripsFragment;
-    private TripItemFragment currentTripFragment;
 
     // Views in Navigation view
     private ActionBarDrawerToggle drawerToggle;
@@ -110,33 +102,12 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
         drawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(drawerToggle);
-
-        tabViewPager.setAdapter(
-            new HomePagerAdapter(
-                getSupportFragmentManager(),
-                this,
-                getCurrentUser().getObjectId()
-            )
-        );
-        tabLayout.setupWithViewPager(tabViewPager);
     }
 
     private void setUpClickListeners() {
         mFab.setOnClickListener(view -> {
             launchNewTripFragment();
         });
-    }
-
-    private void refreshMyTrips() {
-        plannedTripsFragment.populateTrips();
-        currentTripFragment.populateTrip();
-        pastTripsFragment.populateTrips();
-    }
-
-    private void setTripFragmentsUser(String userId) {
-        plannedTripsFragment.setUser(userId);
-        currentTripFragment.setUser(userId);
-        pastTripsFragment.setUser(userId);
     }
 
     // Get the userId from the cached currentUser object
@@ -146,6 +117,15 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         ImageUtils.loadImageCircle(this.ivProfileImage, getProfilePicUrl(pUser),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
         ImageUtils.loadBackground(nvHeader, getCoverPicUrl(pUser));
+
+        tabViewPager.setAdapter(
+            new HomePagerAdapter(
+            getSupportFragmentManager(),
+            this,
+            getCurrentUser().getObjectId()
+            )
+        );
+        tabLayout.setupWithViewPager(tabViewPager);
     }
 
     private void newFBAccountSetup(ParseUser pUser) {
@@ -225,15 +205,14 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             if (pUser.isNew() && ParseFacebookUtils.isLinked(pUser)) {
                 newFBAccountSetup(pUser);
             } else {
-                setTripFragmentsUser(pUser.getObjectId());
                 startWithCurrentUser();
             }
         } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
             // trip added
-            refreshMyTrips();
+            tabViewPager.getAdapter().notifyDataSetChanged();
         } else if (resultCode == RESULT_OK && requestCode == STORY_REQUEST) {
             // trip deleted
-            refreshMyTrips();
+            tabViewPager.getAdapter().notifyDataSetChanged();
         }
     }
 
