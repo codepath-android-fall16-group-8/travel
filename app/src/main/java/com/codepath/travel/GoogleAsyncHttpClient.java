@@ -7,7 +7,6 @@ import com.loopj.android.http.RequestParams;
 /**
  * Created by aditikakadebansal on 11/15/16.
  */
-
 public class GoogleAsyncHttpClient {
 
     private static AsyncHttpClient client = new AsyncHttpClient();
@@ -22,9 +21,14 @@ public class GoogleAsyncHttpClient {
     }
 
     public static String getPlacePhotoUrl(String reference) {
-        return GoogleAsyncHttpClient.PLACE_PHOTO_URL
-                + "&photoreference=" + reference
-                + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY;
+        if (reference.contains("http")) {
+            // this is not a google photo reference
+            return reference;
+        } else {
+            return GoogleAsyncHttpClient.PLACE_PHOTO_URL
+                    + "&photoreference=" + reference
+                    + "&key=" + GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY;
+        }
     }
 
     public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {

@@ -14,6 +14,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -82,7 +83,8 @@ dependencies {
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
 
-    // Material DateTime Range Picker
-    compile 'com.borax12.materialdaterangepicker:library:1.9'
+    // Material DatePickers
+    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
+    compile 'com.borax12.materialdaterangepicker:library:1.9' // date range picker
 
 }

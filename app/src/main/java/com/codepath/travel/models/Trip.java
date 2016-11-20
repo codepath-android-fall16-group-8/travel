@@ -128,6 +128,7 @@ public class Trip extends ParseObject {
         Log.d(TAG, String.format("Querying Parse for Trip with objectId: %s", objectId));
         ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
         tripQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        tripQuery.include(USER_KEY);
         tripQuery.getFirstInBackground(callback);
     }
 
@@ -221,6 +222,7 @@ public class Trip extends ParseObject {
     public static void getPlaces(String tripId, FindCallback<StoryPlace> callback) {
         ParseQuery<StoryPlace> storyQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
         storyQuery.whereEqualTo(TRIP_KEY, ParseObject.createWithoutData(Trip.class, tripId));
+        storyQuery.addAscendingOrder(CHECK_IN_TIME_KEY);
         storyQuery.findInBackground(callback);
     }
 

@@ -1,34 +1,31 @@
 package com.codepath.travel.helper;
 
+import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
+
+import android.content.Context;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Helper methods for dealing with dates.
  */
 public final class DateUtils {
-    private static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("dd", Locale.getDefault());;
-    private static final SimpleDateFormat DAY_YEAR_FORMAT = new SimpleDateFormat("dd, yyyy", Locale.getDefault());
-    private static final SimpleDateFormat MONTH_DAY_FORMAT = new SimpleDateFormat("MMM dd", Locale.getDefault());
-    public static final SimpleDateFormat MONTH_DAY_YEAR_FORMAT = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-    private static final String RANGE_FORMAT = "%s - %s";
-
     private DateUtils() {}
 
     /**
      * Get a formatted date string for the given  date.
+     *
      * @param date the date to convert
-     * @param dateFormat the date format to use
      * @return the formatted date string
      */
-    public static String getStringFromDate(Date date, SimpleDateFormat dateFormat) {
-        if (date != null) {
-            return dateFormat.format(date);
-        } else {
+    public static String formatDate(Context context, Date date) {
+        if (date == null) {
             return "";
         }
+
+        return android.text.format.DateUtils.formatDateTime(context, date.getTime(), FORMAT_ABBREV_MONTH);
     }
 
     /**
@@ -38,56 +35,33 @@ public final class DateUtils {
      * @param end the end date
      * @return a formatted date range string
      */
-    public static String getDateRangeString(Date start, Date end) {
+    public static String formatDateRange(Context context, Date start, Date end) {
         if (start == null && end == null) {
             return "";
         }
 
+        return android.text.format.DateUtils.formatDateRange(
+                context, start.getTime(), end.getTime(), FORMAT_ABBREV_MONTH);
+    }
+
+    public static final int PAST = -1;
+    public static final int NOW = 0;
+    public static final int FUTURE = 1;
+
+    public static int todayInRange(Date start, Date end) {
+        if (start == null && end == null) {
+            return FUTURE;
+        }
+
         Calendar today = todayAtStartOfDay();
-        int curYear = today.get(Calendar.YEAR);
-
-        Calendar startCal = calendarFromDate(start);
-        int startYear = startCal.get(Calendar.YEAR);
-
-        if (start.compareTo(end) == 0) {
-            // Single day:
-            // MMM dd                           same day for current year
-            // MMM dd, yyyy                     same day for another year
-            return getStringFromDate(start, startYear == curYear ? MONTH_DAY_FORMAT : MONTH_DAY_YEAR_FORMAT);
+        Calendar startCal = dateAtStartOfDay(calendarFromDate(start));
+        Calendar endCal = dateAtStartOfDay(calendarFromDate(end));
+        if (today.after(endCal)) {
+            return PAST;
+        } else if (today.before(startCal)) {
+            return FUTURE;
         } else {
-            // Range:
-            // MMM dd - dd                      same month for cur year
-            // MMM dd - MMM dd                  diff month for cur year
-            // MMM dd - dd, yyyy                same month for another year
-            // MMM dd - MMM dd, yyyy            diff month for another year
-            // MMM dd, yyyy - MMM dd, yyyy      diff years
-            int startMonth = startCal.get(Calendar.MONTH);
-            Calendar endCal = calendarFromDate(end);
-            int endYear = endCal.get(Calendar.YEAR);
-            int endMonth = endCal.get(Calendar.MONTH);
-
-            String startString;
-            String endString;
-            if (startYear != endYear) { // start and end have diff years:
-                startString = getStringFromDate(start, MONTH_DAY_YEAR_FORMAT);
-                endString = getStringFromDate(end, MONTH_DAY_YEAR_FORMAT);
-            } else { // start and end have same years
-                startString = getStringFromDate(start, MONTH_DAY_FORMAT);
-                if (startYear == curYear) { // is current year
-                    if (startMonth == endMonth) { // start and end have same month
-                        endString = getStringFromDate(end, DAY_FORMAT);
-                    } else { // different month
-                        endString = getStringFromDate(end, MONTH_DAY_FORMAT);
-                    }
-                } else { // is another year
-                    if (startMonth == endMonth) { // start and end have same month
-                        endString = getStringFromDate(end, DAY_YEAR_FORMAT);
-                    } else { // different month
-                        endString = getStringFromDate(end, MONTH_DAY_YEAR_FORMAT);
-                    }
-                }
-            }
-            return String.format(RANGE_FORMAT, startString, endString);
+            return NOW;
         }
     }
 

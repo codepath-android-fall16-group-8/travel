@@ -113,7 +113,7 @@ public class TripDatesFragment extends Fragment implements DatePickerDialog.OnDa
     }
 
     private void setTripDatesText() {
-        String formattedDateString = DateUtils.getDateRangeString(startDate.getTime(), endDate.getTime());
+        String formattedDateString = DateUtils.formatDateRange(getContext(), startDate.getTime(), endDate.getTime());
         tvTripDates.setText(formattedDateString);
         Log.d(TAG, String.format("Set trip dates string: %s", formattedDateString));
     }

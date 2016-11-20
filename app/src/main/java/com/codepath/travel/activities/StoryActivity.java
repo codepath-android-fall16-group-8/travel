@@ -3,6 +3,7 @@ package com.codepath.travel.activities;
 import static com.codepath.travel.models.User.setCoverPicUrl;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ import com.codepath.travel.adapters.StoryArrayAdapter;
 import com.codepath.travel.fragments.TripDatesFragment;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
+import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
@@ -35,6 +37,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,6 +56,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
         StoryArrayAdapter.StoryPlaceListener,
+        DatePickerDialog.OnDateSetListener,
         EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         TripDatesFragment.TripDatesListener {
@@ -78,12 +82,16 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     private ArrayList<StoryPlace> mStoryPlaces;
     private StoryArrayAdapter mAdapter;
     private ItemTouchHelper mItemTouchHelper;
-
     private int mMediaLauncherStoryIndex;
     private String mTripID;
     private Trip mTrip;
     private String mTripTitle;
     private String mPhotoURL;
+    private int mCheckinIndex;
+
+    // flags for story place view state
+    private boolean isOwner;
+    private int datesRelation; // PAST, NOW, or FUTURE
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,14 +109,16 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         Trip.getTripForObjectId(mTripID, (trip, e) -> {
             if (e == null) {
                 mTrip = trip;
+                isOwner = mTrip.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId());
+                datesRelation = DateUtils.todayInRange(trip.getStartDate(), trip.getEndDate());
                 setupTripDatesFragment();
+                setUpRecyclerView();
+                getPlacesInTrip();
             } else {
                 Log.d(TAG, String.format("Failed to get trip for id %s", mTrip));
             }
 
         });
-        setUpRecyclerView();
-        getPlacesInTrip();
     }
 
     private void setupTripDatesFragment() {
@@ -121,7 +131,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces);
+        mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces, isOwner, datesRelation);
         rvStoryPlaces.setHasFixedSize(true);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
@@ -132,15 +142,12 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     private void getPlacesInTrip() {
-        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
-            @Override
-            public void done(List<StoryPlace> places, ParseException se) {
-                if (se == null) {
-                    mStoryPlaces.addAll(places);
-                    mAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, String.format("Failed getPlacesInTrip: %s", se.getMessage()));
-                }
+        Trip.getPlaces(mTripID, (places, se) -> {
+            if (se == null) {
+                mStoryPlaces.addAll(places);
+                mAdapter.notifyDataSetChanged();
+            } else {
+                Log.d(TAG, String.format("Failed getPlacesInTrip: %s", se.getMessage()));
             }
         });
     }
@@ -165,8 +172,9 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             media.saveInBackground((ParseException me) -> {
                 if (me != null) {
                     Log.d("error", me.toString());
+                } else {
+                    mAdapter.notifyItemChanged(mMediaLauncherStoryIndex);
                 }
-                mAdapter.notifyDataSetChanged();
             });
         });
     }
@@ -211,6 +219,21 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
                 mStoryPlaces.get(position).getName(), mediaId, caption, data);
         fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
+    }
+
+    private void launchDatePickerDialog(Date startDate, Date endDate) {
+        FragmentManager fm = getFragmentManager();
+        Calendar start = DateUtils.calendarFromDate(startDate);
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                StoryActivity.this,
+                start.get(Calendar.YEAR),
+                start.get(Calendar.MONTH),
+                start.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setMinDate(start);
+        dpd.setMaxDate(DateUtils.calendarFromDate(endDate));
+        dpd.setOnCancelListener(dialogInterface -> mAdapter.notifyItemChanged(mCheckinIndex));
+        dpd.show(fm, "CheckinDatePickerDialog");
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -282,11 +305,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @Override
     public void noteOnClick(int position) {
         launchComposeNoteDialogFragment(position, null, null, null);
-    }
-
-    @Override
-    public void reviewOnClick(int position) {
-        Toast.makeText(this, "review! " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -383,6 +401,28 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             trip.setStartDate(startDate.getTime());
             trip.setEndDate(endDate.getTime());
             trip.saveInBackground();
+        });
+    }
+
+    @Override
+    public void checkinOnClick(int position) {
+        mCheckinIndex = position;
+        launchDatePickerDialog(mTrip.getStartDate(), mTrip.getEndDate());
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, monthOfYear);
+        date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        StoryPlace storyPlace = mStoryPlaces.get(mCheckinIndex);
+        storyPlace.setCheckinTime(date.getTime());
+        storyPlace.saveInBackground(e -> {
+            if (e == null) {
+                mAdapter.notifyItemChanged(mCheckinIndex); // TODO: look into animate reorder
+            }
         });
     }
 
