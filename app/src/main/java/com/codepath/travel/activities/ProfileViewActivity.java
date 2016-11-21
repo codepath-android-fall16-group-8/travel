@@ -138,13 +138,13 @@ public class ProfileViewActivity
 
     fragmentTransaction.replace(
       R.id.flCoverPicContainer,
-      ImagePickerFragment.newInstance(User.getCoverPicUrl(user)),
+      ImagePickerFragment.newInstance(User.getCoverPicUrl(user), user.getObjectId()),
       COVER_PIC
     );
 
      fragmentTransaction.replace(
       R.id.flUserPicContainer,
-      ImagePickerFragment.newInstance(User.getProfilePicUrl(user)),
+      ImagePickerFragment.newInstance(User.getProfilePicUrl(user), user.getObjectId()),
       PROFILE_PIC
      );
 

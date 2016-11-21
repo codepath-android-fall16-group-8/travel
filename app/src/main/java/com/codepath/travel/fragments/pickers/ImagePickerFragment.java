@@ -20,6 +20,7 @@ import com.codepath.travel.R;
 import com.codepath.travel.callbacks.ImageUploadCallback;
 import com.codepath.travel.helper.ImageUtils;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +38,7 @@ public class ImagePickerFragment extends Fragment {
 
   // arguments
   private static final String IMAGE_SRC = "image_source";
+  private static final String USER_ID = "user_id";
 
   // views
   @BindView(R.id.ivImageContainer) ImageView ivImageHolder;
@@ -51,10 +53,11 @@ public class ImagePickerFragment extends Fragment {
   // member variables
   private ImagePickerFragmentListener mImagePickerListener;
 
-  public static ImagePickerFragment newInstance(String imageSrc) {
+  public static ImagePickerFragment newInstance(String imageSrc, String userID) {
     ImagePickerFragment imagePicker = new ImagePickerFragment();
     Bundle args = new Bundle();
     args.putString(IMAGE_SRC, imageSrc);
+    args.putString(USER_ID, userID);
     imagePicker.setArguments(args);
     return imagePicker;
   }
@@ -75,6 +78,12 @@ public class ImagePickerFragment extends Fragment {
   public void onViewCreated(View view, Bundle savedInstance) {
 
     loadImage(getArguments().getString(IMAGE_SRC));
+
+    // hide edit icons if the user does not own this photo
+    if (!ParseUser.getCurrentUser().getObjectId().equals(getArguments().getString(USER_ID))) {
+      ivImagePicker.setVisibility(View.GONE);
+      return;
+    }
 
     // open gallery or camera here
     // just opening gallery for now
