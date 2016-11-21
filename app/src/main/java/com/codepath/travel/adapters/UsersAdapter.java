@@ -1,6 +1,7 @@
 package com.codepath.travel.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
+import com.codepath.travel.activities.ProfileViewActivity;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.User;
 import com.parse.ParseException;
@@ -55,6 +57,13 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             R.drawable.com_facebook_profile_picture_blank_portrait
             );
         }
+
+        ivProfilePhoto.setOnClickListener((View v) -> {
+            Intent viewProfile = new Intent(mContext, ProfileViewActivity.class);
+            viewProfile.putExtra(ProfileViewActivity.USER_ID, user.getObjectId());
+            mContext.startActivity(viewProfile);
+        });
+
         TextView tvUsername = viewHolder.getTvUsername();
         tvUsername.setText(user.getUsername());
 
