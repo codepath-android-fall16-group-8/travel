@@ -256,6 +256,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             case R.id.nav_logout:
                     logout();
                 break;
+            case R.id.nav_search:
+                showSearchActivity();
+                break;
             case R.id.nav_delete_account:
                     deleteAccount();
                 break;
@@ -290,6 +293,11 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private void showUserProfile(String userID) {
         Intent intent = new Intent(this, ProfileViewActivity.class);
         intent.putExtra(ProfileViewActivity.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void showSearchActivity() {
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 }

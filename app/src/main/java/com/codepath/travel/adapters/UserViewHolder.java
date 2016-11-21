@@ -15,11 +15,10 @@ import butterknife.ButterKnife;
  * ViewHolder class for user.
  */
 public class UserViewHolder extends RecyclerView.ViewHolder {
+
     @BindView(R.id.ivProfilePhoto) ImageView ivProfilePhoto;
     @BindView(R.id.tvUsername) TextView tvUsername;
     @BindView(R.id.ivFollowUser) ImageView ivFollowUser;
-    boolean isFollowing;
-
 
     public UserViewHolder(View itemView) {
         super(itemView);
@@ -30,28 +29,10 @@ public class UserViewHolder extends RecyclerView.ViewHolder {
         return this.ivProfilePhoto;
     }
 
-    public void setProfilePhoto(ImageView profilePhoto) {
-        this.ivProfilePhoto = profilePhoto;
-    }
-
     public TextView getTvUsername() {
         return this.tvUsername;
     }
 
-    public void setTvUsername(TextView tvUsername) {
-        this.tvUsername = tvUsername;
-    }
-
     public ImageView getIvFollowUser() { return this.ivFollowUser; }
-
-    public void setIvFollowUser(ImageView ivFollowUser) { this.ivFollowUser = ivFollowUser; }
-
-    public boolean isFollowing() {
-        return isFollowing;
-    }
-
-    public void setFollowing(boolean following) {
-        isFollowing = following;
-    }
 }
 

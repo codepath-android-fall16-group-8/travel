@@ -2,11 +2,9 @@ package com.codepath.travel.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.view.WindowManager;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.UsersAdapter;
-import com.codepath.travel.models.User;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -23,8 +20,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static com.parse.ParseUser.getCurrentUser;
 
 /**
  * Created by aditikakadebansal on 11/18/16.
@@ -61,7 +56,7 @@ public class SearchUserFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         mUsers = new ArrayList<>();
         mFollowingList = new ArrayList<>();
-        mUsersAdapter = new UsersAdapter(getContext(), mUsers, mFollowingList, true);
+        mUsersAdapter = new UsersAdapter(getContext(), mUsers);
         Bundle args = getArguments();
         mUserId = args.getString(USER_ID_ARG);
     }
@@ -95,26 +90,26 @@ public class SearchUserFragment extends DialogFragment {
     }
 
     public void populateUsersForSearchedName(String name) {
-        mUsers.clear();
-        User.queryUsers(name, (parseUsers, e) -> {
-            if (e == null) {
-                for(ParseUser parseUser : parseUsers) {
-                    mUsers.add(parseUser);
-                }
-                mUsersAdapter.notifyDataSetChanged();
-            } else {
-                Log.d(TAG, String.format("Failed to populate all users: %s", e.getMessage()));
-            }
-        });
-        mFollowingList.clear();
-        User.queryFollowing(ParseUser.getCurrentUser(),(users, e) -> {
-            if (e == null) {
-                mFollowingList.addAll(users);
-                mUsersAdapter.notifyDataSetChanged();
-            } else {
-                Log.d(TAG, String.format("Failed to populate all following users: %s", e.getMessage()));
-            }
-        });
+//        mUsers.clear();
+//        User.queryUsers(name, (parseUsers, e) -> {
+//            if (e == null) {
+//                for(ParseUser parseUser : parseUsers) {
+//                    mUsers.add(parseUser);
+//                }
+//                mUsersAdapter.notifyDataSetChanged();
+//            } else {
+//                Log.d(TAG, String.format("Failed to populate all users: %s", e.getMessage()));
+//            }
+//        });
+//        mFollowingList.clear();
+//        User.queryFollowing(ParseUser.getCurrentUser(),(users, e) -> {
+//            if (e == null) {
+//                mFollowingList.addAll(users);
+//                mUsersAdapter.notifyDataSetChanged();
+//            } else {
+//                Log.d(TAG, String.format("Failed to populate all following users: %s", e.getMessage()));
+//            }
+//        });
 
     }
 
