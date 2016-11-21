@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
@@ -15,6 +17,8 @@ import com.codepath.travel.fragments.pickers.ImagePickerFragment;
 import com.codepath.travel.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -37,10 +41,12 @@ public class ProfileViewActivity
   @BindView(R.id.tvProfileUserName) TextView tvProfileUserName;
   @BindView(R.id.tabLayout) TabLayout tabLayout;
   @BindView(R.id.tabViewPager) ViewPager tabViewPager;
+  @BindView(R.id.ivFollowUser) ImageView ivFollowUser;
+  @BindView(R.id.tvFollowersCount) TextView tvFollowersCount;
+  @BindView(R.id.tvFollowingCount) TextView tvFollowingCount;
 
   // member variables
   private ParseUser mUser;
-  private ProfilePagerAdapter mProfilePagerAdapter;
 
   @Override
   public void onCreate(Bundle savedInstance) {
@@ -121,6 +127,7 @@ public class ProfileViewActivity
 
   private void initializeViews(ParseUser user) {
     tvProfileUserName.setText(user.getUsername());
+
     setActionBarTitle(user.getUsername());
 
     tabViewPager.setAdapter(
@@ -131,6 +138,40 @@ public class ProfileViewActivity
       )
     );
     tabLayout.setupWithViewPager(tabViewPager);
+
+    initFollowers(user);
+    initFollowing(user);
+
+    tvFollowersCount.setOnClickListener((View v) -> {
+      Intent showFollowers = new Intent(ProfileViewActivity.this, FollowActivity.class);
+      showFollowers.putExtra(FollowActivity.SHOW_FOLLOWERS, true);
+      showFollowers.putExtra(FollowActivity.USER_ID, user.getObjectId());
+      startActivity(showFollowers);
+    });
+
+    tvFollowingCount.setOnClickListener((View v) -> {
+      Intent showFollowers = new Intent(ProfileViewActivity.this, FollowActivity.class);
+      showFollowers.putExtra(FollowActivity.SHOW_FOLLOWERS, false);
+      showFollowers.putExtra(FollowActivity.USER_ID, user.getObjectId());
+      startActivity(showFollowers);
+    });
+
+    // user can't follow himself
+    if (ParseUser.getCurrentUser().getObjectId().equals(user.getObjectId())) {
+      return;
+    }
+
+    ivFollowUser.setVisibility(View.VISIBLE);
+
+    // make query to check following relation
+    User.queryIsFollowing(ParseUser.getCurrentUser(), user, (List<ParseUser> objects, ParseException e) -> {
+      // successfull query with size > 0 indicates we have a relation
+      if (e == null && objects.size() > 0) {
+        setFollowRelationImageResource(ivFollowUser, user, R.drawable.ic_person_friend);
+        return;
+      }
+      setFollowRelationImageResource(ivFollowUser, user, R.drawable.ic_person_add);
+    });
   }
 
    private void initializeAllFragments(ParseUser user) {
@@ -138,13 +179,13 @@ public class ProfileViewActivity
 
     fragmentTransaction.replace(
       R.id.flCoverPicContainer,
-      ImagePickerFragment.newInstance(User.getCoverPicUrl(user)),
+      ImagePickerFragment.newInstance(User.getCoverPicUrl(user), user.getObjectId()),
       COVER_PIC
     );
 
      fragmentTransaction.replace(
       R.id.flUserPicContainer,
-      ImagePickerFragment.newInstance(User.getProfilePicUrl(user)),
+      ImagePickerFragment.newInstance(User.getProfilePicUrl(user), user.getObjectId()),
       PROFILE_PIC
      );
 
@@ -153,5 +194,57 @@ public class ProfileViewActivity
 
   private boolean getIsValidUser(String userID) {
     return userID.trim().length() > 0 && (userID != null);
+  }
+
+  private void initFollowers(ParseUser user) {
+    User.queryAllFollowers(user, (List<ParseUser> followers, ParseException e) -> {
+      if (e == null) {
+        tvFollowersCount.setText(followers.size()+"");
+      }
+    });
+  }
+
+  private void initFollowing(ParseUser user) {
+    User.queryAllFollowing(user, (List<ParseUser> following, ParseException e) -> {
+      if (e == null) {
+        tvFollowingCount.setText(following.size()+"");
+      }
+    });
+
+  }
+
+  // this stuff is the same as user adapter follow
+  // fragments within a fragment does not seem like a good idea
+  // need to figure out how to share this between user adapter and profile
+  private void setFollowRelationImageResource(ImageView imageView, ParseUser user, int resource) {
+    imageView.setVisibility(View.VISIBLE);
+    imageView.setImageResource(resource);
+    if (resource == R.drawable.ic_person_friend) {
+      setUnFollowListener(imageView, user);
+      return;
+    }
+    setFollowListener(imageView, user);
+  }
+
+  private void setUnFollowListener(ImageView imageView, ParseUser otherUser) {
+    imageView.setOnClickListener((View v) -> {
+      User.unFollow(ParseUser.getCurrentUser(), otherUser, (ParseException e) -> {
+        if (e == null) {
+          setFollowRelationImageResource(imageView, otherUser, R.drawable.ic_person_add);
+          initFollowers(otherUser);
+        }
+      });
+    });
+  }
+
+  private void setFollowListener(ImageView imageView, ParseUser otherUser) {
+    imageView.setOnClickListener((View v) -> {
+      User.follow(ParseUser.getCurrentUser(), otherUser, (ParseException e) -> {
+        if (e == null) {
+          setFollowRelationImageResource(imageView, otherUser, R.drawable.ic_person_friend);
+          initFollowers(otherUser);
+        }
+      });
+    });
   }
 }

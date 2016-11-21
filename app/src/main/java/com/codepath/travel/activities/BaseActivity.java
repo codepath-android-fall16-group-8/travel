@@ -3,7 +3,6 @@ package com.codepath.travel.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.travel.R;
@@ -24,7 +23,6 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity extends AppCompatActivity {
 
   // views
-  @BindView(R.id.toolbarHolder) View toolBarHolder;
   @BindView(R.id.toolbar) Toolbar toolbar;
 
   protected void initializeCommonViews() {

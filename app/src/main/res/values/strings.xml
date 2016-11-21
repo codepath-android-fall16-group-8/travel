@@ -64,4 +64,9 @@
     <!-- Check-in -->
     <string name="checkin">Check-in</string>
     <string name="forgot_checkin">Forgot to check-in?</string>
+
+    <!-- Profile Activity Strings -->
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+
 </resources>

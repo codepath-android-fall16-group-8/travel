@@ -16,7 +16,7 @@
         android:layout_height="@dimen/profile_pic_size"
         android:layout_marginRight="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
-        android:src="@drawable/ic_photoholder" />
+        app:srcCompat="@drawable/ic_photoholder" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -31,7 +31,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_person_add"
+        app:srcCompat="@drawable/ic_person_add"
         android:layout_alignBottom="@id/ivProfilePhoto"
         android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
