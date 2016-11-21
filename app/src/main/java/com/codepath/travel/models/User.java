@@ -81,14 +81,7 @@ public final class User {
         return pUser.getRelation(FOLLOWING_RELATION_KEY);
     }
 
-    public static void queryFollowers(ParseUser pUser, FindCallback<ParseUser> callback) {
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo(FOLLOWING_RELATION_KEY, pUser);
-        query.findInBackground(callback);
-    }
-
     // TODO: figure out how to query for all tags of this user (trip/storyPlace/media)
-    // static query methods
     public static void findUsersByName(String searchTerm, FindCallback<ParseUser> callback) {
         ParseQuery<ParseUser> userQuery = ParseQuery.getQuery(ParseUser.class);
         userQuery.whereMatches(KEY_USERNAME, "^.*"+searchTerm+".*$", "i");
@@ -134,8 +127,7 @@ public final class User {
         ParseUser pCheckUser,
         FindCallback<ParseUser> callback
     ) {
-        ParseQuery followingRelationQuery =
-            getFollowingRelation(pCurrentUser).getQuery();
+        ParseQuery followingRelationQuery = getFollowingRelation(pCurrentUser).getQuery();
         followingRelationQuery.whereEqualTo("objectId", pCheckUser.getObjectId());
         followingRelationQuery.findInBackground(callback);
     }
@@ -148,5 +140,16 @@ public final class User {
     public static void unFollow(ParseUser pUser, ParseUser otherUser, SaveCallback callback) {
         getFollowingRelation(pUser).remove(otherUser);
         pUser.saveInBackground(callback);
+    }
+
+    public static void queryAllFollowers(ParseUser pUser, FindCallback<ParseUser> callback) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo(FOLLOWING_RELATION_KEY, pUser);
+        query.findInBackground(callback);
+    }
+
+    public static void queryAllFollowing(ParseUser pUser, FindCallback<ParseUser> callback) {
+        ParseQuery followingRelationQuery = getFollowingRelation(pUser).getQuery();
+        followingRelationQuery.findInBackground(callback);
     }
 }

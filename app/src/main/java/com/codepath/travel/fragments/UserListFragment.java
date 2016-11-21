@@ -13,6 +13,7 @@ import com.codepath.travel.adapters.UsersAdapter;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,10 +37,8 @@ public class UserListFragment extends Fragment {
   // member variables
   private UsersAdapter mUsersAdapter;
   private ArrayList<ParseUser> mUsers;
-  private ArrayList<ParseUser> mFollowingUsers;
 
   public static UserListFragment newInstance() {
-    Bundle args = new Bundle();
     return new UserListFragment();
   }
 
@@ -47,7 +46,6 @@ public class UserListFragment extends Fragment {
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     mUsers = new ArrayList<>();
-    mFollowingUsers = new ArrayList<>();
     mUsersAdapter = new UsersAdapter(getActivity(), mUsers);
   }
 
@@ -69,7 +67,7 @@ public class UserListFragment extends Fragment {
     rvUsers.setAdapter(mUsersAdapter);
   }
 
-  public void populateUsers(ArrayList<ParseUser> parseUsers) {
+  public void populateUsers(List<ParseUser> parseUsers) {
     mUsers.clear();
     mUsers.addAll(parseUsers);
     mUsersAdapter.notifyDataSetChanged();

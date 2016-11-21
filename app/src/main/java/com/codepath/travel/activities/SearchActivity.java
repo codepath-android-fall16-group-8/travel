@@ -17,7 +17,6 @@ import com.codepath.travel.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,7 +58,6 @@ public class SearchActivity extends BaseActivity {
         tvNoUsersFound.setVisibility(View.GONE);
         User.findUsersByName(query, (List<ParseUser> objects, ParseException e) -> {
           pbSearching.setVisibility(View.GONE);
-          ArrayList<ParseUser> results = new ArrayList<>();
           if (e != null) {
             Log.d("Error ", e.toString());
             return;
@@ -67,8 +65,7 @@ public class SearchActivity extends BaseActivity {
           if (objects.size() == 0) {
             tvNoUsersFound.setVisibility(View.VISIBLE);
           }
-          results.addAll(objects);
-          ((UserListFragment)getSupportFragmentManager().findFragmentByTag(UserListFragment.TAG)).populateUsers(results);
+          ((UserListFragment)getSupportFragmentManager().findFragmentByTag(UserListFragment.TAG)).populateUsers(objects);
         });
         return false;
       }
