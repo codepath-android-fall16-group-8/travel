@@ -17,6 +17,7 @@ import com.codepath.travel.adapters.TripsAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.models.Trip;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +60,7 @@ public class TripListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTrips = new ArrayList<>();
+
         mTripsAdapter = new TripsAdapter(getContext(), mTrips, fetchUser);
         Bundle args = getArguments();
         mUserId = args.getString(USER_ID_ARG);

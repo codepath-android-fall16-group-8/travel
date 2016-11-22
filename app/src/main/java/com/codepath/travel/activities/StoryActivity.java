@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,7 +34,6 @@ import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.models.Media;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -45,7 +45,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -76,6 +75,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
     // member variables
@@ -114,6 +114,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 setupTripDatesFragment();
                 setUpRecyclerView();
                 getPlacesInTrip();
+                setupSharedCheckbox();
             } else {
                 Log.d(TAG, String.format("Failed to get trip for id %s", mTrip));
             }
@@ -127,6 +128,15 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         ft.replace(R.id.flContainer,
                 TripDatesFragment.newInstance(mTrip.getStartDate(), mTrip.getEndDate()));
         ft.commit();
+    }
+
+    private void setupSharedCheckbox() {
+        cbShare.setChecked(mTrip.isShared());
+        cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Log.d(TAG, String.format("Sharing: %s", isChecked));
+            mTrip.setShared(isChecked);
+            mTrip.saveInBackground();
+        });
     }
 
     private void setUpRecyclerView() {

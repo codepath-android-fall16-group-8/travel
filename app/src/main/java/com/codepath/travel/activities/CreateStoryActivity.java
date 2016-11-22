@@ -99,9 +99,17 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     }
 
     private void setUpTrip() {
+        // when a user is logged in and leaves and resumes the app, the ACL keys are missing so we reset them here...
         ParseUser currentUser = ParseUser.getCurrentUser();
-        currentUser.setACL(new ParseACL(currentUser));
-        currentUser.saveInBackground();
+        try {
+            currentUser.getACL();
+        } catch (RuntimeException e) {
+            Log.w(TAG, "Resetting ACL for user");
+            ParseACL acl = new ParseACL(currentUser);
+            acl.setPublicReadAccess(true);
+            currentUser.setACL(acl);
+            currentUser.saveInBackground();
+        }
         mNewTrip = new Trip(currentUser, mDestination);
         mNewTrip.saveInBackground(e -> {
             if (e == null) {

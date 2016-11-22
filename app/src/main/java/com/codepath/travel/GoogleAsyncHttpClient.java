@@ -1,5 +1,7 @@
 package com.codepath.travel;
 
+import android.text.TextUtils;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -21,8 +23,8 @@ public class GoogleAsyncHttpClient {
     }
 
     public static String getPlacePhotoUrl(String reference) {
-        if (reference.contains("http")) {
-            // this is not a google photo reference
+        if (reference == null || TextUtils.isEmpty(reference) || reference.contains("http")) {
+            // null, empty or not a google photo reference
             return reference;
         } else {
             return GoogleAsyncHttpClient.PLACE_PHOTO_URL

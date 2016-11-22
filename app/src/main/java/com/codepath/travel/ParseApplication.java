@@ -9,6 +9,7 @@ import com.codepath.travel.models.Tag;
 import com.codepath.travel.models.Trip;
 import com.codepath.travel.models.User;
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -22,6 +23,8 @@ public class ParseApplication extends Application {
 
     private static final String APP_ID = "traveltrails";
     private static final String SERVER_URL = "http://traveltrails.herokuapp.com/parse";
+
+
 
     @Override
     public void onCreate() {
@@ -45,5 +48,10 @@ public class ParseApplication extends Application {
 
         // ParseFacebookUtils should initialize the Facebook SDK for you
         ParseFacebookUtils.initialize(this);
+
+        // default ACL settings
+        ParseACL defaultACL = new ParseACL();
+        defaultACL.setPublicReadAccess(true);
+        ParseACL.setDefaultACL(defaultACL, true);
     }
 }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.codepath.travel.fragments.CurrentTripListFragment;
 import com.codepath.travel.fragments.PastTripListFragment;
 import com.codepath.travel.fragments.PlannedTripListFragment;
 import com.codepath.travel.fragments.TripListFragment;
@@ -29,7 +30,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
   @Override
   public Fragment getItem(int position) {
     if (position == 0) {
-      return TripListFragment.newInstance(mUserID, false);
+      return CurrentTripListFragment.newInstance(mUserID, false);
     } else if (position == 1) {
       return PastTripListFragment.newInstance(mUserID, false);
     } else {

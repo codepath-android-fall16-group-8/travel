@@ -1,8 +1,8 @@
 package com.codepath.travel.adapters;
 
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,7 +20,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivTripCoverPhoto) ImageView ivCoverPhoto;
     @BindView(R.id.tvTripTitle) TextView tvTripTitle;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.btnShare) ImageButton btnShare;
+    @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
 
     public TripViewHolder(View itemView) {

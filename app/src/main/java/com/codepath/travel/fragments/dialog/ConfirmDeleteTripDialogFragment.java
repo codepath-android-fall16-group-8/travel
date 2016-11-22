@@ -32,7 +32,7 @@ public class ConfirmDeleteTripDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.confirm_delete)
-                .setPositiveButton(R.string.delete, (dialog, id) -> {
+                .setPositiveButton(R.string.delete_trip, (dialog, id) -> {
                     listener.onDeleteTrip();
                     dismiss();
                 })
