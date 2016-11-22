@@ -3,10 +3,10 @@ package com.codepath.travel.models;
 import com.google.android.gms.location.places.Place;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.ParseACL;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import static com.codepath.travel.models.ParseModelConstants.*;
@@ -31,12 +31,14 @@ public class Trip extends ParseObject {
     // for use until we use API places
     public Trip(ParseUser user, String title) {
         super();
+        setDefaultACL(user);
         setUser(user);
         setTitle(title);
     }
 
     public Trip(ParseUser user, String title, Place destination) {
         super();
+        setDefaultACL(user);
         setUser(user);
         setTitle(title);
         setDestinationPlaceId(destination.getId());
@@ -94,27 +96,60 @@ public class Trip extends ParseObject {
         put(END_DATE_KEY, endDate);
     }
 
-    public ParseRelation<ParseUser> getSharedRelation() {
-        return getRelation(SHARED_RELATION_KEY);
+    private void setDefaultACL(ParseUser user) {
+        ParseACL defaultACL = new ParseACL(user);
+        defaultACL.setPublicReadAccess(true);
+        setACL(defaultACL);
+    }
+
+    private void setACLPrivateRead() {
+        Log.d(TAG, String.format("Setting private read: %s", getTitle()));
+        ParseACL acl = getACL();
+        if (acl == null) {
+            acl = new ParseACL(getUser());
+        }
+        acl.setPublicReadAccess(false);
+        setACL(acl);
+    }
+
+    private void setACLPublicRead() {
+        Log.d(TAG, String.format("Setting public read: %s", getTitle()));
+        ParseACL acl = getACL();
+        acl.setPublicReadAccess(true);
+        setACL(acl);
+    }
+
+    public boolean isShared() {
+        ParseACL acl = getACL();
+        if (acl == null) { // for existing data, with no ACL set
+            // default ACL to private read
+            setACLPrivateRead();
+            saveInBackground();
+            return true;
+        } else {
+            return getACL().getPublicReadAccess();
+        }
+    }
+
+    public void setShared(boolean share) {
+        if (share) {
+            setACLPublicRead();
+        } else {
+            setACLPrivateRead();
+        }
     }
 
     public void shareWith(ParseUser pUser) {
-        getSharedRelation().add(pUser);
-        saveInBackground();
+        // TODO:
     }
 
     public void unShareWith(ParseUser pUser) {
-        getSharedRelation().remove(pUser);
-        saveInBackground();
+        // TODO:
     }
 
-//    public void queryFavorites(FindCallback<ParseUser> callback) {
-//        getSharedRelation().getQuery().findInBackground(callback);
+//    public void queryFavorites(FindCallback<User> callback) {
+//        getFavoritesRelation().getQuery().findInBackground(callback);
 //    }
-
-    public String toString() {
-        return getTitle();
-    }
 
     // TODO: figure out how to query for all tags inside this trip (including storyPlace and media tags)
 
@@ -137,15 +172,20 @@ public class Trip extends ParseObject {
      *
      * @param userId the user object id
      * @param includeUser flag to include the user object in the result
+     * @param filterShared flag to filter for shared stories only
      * @param callback the callback function to call
      */
-    public static void getAllTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
+    public static void getAllTripsForUser(String userId, boolean includeUser,
+            FindCallback<Trip> callback) {
         ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
         tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
         tripQuery.addDescendingOrder(START_DATE_KEY);
         if (includeUser) {
             tripQuery.include(USER_KEY);
         }
+//        if (filterShared) {
+//            tripQuery.whereEqualTo(SHARE_KEY, true);
+//        }
         tripQuery.findInBackground(callback);
     }
 
@@ -201,7 +241,7 @@ public class Trip extends ParseObject {
      * @param includeUser flag to include the user object in the result
      * @param callback the callback function to call
      */
-    public static void getCurrentTripForUser(String userId, boolean includeUser, GetCallback<Trip> callback) {
+    public static void getCurrentTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
         ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
         tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
         Date today = new Date();
@@ -210,7 +250,7 @@ public class Trip extends ParseObject {
         if (includeUser) {
             tripQuery.include(USER_KEY);
         }
-        tripQuery.getFirstInBackground(callback);
+        tripQuery.findInBackground(callback);
     }
 
     /**

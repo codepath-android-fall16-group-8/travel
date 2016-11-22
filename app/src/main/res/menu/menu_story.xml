@@ -19,8 +19,8 @@
 
     <item
         android:id="@+id/miDelete"
-        android:orderInCategory="30"
         android:title="@string/delete_trip"
         android:icon="@android:drawable/ic_menu_delete"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
 </menu>

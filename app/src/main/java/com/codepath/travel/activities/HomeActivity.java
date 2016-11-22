@@ -18,12 +18,14 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.HomePagerAdapter;
 import com.codepath.travel.fragments.NewTripFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.ImageUtils;
+import com.codepath.travel.models.Trip;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
@@ -38,6 +40,7 @@ import org.json.JSONException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.codepath.travel.R.string.share;
 import static com.codepath.travel.models.User.getCoverPicUrl;
 import static com.codepath.travel.models.User.getProfilePicUrl;
 import static com.codepath.travel.models.User.setCoverPicUrl;
@@ -220,6 +223,23 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @Override
     public void onTripClick(String tripId, String tripTitle) {
         launchStoryActivity(tripId, tripTitle);
+    }
+
+    @Override
+    public void onShareClick(Trip trip, boolean share) {
+        boolean isShared = trip.isShared();
+        if (!isShared && share) {
+            trip.setShared(true);
+        } else if (isShared && !share) {
+            trip.setShared(false);
+        }
+        trip.saveInBackground();
+    }
+
+    @Override
+    public void onProfileClick(ParseUser pUser) {
+        Log.d(TAG, String.format("onProfileClick: %s", pUser.getUsername()));
+        // TODO: navigate to provile view
     }
 
     /* Navigation Drawer */

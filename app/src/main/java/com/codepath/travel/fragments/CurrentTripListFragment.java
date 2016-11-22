@@ -5,12 +5,12 @@ import android.os.Bundle;
 import com.codepath.travel.models.Trip;
 
 /**
- * Fragment to display a recycler view of past trips.
+ * Fragment to display a recycler view of current trips.
  */
-public class PastTripListFragment extends TripListFragment {
+public class CurrentTripListFragment extends TripListFragment {
 
-    public static PastTripListFragment newInstance(String userId, boolean fetchUser) {
-        PastTripListFragment fragment = new PastTripListFragment();
+    public static CurrentTripListFragment newInstance(String userId, boolean fetchUser) {
+        CurrentTripListFragment fragment = new CurrentTripListFragment();
         Bundle args = new Bundle();
         args.putString(USER_ID_ARG, userId);
         args.putBoolean(FETCH_USER_ARG, fetchUser);
@@ -24,7 +24,7 @@ public class PastTripListFragment extends TripListFragment {
             return;
         }
         mTrips.clear();
-        Trip.getPastTripsForUser(mUserId, fetchUser, (trips, e) -> {
+        Trip.getCurrentTripsForUser(mUserId, fetchUser, (trips, e) -> {
             resetTripAdapter(trips, e);
         });
     }

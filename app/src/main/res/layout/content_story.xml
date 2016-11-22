@@ -11,9 +11,25 @@
 
     <FrameLayout
         android:id="@+id/flContainer"
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content">
     </FrameLayout>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cbShare"
+        android:button="@drawable/checkbox_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/tvShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/cbShare"
+        android:layout_toStartOf="@id/cbShare"
+        android:text="@string/share_label" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvStoryPlaces"
@@ -21,5 +37,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
-
 </RelativeLayout>

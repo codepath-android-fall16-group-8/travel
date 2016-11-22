@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.codepath.travel.models.Trip;
 
 /**
- * Fragment to display a horizontal scrolling recycler view of planned trips.
+ * Fragment to display a recycler view of planned trips.
  */
 public class PlannedTripListFragment extends TripListFragment {
     private static final String TAG = PlannedTripListFragment.class.getSimpleName();

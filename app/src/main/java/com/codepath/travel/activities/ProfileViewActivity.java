@@ -8,12 +8,14 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.ProfilePagerAdapter;
 import com.codepath.travel.callbacks.ParseQueryCallback;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.pickers.ImagePickerFragment;
+import com.codepath.travel.models.Trip;
 import com.codepath.travel.models.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -29,6 +31,8 @@ import butterknife.BindView;
 public class ProfileViewActivity
   extends BaseActivity
   implements ImagePickerFragment.ImagePickerFragmentListener, TripClickListener {
+
+  private static final String TAG = ProfileViewActivity.class.getSimpleName();
 
   // Intent variables
   public static final String USER_ID = "user_id";
@@ -121,6 +125,22 @@ public class ProfileViewActivity
     openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, tripTitle);
     openStory.putExtra(StoryActivity.TRIP_ID_ARG, tripId);
     startActivity(openStory);
+  }
+
+  @Override
+  public void onShareClick(Trip trip, boolean share) {
+    boolean isShared = trip.isShared();
+    if (!isShared && share) {
+      trip.setShared(true);
+    } else if (isShared && !share) {
+      trip.setShared(false);
+    }
+    trip.saveInBackground();
+  }
+
+  @Override
+  public void onProfileClick(ParseUser pUser) {
+    Toast.makeText(this, "onProfileClick", Toast.LENGTH_SHORT).show();
   }
 
   // all private methods below

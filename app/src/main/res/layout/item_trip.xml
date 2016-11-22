@@ -54,14 +54,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <ImageButton
-            android:id="@+id/btnShare"
-            android:src="@android:drawable/ic_menu_share"
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/cbShare"
+            android:button="@drawable/checkbox_share"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:layout_margin="10dp"
             android:layout_alignRight="@+id/ivTripCoverPhoto"
-            android:layout_alignBottom="@+id/ivTripCoverPhoto"
-            android:background="@color/transparent"/>
+            android:layout_alignBottom="@+id/ivTripCoverPhoto" />
     </RelativeLayout>
 </RelativeLayout>
