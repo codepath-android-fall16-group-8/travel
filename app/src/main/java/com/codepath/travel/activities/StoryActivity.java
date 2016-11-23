@@ -21,6 +21,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.travel.R;
@@ -131,12 +132,18 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     private void setupSharedCheckbox() {
-        cbShare.setChecked(mTrip.isShared());
-        cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Log.d(TAG, String.format("Sharing: %s", isChecked));
-            mTrip.setShared(isChecked);
-            mTrip.saveInBackground();
-        });
+        // only display for logged in user
+        if (isOwner) {
+            cbShare.setVisibility(View.VISIBLE);
+            cbShare.setChecked(mTrip.isShared());
+            cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Log.d(TAG, String.format("Sharing: %s", isChecked));
+                mTrip.setShared(isChecked);
+                mTrip.saveInBackground();
+            });
+        } else {
+            cbShare.setVisibility(View.GONE);
+        }
     }
 
     private void setUpRecyclerView() {
