@@ -96,29 +96,6 @@ public class Trip extends ParseObject {
         put(END_DATE_KEY, endDate);
     }
 
-    private void setDefaultACL(ParseUser user) {
-        ParseACL defaultACL = new ParseACL(user);
-        defaultACL.setPublicReadAccess(true);
-        setACL(defaultACL);
-    }
-
-    private void setACLPrivateRead() {
-        Log.d(TAG, String.format("Setting private read: %s", getTitle()));
-        ParseACL acl = getACL();
-        if (acl == null) {
-            acl = new ParseACL(getUser());
-        }
-        acl.setPublicReadAccess(false);
-        setACL(acl);
-    }
-
-    private void setACLPublicRead() {
-        Log.d(TAG, String.format("Setting public read: %s", getTitle()));
-        ParseACL acl = getACL();
-        acl.setPublicReadAccess(true);
-        setACL(acl);
-    }
-
     public boolean isShared() {
         ParseACL acl = getACL();
         if (acl == null) { // for existing data, with no ACL set
@@ -139,20 +116,38 @@ public class Trip extends ParseObject {
         }
     }
 
-    public void shareWith(ParseUser pUser) {
-        // TODO:
+    // TODO: share with specific users
+    // TODO: favorites
+    // TODO: tags
+
+    /* PRIVATE METHODS */
+    private void setDefaultACL(ParseUser user) {
+        ParseACL defaultACL = new ParseACL(user); // owner r/w
+        defaultACL.setPublicReadAccess(false); // not readable publicly
+        setACL(defaultACL);
     }
 
-    public void unShareWith(ParseUser pUser) {
-        // TODO:
+    private void setACLPrivateRead() {
+        Log.d(TAG, String.format("Setting private read: %s", getTitle()));
+        ParseACL acl = getACL();
+        if (acl == null) {
+            acl = new ParseACL(getUser());
+        }
+        acl.setPublicReadAccess(false);
+        setACL(acl);
     }
 
-//    public void queryFavorites(FindCallback<User> callback) {
-//        getFavoritesRelation().getQuery().findInBackground(callback);
-//    }
+    private void setACLPublicRead() {
+        Log.d(TAG, String.format("Setting public read: %s", getTitle()));
+        ParseACL acl = getACL();
+        if (acl == null) {
+            acl = new ParseACL(getUser());
+        }
+        acl.setPublicReadAccess(true);
+        setACL(acl);
+    }
 
-    // TODO: figure out how to query for all tags inside this trip (including storyPlace and media tags)
-
+    /* STATIC METHODS */
     /**
      * Get the Trip object for the given object id
      *
@@ -172,7 +167,6 @@ public class Trip extends ParseObject {
      *
      * @param userId the user object id
      * @param includeUser flag to include the user object in the result
-     * @param filterShared flag to filter for shared stories only
      * @param callback the callback function to call
      */
     public static void getAllTripsForUser(String userId, boolean includeUser,
@@ -183,9 +177,6 @@ public class Trip extends ParseObject {
         if (includeUser) {
             tripQuery.include(USER_KEY);
         }
-//        if (filterShared) {
-//            tripQuery.whereEqualTo(SHARE_KEY, true);
-//        }
         tripQuery.findInBackground(callback);
     }
 
