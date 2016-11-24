@@ -422,7 +422,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         storyPlace.setCheckinTime(date.getTime());
         storyPlace.saveInBackground(e -> {
             if (e == null) {
-                mAdapter.notifyItemChanged(mCheckinIndex); // TODO: look into animate reorder
+                mAdapter.notifyItemChanged(mCheckinIndex);
             }
         });
     }
