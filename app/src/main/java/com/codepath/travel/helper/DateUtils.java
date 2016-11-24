@@ -1,17 +1,22 @@
 package com.codepath.travel.helper;
 
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.FORMAT_ABBREV_MONTH;
+import static android.text.format.DateUtils.WEEK_IN_MILLIS;
 
 import android.content.Context;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Helper methods for dealing with dates.
  */
 public final class DateUtils {
+    private static final String DAY_FORMAT = "%d day%s";
+    private static final String WEEK_FORMAT = "%d week%s";
+
     private DateUtils() {}
 
     /**
@@ -74,6 +79,25 @@ public final class DateUtils {
     public static Calendar todayAtStartOfDay() {
         Calendar today = Calendar.getInstance();
         return dateAtStartOfDay(today);
+    }
+
+    /**
+     * Returns the given millis duration in terms of weeks or days,
+     * whichever is largest. Not i18n friendly.
+     *
+     * @param millis the duration in millis
+     * @return string formatted duration
+     */
+    public static String getDuration(long millis) {
+        if (millis >= WEEK_IN_MILLIS) {
+            final int weeks = Math.round(millis / WEEK_IN_MILLIS);
+            String plural = weeks > 1 ? "s" : "";
+            return String.format(Locale.ENGLISH, WEEK_FORMAT, weeks, plural);
+        } else {
+            final int days = Math.round(millis / DAY_IN_MILLIS);
+            String plural = days > 1 ? "s" : "";
+            return String.format(Locale.ENGLISH, DAY_FORMAT, days, plural);
+        }
     }
 
     private static Calendar dateAtStartOfDay(Calendar calendar) {

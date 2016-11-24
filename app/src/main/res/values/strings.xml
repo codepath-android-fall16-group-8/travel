@@ -59,6 +59,8 @@
 
     <!-- Trip Date Selection -->
     <string name="hint_trip_dates">Set Trip Dates</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
 
     <!-- Sharing -->
     <string name="share_trip">Share Trip</string>
@@ -69,6 +71,7 @@
     <!-- Check-in -->
     <string name="checkin">Check-in</string>
     <string name="forgot_checkin">Forgot to check-in?</string>
+    <string name="checkin_date">Check-in Date</string>
 
     <!-- Profile Activity Strings -->
     <string name="followers">Followers</string>

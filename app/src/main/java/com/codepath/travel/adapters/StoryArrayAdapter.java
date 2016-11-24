@@ -57,7 +57,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         void cameraOnClick(int position);
         void galleryOnClick(int position);
         void noteOnClick(int position);
-        void checkinOnClick(int position);
+        void checkinOnClick(int position, Date checkinDate);
         void storyPlaceMoved(int fromPosition, int toPosition);
         void storyPlaceDismissed(int position);
         void mediaOnClick(Media media, int mPos, int storyPos);
@@ -247,7 +247,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             tvCheckin.setVisibility(View.VISIBLE);
             tvCheckin.setOnClickListener(v -> {
                 if (!tvCheckin.getText().toString().equals(defaultText)) {
-                    listener.checkinOnClick(getRealPosition(storyPlace));
+                    listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
                 }
             });
         }
@@ -256,7 +256,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             showCheckin(storyPlace, R.drawable.checkbox_checkin_forgot, forgot_checkin);
             cbCheckin.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
-                    listener.checkinOnClick(getRealPosition(storyPlace));
+                    listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
                 } else {
                     tvCheckin.setText(forgot_checkin);
                 }

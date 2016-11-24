@@ -82,9 +82,4 @@ dependencies {
     // Run time permissions disptacher
     compile 'com.github.hotchemi:permissionsdispatcher:2.2.0'
     apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
-
-    // Material DatePickers
-    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
-    compile 'com.borax12.materialdaterangepicker:library:1.9' // date range picker
-
 }

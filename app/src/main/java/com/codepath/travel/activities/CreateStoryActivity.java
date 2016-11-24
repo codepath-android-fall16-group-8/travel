@@ -1,8 +1,8 @@
 package com.codepath.travel.activities;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,14 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.travel.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
-import com.codepath.travel.fragments.TripDatesFragment;
+import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
+import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
+import com.codepath.travel.listeners.DateRangePickerListener;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.Trip;
@@ -42,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -49,7 +53,7 @@ import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener,
-        TripDatesFragment.TripDatesListener {
+        DateRangePickerListener {
 
     //Class variables
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
@@ -61,9 +65,11 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
 
     // strings
     @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
+    @BindString(R.string.hint_trip_dates) String hintTripDates;
 
     // Views
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tvTripDates) TextView tvTripDates;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
     @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
     @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
@@ -113,21 +119,17 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         mNewTrip = new Trip(currentUser, mDestination);
         mNewTrip.saveInBackground(e -> {
             if (e == null) {
-                setupTripDatesFragment();
+                tvTripDates.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchDateRangePickerDialog(mNewTrip.getStartDate(), mNewTrip.getEndDate());
+                    }
+                });
+                addSuggestionPlacesToTrip();
             } else {
                 Log.d(TAG, String.format("Failed to setup trip: %s", e.getMessage()));
             }
         });
-    }
-
-    private void setupTripDatesFragment() {
-        // note that this is not using support v4 because the datepicker library doesn't support it
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.flContainer,
-                TripDatesFragment.newInstance(mNewTrip.getStartDate(), mNewTrip.getEndDate()));
-        ft.commit();
-        mNewTrip.saveInBackground();
-        addSuggestionPlacesToTrip();
     }
 
     private void addSuggestionPlacesToTrip() {
@@ -259,6 +261,12 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         }
     }
 
+    private void launchDateRangePickerDialog(Date startDate, Date endDate) {
+        FragmentManager fm = getSupportFragmentManager();
+        DateRangePickerFragment drpf = DateRangePickerFragment.newInstance(startDate, endDate);
+        drpf.show(fm, "DateRangePickerDialog");
+    }
+
     /* Listeners */
     @Override
     public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
@@ -266,11 +274,12 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     }
 
     @Override
-    public void tripDatesOnSet(Calendar startDate, Calendar endDate) {
+    public void onDateRangeSet(Calendar startDate, Calendar endDate) {
         Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
         mNewTrip.setStartDate(startDate.getTime());
         mNewTrip.setEndDate(endDate.getTime());
         mNewTrip.saveInBackground();
+        tvTripDates.setText(DateUtils.formatDateRange(this, startDate.getTime(), endDate.getTime()));
     }
 
     /* Toolbar */

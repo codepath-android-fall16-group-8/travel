@@ -9,11 +9,14 @@
     tools:context=".activities.StoryActivity"
     tools:showIn="@layout/activity_story">
 
-    <FrameLayout
-        android:id="@+id/flContainer"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content">
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvTripDates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_trip_dates"
+        android:drawableLeft="@drawable/ic_calendar"
+        android:drawableStart="@drawable/ic_calendar"
+        android:gravity="center_vertical"/>
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/cbShare"
@@ -27,13 +30,16 @@
         android:id="@+id/tvShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/cbShare"
-        android:layout_toStartOf="@id/cbShare"
-        android:text="@string/share_label" />
+        android:layout_toLeftOf="@+id/cbShare"
+        android:layout_toStartOf="@+id/cbShare"
+        android:layout_alignTop="@+id/cbShare"
+        android:layout_alignBottom="@+id/cbShare"
+        android:text="@string/share_label"
+        android:gravity="center_vertical" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvStoryPlaces"
-        android:layout_below="@+id/flContainer"
+        android:layout_below="@+id/tvTripDates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical" />
