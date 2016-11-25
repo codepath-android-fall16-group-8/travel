@@ -9,15 +9,18 @@
     tools:context=".activities.CreateStoryActivity"
     tools:showIn="@layout/activity_create_story">
 
-    <FrameLayout
-        android:id="@+id/flContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
+    <TextView
+        android:id="@+id/tvTripDates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hint_trip_dates"
+        android:drawableLeft="@drawable/ic_calendar"
+        android:drawableStart="@drawable/ic_calendar"
+        android:gravity="center_vertical"/>
 
     <EditText
         android:id="@+id/etPlacesOfInterest"
-        android:layout_below="@+id/flContainer"
+        android:layout_below="@+id/tvTripDates"
         android:hint="@string/hint_places_of_interest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

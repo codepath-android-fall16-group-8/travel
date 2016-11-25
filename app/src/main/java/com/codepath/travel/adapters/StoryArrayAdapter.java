@@ -57,7 +57,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         void cameraOnClick(int position);
         void galleryOnClick(int position);
         void noteOnClick(int position);
-        void checkinOnClick(int position);
+        void checkinOnClick(int position, Date checkinDate);
         void storyPlaceMoved(int fromPosition, int toPosition);
         void storyPlaceDismissed(int position);
         void mediaOnClick(Media media, int mPos, int storyPos);
@@ -247,17 +247,24 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             tvCheckin.setVisibility(View.VISIBLE);
             tvCheckin.setOnClickListener(v -> {
                 if (!tvCheckin.getText().toString().equals(defaultText)) {
-                    listener.checkinOnClick(getRealPosition(storyPlace));
+                    listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
                 }
             });
         }
 
         private void showMyPastCheckin(StoryPlace storyPlace) {
             showCheckin(storyPlace, R.drawable.checkbox_checkin_forgot, forgot_checkin);
+            cbCheckin.setOnTouchListener((v, event) -> {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!cbCheckin.isChecked()) {
+                        listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
+                        return true; // this will prevent checkbox from changing state
+                    }
+                }
+                return false;
+            });
             cbCheckin.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    listener.checkinOnClick(getRealPosition(storyPlace));
-                } else {
+                if (!isChecked) {
                     tvCheckin.setText(forgot_checkin);
                 }
             });
@@ -270,11 +277,11 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                     Date checkinTime = new Date();
                     tvCheckin.setText(DateUtils.formatDate(mContext, checkinTime));
                     storyPlace.setCheckinTime(checkinTime);
-                    onItemMove(getRealPosition(storyPlace), mStoryPlaces.size() - 1); // move to bottom
+//                    onItemMove(getRealPosition(storyPlace), mStoryPlaces.size() - 1); // move to bottom
                 } else {
                     tvCheckin.setText(checkin);
                     storyPlace.remove(ParseModelConstants.CHECK_IN_TIME_KEY);
-                    onItemMove(getRealPosition(storyPlace), 0); // move to top
+//                    onItemMove(getRealPosition(storyPlace), 0); // move to top
                 }
                 storyPlace.saveInBackground();
             });

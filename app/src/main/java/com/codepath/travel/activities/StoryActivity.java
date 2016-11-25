@@ -1,10 +1,9 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.User.setCoverPicUrl;
 
 import android.Manifest;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,23 +22,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
-import com.codepath.travel.fragments.TripDatesFragment;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
+import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
+import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
+import com.codepath.travel.listeners.DatePickerListener;
+import com.codepath.travel.listeners.DateRangePickerListener;
 import com.codepath.travel.models.Media;
 import com.codepath.travel.models.StoryPlace;
 import com.codepath.travel.models.Trip;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,10 +59,10 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
         StoryArrayAdapter.StoryPlaceListener,
-        DatePickerDialog.OnDateSetListener,
         EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
-        TripDatesFragment.TripDatesListener {
+        DateRangePickerListener,
+        DatePickerListener {
 
     public final String APP_TAG = "TravelTrails";
     public static final int START_CAMERA_REQUEST_CODE = 123;
@@ -76,6 +79,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.tvTripDates) TextView tvTripDates;
     @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
@@ -111,8 +115,14 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             if (e == null) {
                 mTrip = trip;
                 isOwner = mTrip.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId());
-                datesRelation = DateUtils.todayInRange(trip.getStartDate(), trip.getEndDate());
-                setupTripDatesFragment();
+                Date start = trip.getStartDate();
+                Date end = trip.getEndDate();
+                datesRelation = DateUtils.todayInRange(start, end);
+                if (start != null && end !=null) {
+                    tvTripDates.setText(DateUtils.formatDateRange(this, start, end));
+                }
+                tvTripDates.setOnClickListener(
+                        v -> launchDateRangePickerDialog(mTrip.getStartDate(), mTrip.getEndDate()));
                 setUpRecyclerView();
                 getPlacesInTrip();
                 setupSharedCheckbox();
@@ -121,14 +131,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             }
 
         });
-    }
-
-    private void setupTripDatesFragment() {
-        // note that this is not using support v4 because the datepicker library doesn't support it
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.flContainer,
-                TripDatesFragment.newInstance(mTrip.getStartDate(), mTrip.getEndDate()));
-        ft.commit();
     }
 
     private void setupSharedCheckbox() {
@@ -238,19 +240,16 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
     }
 
-    private void launchDatePickerDialog(Date startDate, Date endDate) {
-        FragmentManager fm = getFragmentManager();
-        Calendar start = DateUtils.calendarFromDate(startDate);
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                StoryActivity.this,
-                start.get(Calendar.YEAR),
-                start.get(Calendar.MONTH),
-                start.get(Calendar.DAY_OF_MONTH)
-        );
-        dpd.setMinDate(start);
-        dpd.setMaxDate(DateUtils.calendarFromDate(endDate));
-        dpd.setOnCancelListener(dialogInterface -> mAdapter.notifyItemChanged(mCheckinIndex));
-        dpd.show(fm, "CheckinDatePickerDialog");
+    private void launchDatePickerDialog(Date date, Date minDate, Date maxDate) {
+        FragmentManager fm = getSupportFragmentManager();
+        DatePickerFragment dpf = DatePickerFragment.newInstance(date, minDate, maxDate);
+        dpf.show(fm, "DatePickerDialog");
+    }
+
+    private void launchDateRangePickerDialog(Date startDate, Date endDate) {
+        FragmentManager fm = getSupportFragmentManager();
+        DateRangePickerFragment drpf = DateRangePickerFragment.newInstance(startDate, endDate);
+        drpf.show(fm, "DateRangePickerDialog");
     }
 
     @NeedsPermission(Manifest.permission.CAMERA)
@@ -412,35 +411,29 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     @Override
-    public void tripDatesOnSet(Calendar startDate, Calendar endDate) {
-        Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
-        Trip.getTripForObjectId(mTripID, (trip, e) -> {
-            trip.setStartDate(startDate.getTime());
-            trip.setEndDate(endDate.getTime());
-            trip.saveInBackground();
-        });
-    }
-
-    @Override
-    public void checkinOnClick(int position) {
+    public void checkinOnClick(int position, Date checkinDate) {
         mCheckinIndex = position;
-        launchDatePickerDialog(mTrip.getStartDate(), mTrip.getEndDate());
+        launchDatePickerDialog(checkinDate, mTrip.getStartDate(), mTrip.getEndDate());
     }
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.YEAR, year);
-        date.set(Calendar.MONTH, monthOfYear);
-        date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
+    public void onDateSet(Calendar date) {
         StoryPlace storyPlace = mStoryPlaces.get(mCheckinIndex);
         storyPlace.setCheckinTime(date.getTime());
         storyPlace.saveInBackground(e -> {
             if (e == null) {
-                mAdapter.notifyItemChanged(mCheckinIndex); // TODO: look into animate reorder
+                mAdapter.notifyItemChanged(mCheckinIndex);
             }
         });
+    }
+
+    @Override
+    public void onDateRangeSet(Calendar startDate, Calendar endDate) {
+        String formattedDateString = formatDateRange(this, startDate.getTime(), endDate.getTime());
+        tvTripDates.setText(formattedDateString);
+        mTrip.setStartDate(startDate.getTime());
+        mTrip.setEndDate(endDate.getTime());
+        mTrip.saveInBackground();
     }
 
     /* Toolbar */

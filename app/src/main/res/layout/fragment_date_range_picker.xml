@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rlDatesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStartLabel"
+            android:text="@string/start_date" />
+
+        <TextView
+            android:layout_below="@+id/tvStartLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvStartDate"
+            tools:text="Nov 11, 2016" />
+
+        <View
+            android:id="@+id/verticalLine"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="false"
+            android:background="@color/lightGray"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/tvEndLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/verticalLine"
+            android:layout_toEndOf="@+id/verticalLine"
+            android:layout_marginLeft="@dimen/margin"
+            android:text="@string/end_date" />
+
+        <TextView
+            android:id="@+id/tvEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvEndLabel"
+            android:layout_toRightOf="@+id/verticalLine"
+            android:layout_toEndOf="@+id/verticalLine"
+            android:layout_marginLeft="@dimen/margin"
+            tools:text="Dec 11, 2016" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/viewSeparator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rlDatesContainer"
+        android:background="@color/lightGray" />
+
+    <LinearLayout
+        android:id="@+id/llDurationRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewSeparator1"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin">
+
+        <TextView
+            android:id="@+id/tvDurationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Duration:"/>
+
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="1 month"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewSeparator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/llDurationRow"
+        android:background="@color/lightGray" />
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_below="@+id/viewSeparator2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btnSave"
+        android:text="Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calendarView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:enabled="false"/>
+
+    <Button
+        android:id="@+id/btnCancel"
+        android:text="Cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calendarView"
+        android:layout_toLeftOf="@+id/btnSave"
+        android:layout_toStartOf="@+id/btnSave" />
+
+</RelativeLayout>
