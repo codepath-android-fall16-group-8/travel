@@ -78,41 +78,36 @@ public class DateRangePickerFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        calendarView.setDate(Calendar.getInstance().getTimeInMillis());
         if (startDate != null && endDate !=null) {
             tvStartDate.setText(DateUtils.formatDate(getContext(), startDate.getTime()));
             tvEndDate.setText(DateUtils.formatDate(getContext(), endDate.getTime()));
             tvDuration.setText(DateUtils.getDuration(endDate.getTimeInMillis() - startDate.getTimeInMillis()));
         }
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                    int dayOfMonth) {
-                Log.d(TAG, String.format("Selected: %d-%d-%d", year, month, dayOfMonth));
-                if (selectStart) {
-                    startDate = Calendar.getInstance();
-                    startDate.set(Calendar.YEAR, year);
-                    startDate.set(Calendar.MONTH, month);
-                    startDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    tvStartDate.setText(DateUtils.formatDate(getContext(), startDate.getTime()));
-                    tvEndDate.setText("");
-                    tvDuration.setText("");
-                    calendarView.setMinDate(startDate.getTimeInMillis());
-                    calendarView.setDate(startDate.getTimeInMillis());
-                    selectStart = false;
-                    btnSave.setEnabled(false);
-                } else {
-                    endDate = Calendar.getInstance();
-                    endDate.set(Calendar.YEAR, year);
-                    endDate.set(Calendar.MONTH, month);
-                    endDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    tvEndDate.setText(DateUtils.formatDate(getContext(), endDate.getTime()));
-                    tvDuration.setText(DateUtils.getDuration(endDate.getTimeInMillis() - startDate.getTimeInMillis()));
-                    calendarView.setMinDate(0);
-                    calendarView.setDate(endDate.getTimeInMillis());
-                    selectStart = true;
-                    btnSave.setEnabled(true);
-                }
+        calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+            Log.d(TAG, String.format("Selected: %d-%d-%d", year, month, dayOfMonth));
+            if (selectStart) {
+                startDate = DateUtils.todayAtStartOfDay();
+                startDate.set(Calendar.YEAR, year);
+                startDate.set(Calendar.MONTH, month);
+                startDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                tvStartDate.setText(DateUtils.formatDate(getContext(), startDate.getTime()));
+                tvEndDate.setText("");
+                tvDuration.setText("");
+                calendarView.setMinDate(startDate.getTimeInMillis());
+                calendarView.setDate(startDate.getTimeInMillis());
+                selectStart = false;
+                btnSave.setEnabled(false);
+            } else {
+                endDate = DateUtils.todayAtEndOfDay();
+                endDate.set(Calendar.YEAR, year);
+                endDate.set(Calendar.MONTH, month);
+                endDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                tvEndDate.setText(DateUtils.formatDate(getContext(), endDate.getTime()));
+                tvDuration.setText(DateUtils.getDuration(endDate.getTimeInMillis() - startDate.getTimeInMillis()));
+                calendarView.setMinDate(0);
+                calendarView.setDate(endDate.getTimeInMillis());
+                selectStart = true;
+                btnSave.setEnabled(true);
             }
         });
         btnSave.setOnClickListener(v -> {

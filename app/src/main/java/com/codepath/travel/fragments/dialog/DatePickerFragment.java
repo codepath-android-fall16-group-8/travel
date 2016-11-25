@@ -1,7 +1,5 @@
 package com.codepath.travel.fragments.dialog;
 
-import static com.codepath.travel.helper.DateUtils.NOW;
-import static com.codepath.travel.helper.DateUtils.todayInRange;
 import static com.codepath.travel.models.ParseModelConstants.END_DATE_KEY;
 import static com.codepath.travel.models.ParseModelConstants.START_DATE_KEY;
 
@@ -73,7 +71,7 @@ public class DatePickerFragment extends DialogFragment {
         long dateMillis = args.getLong(DATE_KEY, -1);
         long startDateMillis = args.getLong(START_DATE_KEY, -1);
         long endDateMillis = args.getLong(END_DATE_KEY, -1);
-        date = Calendar.getInstance();
+        date = DateUtils.todayAtStartOfDay();
         if (dateMillis >= 0) {
             date.setTimeInMillis(dateMillis);
         } else {
@@ -95,18 +93,14 @@ public class DatePickerFragment extends DialogFragment {
         calendarView.setDate(date.getTimeInMillis());
         calendarView.setMinDate(startDate.getTimeInMillis());
         calendarView.setMaxDate(endDate.getTimeInMillis());
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month,
-                    int dayOfMonth) {
-                Log.d(TAG, String.format("Selected: %d-%d-%d", year, month, dayOfMonth));
-                date = Calendar.getInstance();
-                date.set(Calendar.YEAR, year);
-                date.set(Calendar.MONTH, month);
-                date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                tvDate.setText(DateUtils.formatDate(getContext(), date.getTime()));
-                calendarView.setDate(date.getTimeInMillis());
-            }
+        calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+            Log.d(TAG, String.format("Selected: %d-%d-%d", year, month, dayOfMonth));
+            date = DateUtils.todayAtStartOfDay();
+            date.set(Calendar.YEAR, year);
+            date.set(Calendar.MONTH, month);
+            date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            tvDate.setText(DateUtils.formatDate(getContext(), date.getTime()));
+            calendarView.setDate(date.getTimeInMillis());
         });
         btnSave.setOnClickListener(v -> {
             listener.onDateSet(date);
