@@ -2,7 +2,7 @@ package com.codepath.travel.fragments;
 
 import android.os.Bundle;
 
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Trip;
 
 /**
  * Fragment to display a recycler view of current trips.

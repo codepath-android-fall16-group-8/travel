@@ -1,4 +1,4 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 /**
  * Shared constant values for Parse models.
@@ -20,8 +20,6 @@ public final class ParseModelConstants {
     public static final String DESTINATION_PLACE_ID_KEY = "destinationPlaceId";
     public static final String START_DATE_KEY = "startDate";
     public static final String END_DATE_KEY = "endDate";
-    public static final String SHARE_KEY = "share";
-    public static final String SHARED_RELATION_KEY = "shared";
 
     // StoryPlace-specific values
     public static final String STORY_PLACE_CLASS_NAME = "StoryPlace";

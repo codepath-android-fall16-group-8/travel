@@ -17,16 +17,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.travel.GoogleAsyncHttpClient;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.helper.OnStartDragListener;
-import com.codepath.travel.models.Media;
-import com.codepath.travel.models.ParseModelConstants;
-import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.parse.Media;
+import com.codepath.travel.models.parse.ParseModelConstants;
+import com.codepath.travel.models.parse.StoryPlace;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 

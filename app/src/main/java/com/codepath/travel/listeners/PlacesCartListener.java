@@ -1,4 +1,4 @@
-package com.codepath.travel.helper;
+package com.codepath.travel.listeners;
 
 import com.codepath.travel.models.SuggestionPlace;
 

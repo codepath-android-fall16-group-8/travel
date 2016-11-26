@@ -1,37 +1,43 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.CREATE_STORY_REQUEST;
+import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
+import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
+import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
+import static com.codepath.travel.Constants.PLACE_ID_ARG;
+import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.Constants.POSITION_ARG;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
-import com.codepath.travel.helper.PlacesCartListener;
+import com.codepath.travel.helper.ItemClickSupport;
+import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.SuggestionPlace;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
+import butterknife.BindString;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class PlaceSuggestionActivity extends AppCompatActivity implements PlacesCartListener {
+public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartListener {
 
-    private static final int CREATE_STORY_REQUEST = 1;
-
-    // intent arguments
-    public static final String DESTINATION_ARGS = "destination";
-    public static final String LATLNG_ARGS = "latlong";
+    // Strings
+    @BindString(R.string.toolbar_title_place_suggestion) String toolbarTitle;
 
     //Views
     @BindView(R.id.btnCart) ImageButton mStoryCart;
     @BindView(R.id.rvRestaurantPlaces) RecyclerView mRvRestaurantPlaces;
     @BindView(R.id.rvSightPlaces) RecyclerView mRvSightPlaces;
-
 
     //Member variable
     private String mDestination;
@@ -46,13 +52,16 @@ public class PlaceSuggestionActivity extends AppCompatActivity implements Places
     private LinearLayoutManager mRestaurantLinearLayoutManager;
     private LinearLayoutManager mSightLinearLayoutManager;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_suggestion);
-        ButterKnife.bind(this);
+        initializeCommonViews();
+
+        mDestination = getIntent().getStringExtra(Constants.DESTINATION_ARG);
+        mLatLng = getIntent().getStringExtra(Constants.LATLNG_ARG);
+        setActionBarTitle(String.format(toolbarTitle, mDestination));
+
         mSuggestionPlaces = new ArrayList<>();
 
         mRestaurants = new ArrayList<>();
@@ -67,30 +76,22 @@ public class PlaceSuggestionActivity extends AppCompatActivity implements Places
         mSightLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRvSightPlaces.setLayoutManager(mSightLinearLayoutManager);
 
-        mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
-        mLatLng = getIntent().getStringExtra(LATLNG_ARGS);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getApplicationContext().getResources().getString(R.string.toolbar_title_place_suggestion) + mDestination);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpClickListeners();
         showPlacesToEat();
         showPointsOfInterest();
     }
 
     private void setUpClickListeners() {
-        mStoryCart.setOnClickListener((View view) -> {
-            Intent createTrip = new Intent(this, CreateStoryActivity.class);
-            createTrip.putExtra(
-                    CreateStoryActivity.DESTINATION_ARGS,
-                    mDestination
-            );
-            createTrip.putParcelableArrayListExtra(CreateStoryActivity.SUGGESTION_PLACES_LIST_ARGS, mSuggestionPlaces);
+        // cart button -> create story activity
+        mStoryCart.setOnClickListener((View view) -> launchCreateStoryActivity());
 
-            startActivityForResult(createTrip, CREATE_STORY_REQUEST);
-            setResult(RESULT_OK);
-            finish();
-        });
+        // recycler view items -> place detail activity
+        ItemClickSupport.addTo(this.mRvRestaurantPlaces).setOnItemClickListener(
+                (recyclerView, position, v) -> launchPlaceDetailActivity(position, true)
+        );
+        ItemClickSupport.addTo(this.mRvSightPlaces).setOnItemClickListener(
+                (recyclerView, position, v) -> launchPlaceDetailActivity(position, false)
+        );
     }
 
     private void showPlacesToEat() {
@@ -104,6 +105,7 @@ public class PlaceSuggestionActivity extends AppCompatActivity implements Places
         mSightsSuggestionArrayAdapter.populatePlacesNearby(mLatLng, "point_of_interest|establishment|museum|amusement_park|art_gallery|casino|zoo");
     }
 
+    /* Listeners */
     @Override
     public void addPlace(SuggestionPlace suggestionPlace) {
         mSuggestionPlaces.add(suggestionPlace);
@@ -113,6 +115,48 @@ public class PlaceSuggestionActivity extends AppCompatActivity implements Places
     @Override
     public void removePlace(SuggestionPlace suggestionPlace) {
         mSuggestionPlaces.remove(suggestionPlace);
+    }
+
+    /* Navigation */
+    private void launchCreateStoryActivity() {
+        Intent createTrip = new Intent(this, CreateStoryActivity.class);
+        createTrip.putExtra(Constants.DESTINATION_ARG, mDestination);
+        createTrip.putExtra(Constants.SUGGESTION_PLACES_LIST_ARG,
+                Parcels.wrap(mSuggestionPlaces));
+
+        startActivityForResult(createTrip, CREATE_STORY_REQUEST); // who is listening for this result?
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    private void launchPlaceDetailActivity(int position, boolean restaurants) {
+        SuggestionPlace suggestionPlace = restaurants ? mRestaurants.get(position) : mSights.get(position);
+        Intent placeDetail = new Intent(this, PlaceDetailActivity.class);
+        placeDetail.putExtra(PLACE_ID_ARG, suggestionPlace.getPlaceId());
+        placeDetail.putExtra(PLACE_NAME_ARG, suggestionPlace.getName());
+        placeDetail.putExtra(PLACE_ADDED_ARG, suggestionPlace.isSelected());
+        placeDetail.putExtra(POSITION_ARG, position);
+        placeDetail.putExtra(PLACE_CATEGORY_ARG, restaurants);
+        startActivityForResult(placeDetail, PLACE_DETAIL_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == PLACE_DETAIL_REQUEST) {
+            boolean restaurants = data.getBooleanExtra(PLACE_CATEGORY_ARG, true);
+            int position = data.getIntExtra(POSITION_ARG, 0);
+            boolean original = restaurants
+                    ? mRestaurants.get(position).isSelected()
+                    : mSights.get(position).isSelected();
+            boolean updated = data.getBooleanExtra(PLACE_ADDED_ARG, false);
+            if (original != updated) {
+                if (restaurants) {
+                    mRestaurantsSuggestionArrayAdapter.notifyItemChanged(position);
+                } else {
+                    mSightsSuggestionArrayAdapter.notifyItemChanged(position);
+                }
+            }
+        }
     }
 
 }

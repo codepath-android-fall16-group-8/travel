@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
-import com.codepath.travel.activities.CreateStoryActivity;
 import com.codepath.travel.activities.PlaceSuggestionActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -87,10 +87,10 @@ public class NewTripFragment extends DialogFragment implements PlaceSelectionLis
             String destination = mTvDestination.getText().toString();
             if(!destination.isEmpty() && !LatLng.isEmpty()) {
                 createTrip.putExtra(
-                        PlaceSuggestionActivity.DESTINATION_ARGS,
+                        Constants.DESTINATION_ARG,
                         destination
                 );
-                createTrip.putExtra(PlaceSuggestionActivity.LATLNG_ARGS,
+                createTrip.putExtra(Constants.LATLNG_ARG,
                         LatLng);
                 mTvDestination.setText("");
                 getActivity().startActivityForResult(createTrip, CREATE_STORY_REQUEST);

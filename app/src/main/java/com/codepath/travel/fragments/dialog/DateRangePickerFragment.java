@@ -1,7 +1,7 @@
 package com.codepath.travel.fragments.dialog;
 
-import static com.codepath.travel.models.ParseModelConstants.END_DATE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.START_DATE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.END_DATE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.START_DATE_KEY;
 
 import android.content.Context;
 import android.os.Bundle;

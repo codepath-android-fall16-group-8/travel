@@ -1,8 +1,9 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 import android.text.TextUtils;
 
 import com.codepath.travel.callbacks.ParseQueryCallback;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -12,13 +13,13 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 
-import static com.codepath.travel.models.ParseModelConstants.FAVORITES_RELATION_KEY;
-import static com.codepath.travel.models.ParseModelConstants.FB_UID_KEY;
-import static com.codepath.travel.models.ParseModelConstants.FOLLOWING_RELATION_KEY;
-import static com.codepath.travel.models.ParseModelConstants.KEY_USERNAME;
-import static com.codepath.travel.models.ParseModelConstants.PHOTO_URL;
-import static com.codepath.travel.models.ParseModelConstants.PROFILE_PIC_URL_KEY;
-import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.FAVORITES_RELATION_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.FB_UID_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.FOLLOWING_RELATION_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.KEY_USERNAME;
+import static com.codepath.travel.models.parse.ParseModelConstants.PHOTO_URL;
+import static com.codepath.travel.models.parse.ParseModelConstants.PROFILE_PIC_URL_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.USER_KEY;
 
 /**
  * ParseUser helper methods for extended fields and relations.

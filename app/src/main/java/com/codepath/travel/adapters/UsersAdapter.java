@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.codepath.travel.R;
 import com.codepath.travel.activities.ProfileViewActivity;
 import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.User;
+import com.codepath.travel.models.parse.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 

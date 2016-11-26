@@ -30,7 +30,7 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_new_trip"
-            android:src="@drawable/ic_fab"
+            app:srcCompat="@drawable/ic_fab"
             app:backgroundTint="@color/colorAccent"
             app:fabSize="normal"
             android:layout_width="wrap_content"

@@ -42,13 +42,13 @@ public abstract class BaseActivity extends AppCompatActivity {
   }
 
   /**
-   * react to the user tapping the back/up icon in the action bar
+   * react to the user tapping the up icon in the action bar
    */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        this.onBackPressed();
+        finish(); // up has slightly different behaviour than back button
         return true;
       default:
         return super.onOptionsItemSelected(item);

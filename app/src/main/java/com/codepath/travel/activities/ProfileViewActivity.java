@@ -15,8 +15,8 @@ import com.codepath.travel.adapters.ProfilePagerAdapter;
 import com.codepath.travel.callbacks.ParseQueryCallback;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.fragments.pickers.ImagePickerFragment;
-import com.codepath.travel.models.Trip;
-import com.codepath.travel.models.User;
+import com.codepath.travel.models.parse.Trip;
+import com.codepath.travel.models.parse.User;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
