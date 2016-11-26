@@ -1,4 +1,4 @@
-package com.codepath.travel.utils;
+package com.codepath.travel.helper;
 
 import android.graphics.Bitmap;
 

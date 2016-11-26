@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
-import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.parse.StoryPlace;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.codepath.travel.activities;
 
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
-import static com.codepath.travel.models.User.setCoverPicUrl;
+import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
 import android.Manifest;
 import android.content.Intent;
@@ -36,9 +36,9 @@ import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
-import com.codepath.travel.models.Media;
-import com.codepath.travel.models.StoryPlace;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Media;
+import com.codepath.travel.models.parse.StoryPlace;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;

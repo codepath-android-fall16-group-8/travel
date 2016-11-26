@@ -17,8 +17,8 @@ import com.codepath.travel.R;
 import com.codepath.travel.adapters.CollageAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.helper.SpacesItemDecoration;
-import com.codepath.travel.models.StoryPlace;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.StoryPlace;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 

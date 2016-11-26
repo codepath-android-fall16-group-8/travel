@@ -13,12 +13,12 @@ import com.codepath.travel.R;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.ParseUser;
 
 import java.util.List;
 
-import static com.codepath.travel.models.User.getProfilePicUrl;
+import static com.codepath.travel.models.parse.User.getProfilePicUrl;
 
 /**
  * Adapter for trips.

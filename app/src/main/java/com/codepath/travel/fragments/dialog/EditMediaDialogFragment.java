@@ -107,9 +107,7 @@ public class EditMediaDialogFragment extends DialogFragment {
             etCaption.setSelection(caption.length());
         }
 
-        btnCancel.setOnClickListener(v -> {
-            dismiss();
-        });
+        btnCancel.setOnClickListener(v -> dismiss());
 
         btnSave.setOnClickListener(v -> {
             listener.onSaveCaption(position, etCaption.getText().toString(), mediaId);

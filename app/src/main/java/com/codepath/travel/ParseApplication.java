@@ -2,17 +2,15 @@ package com.codepath.travel;
 
 import android.app.Application;
 
-import com.codepath.travel.models.Media;
-import com.codepath.travel.models.SavedPlace;
-import com.codepath.travel.models.StoryPlace;
-import com.codepath.travel.models.Tag;
-import com.codepath.travel.models.Trip;
-import com.codepath.travel.models.User;
+import com.codepath.travel.models.parse.Media;
+import com.codepath.travel.models.parse.SavedPlace;
+import com.codepath.travel.models.parse.StoryPlace;
+import com.codepath.travel.models.parse.Tag;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 import com.parse.interceptors.ParseLogInterceptor;
 
 /**

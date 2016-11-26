@@ -1,12 +1,12 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 import com.google.android.gms.location.places.Place;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
-import static com.codepath.travel.models.ParseModelConstants.PLACE_ID_KEY;
-import static com.codepath.travel.models.ParseModelConstants.SAVED_PLACE_CLASS_NAME;
-import static com.codepath.travel.models.ParseModelConstants.TRIP_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.PLACE_ID_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.SAVED_PLACE_CLASS_NAME;
+import static com.codepath.travel.models.parse.ParseModelConstants.TRIP_KEY;
 
 /**
  * Parse model for a saved place.

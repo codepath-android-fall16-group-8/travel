@@ -1,4 +1,4 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 import com.google.android.gms.location.places.Place;
 import com.parse.FindCallback;
@@ -9,7 +9,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import static com.codepath.travel.models.ParseModelConstants.*;
+import static com.codepath.travel.models.parse.ParseModelConstants.*;
 
 import android.text.TextUtils;
 import android.util.Log;

@@ -1,11 +1,11 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import static com.codepath.travel.models.ParseModelConstants.*;
+import static com.codepath.travel.models.parse.ParseModelConstants.*;
 
 import android.util.Log;
 

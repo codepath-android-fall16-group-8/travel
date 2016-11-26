@@ -18,14 +18,13 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.HomePagerAdapter;
 import com.codepath.travel.fragments.NewTripFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Trip;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
@@ -40,12 +39,11 @@ import org.json.JSONException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.codepath.travel.R.string.share;
-import static com.codepath.travel.models.User.getCoverPicUrl;
-import static com.codepath.travel.models.User.getProfilePicUrl;
-import static com.codepath.travel.models.User.setCoverPicUrl;
-import static com.codepath.travel.models.User.setFbUid;
-import static com.codepath.travel.models.User.setProfilePicUrl;
+import static com.codepath.travel.models.parse.User.getCoverPicUrl;
+import static com.codepath.travel.models.parse.User.getProfilePicUrl;
+import static com.codepath.travel.models.parse.User.setCoverPicUrl;
+import static com.codepath.travel.models.parse.User.setFbUid;
+import static com.codepath.travel.models.parse.User.setProfilePicUrl;
 import static com.parse.ParseUser.getCurrentUser;
 
 public class HomeActivity extends AppCompatActivity implements TripClickListener {

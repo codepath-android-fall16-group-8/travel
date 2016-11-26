@@ -57,7 +57,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add"
+        app:srcCompat="@drawable/ic_add"
         android:tint="@color/colorAccent"
         android:id="@+id/ivAddSuggestionPlace"
         android:layout_alignBottom="@+id/tvSuggestionPlaceRating"
@@ -75,6 +75,5 @@
         android:layout_toRightOf="@+id/rlPlaceLayout"
         android:layout_toEndOf="@+id/rlPlaceLayout"
         android:background="@android:color/darker_gray" />
-
 
 </RelativeLayout>

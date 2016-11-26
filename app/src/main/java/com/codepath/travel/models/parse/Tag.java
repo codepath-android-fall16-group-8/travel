@@ -1,14 +1,14 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
-import static com.codepath.travel.models.ParseModelConstants.TAG_CLASS_NAME;
-import static com.codepath.travel.models.ParseModelConstants.USER_KEY;
-import static com.codepath.travel.models.ParseModelConstants.TRIP_KEY;
-import static com.codepath.travel.models.ParseModelConstants.STORY_PLACE_KEY;
-import static com.codepath.travel.models.ParseModelConstants.MEDIA_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.TAG_CLASS_NAME;
+import static com.codepath.travel.models.parse.ParseModelConstants.USER_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.TRIP_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.STORY_PLACE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.MEDIA_KEY;
 
 /**
  * Parse model for a tag.

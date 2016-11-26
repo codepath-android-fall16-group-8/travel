@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
-import com.codepath.travel.models.Media;
+import com.codepath.travel.models.parse.Media;
 
 import java.util.List;
 

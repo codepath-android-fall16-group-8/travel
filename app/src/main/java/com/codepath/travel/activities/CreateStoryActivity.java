@@ -1,5 +1,8 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.DESTINATION_ARG;
+import static com.codepath.travel.Constants.SUGGESTION_PLACES_LIST_ARG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -17,7 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.codepath.travel.GoogleAsyncHttpClient;
+import com.codepath.travel.Constants;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
@@ -25,9 +29,9 @@ import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DateRangePickerListener;
-import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.SuggestionPlace;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Trip;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -42,6 +46,7 @@ import com.parse.ParseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,13 +60,7 @@ import cz.msebera.android.httpclient.Header;
 public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener,
         DateRangePickerListener {
 
-    //Class variables
-    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
-
-    // intent arguments
-    public static final String DESTINATION_ARGS = "destination";
-    public static final String SUGGESTION_PLACES_LIST_ARGS = "suggestion_places_list";
 
     // strings
     @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
@@ -93,9 +92,10 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         setContentView(R.layout.activity_create_story);
         ButterKnife.bind(this);
 
-        mDestination = getIntent().getStringExtra(DESTINATION_ARGS);
+        mDestination = getIntent().getStringExtra(DESTINATION_ARG);
         //Get list of selected places from suggestions screen
-        mSelectedSuggestionPlaces = getIntent().getParcelableArrayListExtra(SUGGESTION_PLACES_LIST_ARGS);
+        mSelectedSuggestionPlaces = Parcels.unwrap(getIntent().getParcelableExtra(
+                SUGGESTION_PLACES_LIST_ARG));
         toolbar.setTitle(String.format(toolbarTitle, mDestination));
         setSupportActionBar(toolbar);
 
@@ -105,12 +105,13 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
     }
 
     private void setUpTrip() {
-        // when a user is logged in and leaves and resumes the app, the ACL keys are missing so we reset them here...
+        // when a user is logged in and leaves and resumes the app,
+        // the ACL keys are missing so we reset them here...
         ParseUser currentUser = ParseUser.getCurrentUser();
         try {
             currentUser.getACL();
         } catch (RuntimeException e) {
-            Log.w(TAG, "Resetting ACL for user");
+            Log.w(TAG, String.format("Resetting ACL for user %s", currentUser.getUsername()));
             ParseACL acl = new ParseACL(currentUser);
             acl.setPublicReadAccess(true);
             currentUser.setACL(acl);
@@ -119,12 +120,8 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         mNewTrip = new Trip(currentUser, mDestination);
         mNewTrip.saveInBackground(e -> {
             if (e == null) {
-                tvTripDates.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        launchDateRangePickerDialog(mNewTrip.getStartDate(), mNewTrip.getEndDate());
-                    }
-                });
+                tvTripDates.setOnClickListener(
+                        v -> launchDateRangePickerDialog(mNewTrip.getStartDate(), mNewTrip.getEndDate()));
                 addSuggestionPlacesToTrip();
             } else {
                 Log.d(TAG, String.format("Failed to setup trip: %s", e.getMessage()));
@@ -218,7 +215,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
             // builder checks this and throws an exception if it is not the case.
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                     .build(this);
-            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            startActivityForResult(intent, Constants.AUTOCOMLETE_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             // Indicates that Google Play Services is either not installed or not up to date. Prompt
             // the user to correct the issue.
@@ -243,7 +240,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check that the result was from the autocomplete widget.
-        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+        if (requestCode == Constants.AUTOCOMLETE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the edit text.
                 mNewSelectedPlace = PlaceAutocomplete.getPlace(this, data);

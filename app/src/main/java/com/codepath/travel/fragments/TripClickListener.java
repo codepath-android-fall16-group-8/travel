@@ -1,7 +1,6 @@
 package com.codepath.travel.fragments;
 
-import com.codepath.travel.models.Trip;
-import com.codepath.travel.models.User;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.ParseUser;
 
 /**

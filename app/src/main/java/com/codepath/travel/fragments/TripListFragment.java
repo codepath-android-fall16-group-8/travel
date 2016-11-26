@@ -15,9 +15,8 @@ import android.widget.TextView;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.TripsAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
-import com.codepath.travel.models.Trip;
+import com.codepath.travel.models.parse.Trip;
 import com.parse.ParseException;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;

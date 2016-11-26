@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tvRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_star"
+        android:drawableStart="@drawable/ic_star"
+        android:gravity="center_vertical"
+        tools:text="4.5" />
+
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tvRating"
+        android:layout_toEndOf="@id/tvRating"
+        android:layout_alignBaseline="@id/tvRating"
+        android:layout_marginLeft="@dimen/margin"
+        tools:text="Firstname Lastname" />
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAuthor"
+        android:layout_toRightOf="@id/tvRating"
+        android:layout_toEndOf="@id/tvRating"
+        android:layout_marginTop="@dimen/margin"
+        tools:text="I've had breakfast here several times. Quiche and salad consists of a generous portion of both at a reasonable price for the area.\n\nPleasant staff and environment." />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tvRating"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        tools:text="1 day ago" />
+</RelativeLayout>

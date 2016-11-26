@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_place_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbarHolder"
+        layout="@layout/layout_app_bar"/>
+
+    <ProgressBar
+        android:id="@+id/pbImageLoading"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/ivPlacePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/cbAddPlace"
+        android:button="@drawable/checkbox_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivPlacePhoto"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        tools:text="Place Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivPlacePhoto" />
+
+    <TextView
+        android:id="@+id/tvPhoneNumber"
+        tools:text="Place Phone Number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAddress" />
+
+    <TextView
+        android:id="@+id/tvOpenNow"
+        tools:text="Open Now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPhoneNumber" />
+
+    <TextView
+        android:id="@+id/tvPriceLevel"
+        tools:text="Price Level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPhoneNumber"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/tvHours"
+        tools:text="Place Hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvOpenNow" />
+
+    <TextView
+        android:id="@+id/tvWebsite"
+        tools:text="Place Website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvHours"
+        android:layout_marginRight="@dimen/margin" />
+
+    <TextView
+        android:id="@+id/tvGoogleUrl"
+        tools:text="Google Url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvHours"
+        android:layout_toRightOf="@id/tvWebsite"
+        android:layout_toEndOf="@id/tvWebsite" />
+
+    <TextView
+        android:id="@+id/tvReviewsLabel"
+        android:text="@string/reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvGoogleUrl" />
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/tvGoogleUrl"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:numStars="5"
+        android:stepSize="0.5"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvReviews"
+        android:layout_below="@id/ratingBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>

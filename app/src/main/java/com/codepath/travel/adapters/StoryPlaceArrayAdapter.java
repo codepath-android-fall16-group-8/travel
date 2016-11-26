@@ -11,13 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.travel.GoogleAsyncHttpClient;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.helper.OnStartDragListener;
-import com.codepath.travel.models.StoryPlace;
+import com.codepath.travel.models.parse.StoryPlace;
 
 import java.util.Collections;
 import java.util.List;

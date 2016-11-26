@@ -1,5 +1,6 @@
-package com.codepath.travel.models;
+package com.codepath.travel.models.parse;
 
+import com.codepath.travel.models.SuggestionPlace;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.GetCallback;
@@ -10,7 +11,7 @@ import com.parse.ParseQuery;
 import java.util.Date;
 import java.util.List;
 
-import static com.codepath.travel.models.ParseModelConstants.*;
+import static com.codepath.travel.models.parse.ParseModelConstants.*;
 
 import android.text.TextUtils;
 import android.util.Log;
