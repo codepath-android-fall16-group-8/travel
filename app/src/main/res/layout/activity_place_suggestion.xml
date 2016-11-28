@@ -12,26 +12,6 @@
         layout="@layout/layout_app_bar"/>
 
     <TextView
-        android:text="@string/places_to_eat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btnCart"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/tvRestaurantLabel" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvRestaurantPlaces"
-        android:layout_below="@+id/tvRestaurantLabel"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@color/white"/>
-
-    <TextView
         android:text="@string/sights_to_see"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +31,27 @@
         android:layout_height="180dp"
         android:background="@color/white"/>
 
+    <TextView
+        android:text="@string/places_to_eat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:id="@+id/tvRestaurantLabel"
+        android:layout_below="@+id/toolbarHolder"
+        android:layout_alignLeft="@+id/tvSightLabel"
+        android:layout_alignStart="@+id/tvSightLabel"
+        android:layout_alignRight="@+id/tvSightLabel"
+        android:layout_alignEnd="@+id/tvSightLabel" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRestaurantPlaces"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/white"
+        android:layout_below="@+id/btnCart"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <ImageButton
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -59,7 +60,7 @@
         android:id="@+id/btnCart"
         android:layout_marginRight="15dp"
         android:layout_marginEnd="15dp"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/tvRestaurantLabel"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
