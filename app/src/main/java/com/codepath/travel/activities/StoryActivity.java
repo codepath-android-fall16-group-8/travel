@@ -81,6 +81,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
     @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
+    @BindView(R.id.tvShare) TextView tvShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
     // member variables
@@ -136,6 +137,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     private void setupSharedCheckbox() {
         // only display for logged in user
         if (isOwner) {
+            tvShare.setVisibility(View.VISIBLE);
             cbShare.setVisibility(View.VISIBLE);
             cbShare.setChecked(mTrip.isShared());
             cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -144,6 +146,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 mTrip.saveInBackground();
             });
         } else {
+            tvShare.setVisibility(View.GONE);
             cbShare.setVisibility(View.GONE);
         }
     }
@@ -151,13 +154,13 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
         mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces, isOwner, datesRelation);
-        rvStoryPlaces.setHasFixedSize(true);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
 
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
+        // left/right drag
+//        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+//        mItemTouchHelper = new ItemTouchHelper(callback);
+//        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
     }
 
     private void getPlacesInTrip() {

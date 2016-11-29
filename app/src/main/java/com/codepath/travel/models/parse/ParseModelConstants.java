@@ -50,5 +50,6 @@ public final class ParseModelConstants {
     public static final String PLACE_ID_KEY = "placeId";
     public static final String NAME_KEY = "name";
     public static final String PHOTO_URL = "photoUrl";
+    public static final String UPDATED_AT_KEY = "updatedAt";
 
 }

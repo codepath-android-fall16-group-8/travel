@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:scaleType="centerCrop"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/ivPlacePhoto"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        tools:text="Place 1"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:id="@+id/tvPlaceName"
-        android:layout_alignBottom="@+id/ivPlacePhoto"
-        android:layout_toRightOf="@+id/ivPlacePhoto"
-        android:layout_toEndOf="@+id/ivPlacePhoto"
-        android:layout_marginBottom="10dp"
-        />
+        android:layout_marginBottom="@dimen/margin">
 
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/cbCheckin"
-        android:button="@drawable/checkbox_checkin"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="12dp"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size" />
+        <ImageView
+            android:id="@+id/ivPlacePhoto"
+            android:layout_width="@dimen/photo_size"
+            android:layout_height="@dimen/photo_size"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:scaleType="centerCrop"
+            tools:src="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/tvCheckin"
-        android:layout_toLeftOf="@+id/cbCheckin"
-        android:layout_marginRight="@dimen/margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="Visited 11/9"/>
+        <TextView
+            android:id="@+id/tvPlaceName"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            tools:text="Place Name Name Name Name Name Very Long Name" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/tvCheckin"
+            android:layout_marginRight="@dimen/margin_s"
+            android:layout_marginEnd="@dimen/margin_s"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/forgot_checkin"/>
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/cbCheckin"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            android:button="@drawable/checkbox_checkin"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llMediaActionRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvPlaceName"
         android:orientation="horizontal"
-        android:gravity="right"
+        android:gravity="end"
         android:padding="@dimen/margin">
 
         <ImageView
             android:id="@+id/ivGallery"
             android:src="@android:drawable/ic_menu_gallery"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
 
@@ -69,6 +74,7 @@
             android:id="@+id/ivCamera"
             android:src="@android:drawable/ic_menu_camera"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
 
@@ -76,13 +82,13 @@
             android:id="@+id/ivNote"
             android:src="@android:drawable/ic_menu_edit"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvMediaHolder"
-        android:layout_below="@+id/llMediaActionRow"
         android:layout_width="match_parent"
         android:layout_height="120dp"/>
 
@@ -90,8 +96,5 @@
         android:id="@+id/viewSeparator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/rvMediaHolder"
         android:background="@android:color/darker_gray" />
-</RelativeLayout>
+</LinearLayout>

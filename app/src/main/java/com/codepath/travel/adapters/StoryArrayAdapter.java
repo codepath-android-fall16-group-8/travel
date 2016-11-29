@@ -1,11 +1,13 @@
 package com.codepath.travel.adapters;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import static com.codepath.travel.helper.DateUtils.FUTURE;
 import static com.codepath.travel.helper.DateUtils.PAST;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codepath.travel.net.GoogleAsyncHttpClient;
@@ -27,8 +30,6 @@ import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.ParseModelConstants;
 import com.codepath.travel.models.parse.StoryPlace;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +47,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         implements ItemTouchHelperAdapter {
 
     private List<StoryPlace> mStoryPlaces;
-    private final OnStartDragListener mDragStartListener;
+//    private final OnStartDragListener mDragStartListener;
     private Context mContext;
     private StoryPlaceListener listener;
 
@@ -66,7 +67,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
     public StoryArrayAdapter(Context context, OnStartDragListener dragStartListener,
             List<StoryPlace> storyPlaces, boolean isOwner, int datesRelation) {
         mStoryPlaces = storyPlaces;
-        mDragStartListener = dragStartListener;
+//        mDragStartListener = dragStartListener;
         mContext = context;
         listener = (StoryPlaceListener) context;
         this.isOwner = isOwner;
@@ -91,16 +92,13 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
     public void onBindViewHolder(final StoryArrayAdapter.StoryViewHolder holder, int position) {
         StoryPlace storyPlace = mStoryPlaces.get(position);
         holder.populate(storyPlace);
-        // Start a drag whenever the handle view it touched
-        holder.ivPlacePhoto.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
-                }
-                return false;
-            }
-        });
+        // Start a up/down drag whenever the photo view is touched
+//        holder.ivPlacePhoto.setOnTouchListener((v, event) -> {
+//            if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+//                mDragStartListener.onStartDrag(holder);
+//            }
+//            return false;
+//        });
 
         holder.ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(storyPlace)));
         holder.ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(storyPlace)));
@@ -150,6 +148,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         @BindView(R.id.tvPlaceName) TextView tvPlaceName;
         @BindView(R.id.cbCheckin) AppCompatCheckBox cbCheckin;
         @BindView(R.id.tvCheckin) TextView tvCheckin;
+        @BindView(R.id.llMediaActionRow) LinearLayout llMediaActionRow;
         @BindView(R.id.ivNote) ImageView ivNote;
         @BindView(R.id.ivCamera) ImageView ivCamera;
         @BindView(R.id.ivGallery) ImageView ivGallery;
@@ -180,18 +179,20 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             ImageUtils.loadImage(ivPlacePhoto,
                     GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()), R.drawable.ic_photoholder, null);
             tvPlaceName.setText(storyPlace.getName());
-            ParseQuery<Media> mediaObjectsQuery = ParseQuery.getQuery(ParseModelConstants.MEDIA_CLASS_NAME);
-            mediaObjectsQuery.whereEqualTo(ParseModelConstants.STORY_PLACE_KEY, storyPlace);
-            mediaObjectsQuery.findInBackground((List<Media> mediaObjects, ParseException e) -> {
+            setupCheckinCheckbox(storyPlace);
+            // show/hide media add actions if owner
+            llMediaActionRow.setVisibility(isOwner ? VISIBLE : GONE);
+            Media.getMediaForStoryPlace(storyPlace, (mediaObjects, e) -> {
                 if (e == null) {
                     mPlaceMediaItems.clear();
                     mPlaceMediaItems.addAll(mediaObjects);
                     mMediaItemAdapter.notifyDataSetChanged();
+                    // show/hide media items recycler view
+                    rvMediaItems.setVisibility(!mediaObjects.isEmpty() ? VISIBLE : GONE);
                 } else {
                     Log.d("Media fetch failed", e.toString());
                 }
             });
-            setupCheckinCheckbox(storyPlace);
         }
 
         private void setupCheckinCheckbox(StoryPlace storyPlace) {
@@ -219,8 +220,8 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
 
         private void hideCheckin() {
             cbCheckin.setEnabled(false);
-            cbCheckin.setVisibility(View.GONE);
-            tvCheckin.setVisibility(View.GONE);
+            cbCheckin.setVisibility(GONE);
+            tvCheckin.setVisibility(GONE);
         }
 
         private void showPastCheckin(StoryPlace storyPlace) {
@@ -229,11 +230,11 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             if (checkIn != null) {
                 cbCheckin.setChecked(true);
                 tvCheckin.setText(DateUtils.formatDate(mContext, checkIn));
-                cbCheckin.setVisibility(View.VISIBLE);
-                tvCheckin.setVisibility(View.VISIBLE);
+                cbCheckin.setVisibility(VISIBLE);
+                tvCheckin.setVisibility(VISIBLE);
             } else {
-                cbCheckin.setVisibility(View.GONE);
-                tvCheckin.setVisibility(View.GONE);
+                cbCheckin.setVisibility(GONE);
+                tvCheckin.setVisibility(GONE);
             }
         }
 
@@ -243,8 +244,8 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             Date checkIn = storyPlace.getCheckinTime();
             cbCheckin.setChecked(checkIn != null);
             tvCheckin.setText(checkIn != null ? DateUtils.formatDate(mContext, checkIn) : defaultText);
-            cbCheckin.setVisibility(View.VISIBLE);
-            tvCheckin.setVisibility(View.VISIBLE);
+            cbCheckin.setVisibility(VISIBLE);
+            tvCheckin.setVisibility(VISIBLE);
             tvCheckin.setOnClickListener(v -> {
                 if (!tvCheckin.getText().toString().equals(defaultText)) {
                     listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
