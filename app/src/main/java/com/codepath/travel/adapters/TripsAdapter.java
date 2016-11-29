@@ -59,13 +59,11 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void configureViewHolder(TripViewHolder viewHolder, int position) {
         Trip trip = this.mTrips.get(position);
 
-        ImageView ivCoverPhoto = viewHolder.getCoverPhoto();
-        ImageUtils.loadImage(
-            ivCoverPhoto,
-            trip.getCoverPicUrl(),
-            R.drawable.com_facebook_profile_picture_blank_portrait,
-            viewHolder.getProgressBar()
-        );
+        ImageUtils.loadBackgroundImage(viewHolder.getRelativeLayout(),
+                trip.getCoverPicUrl(),
+                R.drawable.ic_photoholder,
+                viewHolder.getProgressBar());
+
         ImageView ivProfilePhoto = viewHolder.getProfilePhoto();
         if (showProfilePhoto) {
             ImageUtils.loadImageCircle(ivProfilePhoto, getProfilePicUrl(trip.getUser()),

@@ -78,6 +78,26 @@ public class ImageUtils {
         }
     }
 
+    public static void loadBackgroundImage(RelativeLayout relativeLayout, String imageUrl, int placeholder, ProgressBar processingView) {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            Context context = relativeLayout.getContext();
+            Glide.with(context).load(imageUrl)
+                    .asBitmap()
+                    .placeholder(placeholder)
+                    .centerCrop()
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                            if (processingView != null) {
+                                processingView.setVisibility(View.GONE);
+                            }
+                            Drawable drawable = new BitmapDrawable(context.getResources(), resource);
+                            relativeLayout.setBackground(drawable);
+                        }
+                    });
+        }
+    }
+
     public static void loadImageCircle(ImageView imageView, String imageUrl, int placeholder) {
         imageView.setImageResource(0);
         if (!TextUtils.isEmpty(imageUrl)) {

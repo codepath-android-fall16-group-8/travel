@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
@@ -17,11 +18,11 @@ import butterknife.ButterKnife;
  */
 public class TripViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivProfilePhoto) ImageView ivProfilePhoto;
-    @BindView(R.id.ivTripCoverPhoto) ImageView ivCoverPhoto;
     @BindView(R.id.tvTripTitle) TextView tvTripTitle;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
     @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
+    @BindView(R.id.rlTrip) RelativeLayout rlTrip;
 
     public TripViewHolder(View itemView) {
         super(itemView);
@@ -36,10 +37,6 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
         return this.ivProfilePhoto;
     }
 
-    public ImageView getCoverPhoto() {
-        return this.ivCoverPhoto;
-    }
-
     public TextView getTripTitle() {
         return this.tvTripTitle;
     }
@@ -47,5 +44,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     public TextView getTripDates() {
         return this.tvTripDates;
     }
+
+    public RelativeLayout getRelativeLayout(){ return this.rlTrip; }
 }
 
