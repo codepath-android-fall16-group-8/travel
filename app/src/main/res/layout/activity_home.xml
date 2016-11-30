@@ -20,6 +20,12 @@
             android:minHeight="?attr/actionBarSize"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="?attr/colorPrimaryDark">
+                <fragment
+                android:id="@+id/autocomplete_fragment_new_trip"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
         </android.support.v7.widget.Toolbar>
 
         <include
@@ -27,21 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             layout="@layout/layout_tabs"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_new_trip"
-            app:srcCompat="@drawable/ic_fab"
-            app:backgroundTint="@color/colorAccent"
-            app:fabSize="normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            app:layout_anchorGravity="bottom|right|end"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="15dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
     <android.support.design.widget.NavigationView

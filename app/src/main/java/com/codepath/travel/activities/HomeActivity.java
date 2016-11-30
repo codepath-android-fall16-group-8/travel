@@ -3,10 +3,8 @@ package com.codepath.travel.activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,10 +16,11 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.HomePagerAdapter;
-import com.codepath.travel.fragments.NewTripFragment;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
@@ -30,6 +29,10 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.LoggingBehavior;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
@@ -46,7 +49,7 @@ import static com.codepath.travel.models.parse.User.setFbUid;
 import static com.codepath.travel.models.parse.User.setProfilePicUrl;
 import static com.parse.ParseUser.getCurrentUser;
 
-public class HomeActivity extends AppCompatActivity implements TripClickListener {
+public class HomeActivity extends AppCompatActivity implements TripClickListener, PlaceSelectionListener {
     //Class variables
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int LOGIN_REQUEST = 0;
@@ -57,7 +60,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.drawer_layout) DrawerLayout mDrawer;
     @BindView(R.id.toolbar)  Toolbar toolbar;
     @BindView(R.id.nvView) NavigationView nvDrawer;
-    @BindView(R.id.fab_new_trip) FloatingActionButton mFab;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
 
@@ -82,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
         setupViews();
         setupDrawerContent(nvDrawer);
-        setUpClickListeners();
+        setUpSearchAutoComplete();
 
         // User login
         if (getCurrentUser() != null) { // start with existing user
@@ -103,12 +105,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
         drawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(drawerToggle);
-    }
-
-    private void setUpClickListeners() {
-        mFab.setOnClickListener(view -> {
-            launchNewTripFragment();
-        });
     }
 
     // Get the userId from the cached currentUser object
@@ -162,6 +158,15 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         request.executeAsync();
     }
 
+    private void setUpSearchAutoComplete() {
+        // Retrieve the PlaceAutocompleteFragment.
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)this
+                .getFragmentManager().findFragmentById(R.id.autocomplete_fragment_new_trip);
+        // Register a listener to receive callbacks when a place has been selected or an error has
+        // occurred.
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+    }
+
     /* Navigation */
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
@@ -173,12 +178,6 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, tripTitle);
         openStory.putExtra(StoryActivity.TRIP_ID_ARG, tripId);
         startActivityForResult(openStory, STORY_REQUEST);
-    }
-
-    private void launchNewTripFragment() {
-        FragmentManager fm = getSupportFragmentManager();
-        NewTripFragment newTripDialog = NewTripFragment.newInstance();
-        newTripDialog.show(fm, "New Trip");
     }
 
     private void logout() {
@@ -317,5 +316,29 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private void showSearchActivity() {
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        Log.i(TAG, "Place Selected: " + place.getName());
+        String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
+        Intent createTrip = new Intent(this, PlaceSuggestionActivity.class);
+        String destination = place.getName().toString();
+        if(!destination.isEmpty() && !LatLng.isEmpty()) {
+            createTrip.putExtra(
+                    Constants.DESTINATION_ARG,
+                    destination
+            );
+            createTrip.putExtra(Constants.LATLNG_ARG,
+                    LatLng);
+            startActivityForResult(createTrip, CREATE_STORY_REQUEST);
+        }else {
+            Toast.makeText(this, "Please add a destination", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onError(Status status) {
+        Log.e(TAG, "onError: Status = " + status.toString());
     }
 }
