@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.CollageAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
-import com.codepath.travel.helper.SpacesItemDecoration;
+import com.codepath.travel.decoration.SpacesItemDecoration;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
 import com.parse.FindCallback;

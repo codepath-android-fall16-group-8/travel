@@ -17,7 +17,6 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,19 +24,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
-import com.codepath.travel.adapters.StoryArrayAdapter;
+import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
+import com.codepath.travel.decoration.DividerItemDecoration;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
 import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
-import com.codepath.travel.helper.OnStartDragListener;
-import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
 import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
+import com.daimajia.swipe.util.Attributes;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -56,8 +55,8 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
-        StoryArrayAdapter.StoryPlaceListener,
+public class StoryActivity extends AppCompatActivity implements
+        SwipeStoryPlaceAdapter.StoryPlaceListener,
         EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         DateRangePickerListener,
@@ -85,8 +84,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
-    private StoryArrayAdapter mAdapter;
-    private ItemTouchHelper mItemTouchHelper;
+    private SwipeStoryPlaceAdapter mAdapter;
     private int mMediaLauncherStoryIndex;
     private String mTripID;
     private Trip mTrip;
@@ -152,14 +150,13 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces, isOwner, datesRelation);
+        mAdapter = new SwipeStoryPlaceAdapter(this, mStoryPlaces, isOwner, datesRelation);
+        mAdapter.setMode(Attributes.Mode.Single);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
-
-        // left/right drag
-//        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-//        mItemTouchHelper = new ItemTouchHelper(callback);
-//        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        rvStoryPlaces.addItemDecoration(itemDecoration);
     }
 
     private void getPlacesInTrip() {
@@ -305,12 +302,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     /* Listeners */
     @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        Log.d("onStartDrag", "dragging...");
-        mItemTouchHelper.startDrag(viewHolder);
-    }
-
-    @Override
     public void cameraOnClick(int position) {
         launchCameraActivity(position);
     }
@@ -326,16 +317,18 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     }
 
     @Override
-    public void storyPlaceMoved(int fromPosition, int toPosition) {
-        Log.d(TAG, String.format("story moved fromPos: %d, toPos: %d", fromPosition, toPosition));
-        // TODO: save order in Parse
+    public void onStoryPlaceDelete(int position) {
+        Log.d(TAG, String.format("delete story at pos: %d", position));
+        StoryPlace storyPlace = mStoryPlaces.get(position);
+        storyPlace.deleteWithMedia();
+        // TODO: show confirm dialog
     }
 
     @Override
-    public void storyPlaceDismissed(int position) {
-        Log.d(TAG, String.format("dismissed story at pos: %d", position));
+    public void onStoryPlaceInfo(int position) {
         StoryPlace storyPlace = mStoryPlaces.get(position);
-        storyPlace.deleteWithMedia();
+        Log.d(TAG, String.format("show place at pos: %d, %s, %s", position, storyPlace.getName(), storyPlace.getPlaceId()));
+        // TODO: launch place detail (animate entry from bottom)
     }
 
     @Override

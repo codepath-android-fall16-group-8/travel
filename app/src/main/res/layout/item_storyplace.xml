@@ -1,118 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.daimajia.swipe.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:orientation="vertical">
+    swipe:leftEdgeSwipeOffset="0dp"
+    swipe:rightEdgeSwipeOffset="0dp">
 
-    <RelativeLayout
-        android:id="@+id/llHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_s">
-
-        <ImageView
-            android:id="@+id/ivPlacePhoto"
-            android:layout_width="@dimen/photo_size"
-            android:layout_height="@dimen/photo_size"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginStart="@dimen/margin"
-            android:scaleType="centerCrop"
-            tools:src="@mipmap/ic_launcher" />
-
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/cbCheckin"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:button="@drawable/checkbox_checkin" />
-
-        <TextView
-            android:id="@+id/tvCheckin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/cbCheckin"
-            android:layout_toStartOf="@id/cbCheckin"
-            android:layout_marginRight="@dimen/margin_s"
-            android:layout_marginEnd="@dimen/margin_s"
-            android:layout_marginBottom="@dimen/margin"
-            tools:text="@string/forgot_checkin" />
-
-        <RatingBar
-            android:id="@+id/rbUserRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/cbCheckin"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/margin_s"
-            android:layout_marginEnd="@dimen/margin_s"
-            android:numStars="5"
-            android:stepSize="0.5"
-            android:rating="3"
-            style="@style/heartRatingBar" />
-
-        <TextView
-            android:id="@+id/tvPlaceName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/ivPlacePhoto"
-            android:layout_toEndOf="@id/ivPlacePhoto"
-            android:layout_toLeftOf="@id/tvCheckin"
-            android:layout_toStartOf="@id/tvCheckin"
-            android:layout_marginLeft="@dimen/margin_s"
-            android:layout_marginStart="@dimen/margin_s"
-            tools:text="Place Name Name Name Name Name Very Long Name" />
-    </RelativeLayout>
-
+    <!-- Swipe Menu: Left side -->
     <LinearLayout
-        android:id="@+id/llMediaActionRow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/bottomLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="end"
-        android:padding="@dimen/margin">
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:padding="@dimen/margin_s"
+        android:background="@color/red">
 
         <ImageView
-            android:id="@+id/ivGallery"
-            android:src="@android:drawable/ic_menu_gallery"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
+            android:id="@+id/ivDelete"
+            app:srcCompat="@drawable/ic_delete"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"/>
+
+    </LinearLayout>
+
+    <!-- Swipe Menu: Right side -->
+    <LinearLayout
+        android:id="@+id/bottomRight"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="end"
+        android:gravity="center"
+        android:padding="@dimen/margin_s"
+        android:background="@color/green">
+
+        <ImageView
+            android:id="@+id/ivInfo"
+            app:srcCompat="@drawable/ic_info"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
 
         <ImageView
-            android:id="@+id/ivCamera"
-            android:src="@android:drawable/ic_menu_camera"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"/>
-
-        <ImageView
-            android:id="@+id/ivNote"
-            android:src="@android:drawable/ic_menu_edit"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
+            android:id="@+id/ivEdit"
+            app:srcCompat="@drawable/ic_create"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvMediaHolder"
+    <!-- Top View (recycler view item) -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/media_size"/>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_s"
+        android:orientation="vertical">
 
-    <View
-        android:id="@+id/viewSeparator"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
-</LinearLayout>
+        <RelativeLayout
+            android:id="@+id/llHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_s">
+
+            <ImageView
+                android:id="@+id/ivPlacePhoto"
+                android:layout_width="@dimen/photo_size"
+                android:layout_height="@dimen/photo_size"
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/ic_launcher" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/cbCheckin"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"
+                android:button="@drawable/checkbox_checkin" />
+
+            <TextView
+                android:id="@+id/tvCheckin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/cbCheckin"
+                android:layout_toStartOf="@id/cbCheckin"
+                android:layout_marginRight="@dimen/margin_s"
+                android:layout_marginEnd="@dimen/margin_s"
+                android:layout_marginBottom="@dimen/margin"
+                tools:text="@string/forgot_checkin" />
+
+            <RatingBar
+                android:id="@+id/rbUserRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cbCheckin"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/margin_s"
+                android:layout_marginEnd="@dimen/margin_s"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="3"
+                style="@style/heartRatingBar" />
+
+            <TextView
+                android:id="@+id/tvPlaceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ivPlacePhoto"
+                android:layout_toEndOf="@id/ivPlacePhoto"
+                android:layout_toLeftOf="@id/tvCheckin"
+                android:layout_toStartOf="@id/tvCheckin"
+                android:layout_marginLeft="@dimen/margin_s"
+                android:layout_marginStart="@dimen/margin_s"
+                tools:text="Place Name Name Name Name Name Very Long Name" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvMediaHolder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/media_size" />
+    </LinearLayout>
+</com.daimajia.swipe.SwipeLayout>
