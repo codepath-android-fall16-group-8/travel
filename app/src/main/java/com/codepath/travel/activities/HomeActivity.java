@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @BindView(R.id.nvView) NavigationView nvDrawer;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
+    @BindView(R.id.etAutocomplete) EditText etAutocomplete;
 
     // Views in Navigation view
     private ActionBarDrawerToggle drawerToggle;
@@ -210,6 +212,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         } else if (resultCode == RESULT_OK && requestCode == CREATE_STORY_REQUEST) {
             // trip added
             tabViewPager.getAdapter().notifyDataSetChanged();
+            etAutocomplete.setText("");
         } else if (resultCode == RESULT_OK && requestCode == STORY_REQUEST) {
             // trip deleted
             tabViewPager.getAdapter().notifyDataSetChanged();

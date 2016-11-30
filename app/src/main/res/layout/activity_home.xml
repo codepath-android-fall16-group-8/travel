@@ -22,7 +22,7 @@
             android:background="?attr/colorPrimaryDark">
                 <fragment
                 android:id="@+id/autocomplete_fragment_new_trip"
-                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:name="com.codepath.travel.fragments.CustomPlaceAutoCompleteFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
