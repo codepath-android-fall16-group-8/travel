@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.PlaceSuggestionActivity">
 
-    <item
-        android:id="@+id/miMap"
-        android:orderInCategory="10"
-        android:title="@string/view_map"
-        android:icon="@android:drawable/ic_dialog_map"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/miMap"-->
+        <!--android:orderInCategory="10"-->
+        <!--android:title="@string/view_map"-->
+        <!--android:icon="@android:drawable/ic_dialog_map"-->
+        <!--app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/miCollage"

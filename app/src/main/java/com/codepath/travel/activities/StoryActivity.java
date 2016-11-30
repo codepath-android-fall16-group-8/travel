@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryArrayAdapter;
@@ -458,8 +457,8 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             setResult(RESULT_CANCELED);
             finish();
             return true;
-        } else if (id == R.id.miMap) {
-            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.miMap) {
+//            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.miCollage) {
             launchStoryCollageActivity();
         } else if (id == R.id.miDelete) {

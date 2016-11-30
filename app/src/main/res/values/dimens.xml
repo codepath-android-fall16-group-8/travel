@@ -24,4 +24,7 @@
     <dimen name="profile_view_user_pic_width">60dp</dimen>
     <dimen name="profile_view_user_pic_height">60dp</dimen>
 
+    <!-- Story View -->
+    <dimen name="media_size">120dp</dimen>
+
 </resources>

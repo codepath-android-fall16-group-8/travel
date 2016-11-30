@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.codepath.travel.net.GoogleAsyncHttpClient;
@@ -148,6 +149,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
         @BindView(R.id.tvPlaceName) TextView tvPlaceName;
         @BindView(R.id.cbCheckin) AppCompatCheckBox cbCheckin;
         @BindView(R.id.tvCheckin) TextView tvCheckin;
+        @BindView(R.id.rbUserRating) RatingBar rbUserRating;
         @BindView(R.id.llMediaActionRow) LinearLayout llMediaActionRow;
         @BindView(R.id.ivNote) ImageView ivNote;
         @BindView(R.id.ivCamera) ImageView ivCamera;
@@ -180,8 +182,8 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                     GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()), R.drawable.ic_photoholder, null);
             tvPlaceName.setText(storyPlace.getName());
             setupCheckinCheckbox(storyPlace);
-            // show/hide media add actions if owner
-            llMediaActionRow.setVisibility(isOwner ? VISIBLE : GONE);
+            // show media add actions for owner's current + past trips
+            llMediaActionRow.setVisibility(isOwner && datesRelation != FUTURE ? VISIBLE : GONE);
             Media.getMediaForStoryPlace(storyPlace, (mediaObjects, e) -> {
                 if (e == null) {
                     mPlaceMediaItems.clear();
@@ -222,6 +224,7 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
             cbCheckin.setEnabled(false);
             cbCheckin.setVisibility(GONE);
             tvCheckin.setVisibility(GONE);
+            rbUserRating.setVisibility(GONE);
         }
 
         private void showPastCheckin(StoryPlace storyPlace) {
@@ -232,9 +235,18 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                 tvCheckin.setText(DateUtils.formatDate(mContext, checkIn));
                 cbCheckin.setVisibility(VISIBLE);
                 tvCheckin.setVisibility(VISIBLE);
+                float rating = (float) storyPlace.getRating();
+                if (rating > 0) {
+                    rbUserRating.setRating((float) storyPlace.getRating());
+                    rbUserRating.setIsIndicator(true);
+                    rbUserRating.setVisibility(VISIBLE);
+                } else {
+                    rbUserRating.setVisibility(GONE);
+                }
             } else {
                 cbCheckin.setVisibility(GONE);
                 tvCheckin.setVisibility(GONE);
+                rbUserRating.setVisibility(GONE);
             }
         }
 
@@ -250,6 +262,13 @@ public class StoryArrayAdapter extends RecyclerView.Adapter<StoryArrayAdapter.St
                 if (!tvCheckin.getText().toString().equals(defaultText)) {
                     listener.checkinOnClick(getRealPosition(storyPlace), storyPlace.getCheckinTime());
                 }
+            });
+            rbUserRating.setRating((float) storyPlace.getRating());
+            rbUserRating.setIsIndicator(false);
+            rbUserRating.setVisibility(VISIBLE);
+            rbUserRating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                storyPlace.setRating(rating);
+                storyPlace.saveInBackground();
             });
         }
 

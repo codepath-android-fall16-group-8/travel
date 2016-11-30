@@ -64,4 +64,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- User Rating Bar (for Story Place) -->
+    <style name="heartRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar_heart_full</item>
+        <item name="android:minHeight">23dp</item>
+        <item name="android:maxHeight">25dp</item>
+    </style>
+
 </resources>

@@ -9,11 +9,11 @@
     android:paddingBottom="10dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin">
+        android:layout_marginBottom="@dimen/margin_s">
 
         <ImageView
             android:id="@+id/ivPlacePhoto"
@@ -24,35 +24,53 @@
             android:scaleType="centerCrop"
             tools:src="@mipmap/ic_launcher" />
 
-        <TextView
-            android:id="@+id/tvPlaceName"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginStart="@dimen/margin"
-            tools:text="Place Name Name Name Name Name Very Long Name" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tvCheckin"
-            android:layout_marginRight="@dimen/margin_s"
-            android:layout_marginEnd="@dimen/margin_s"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/forgot_checkin"/>
-
         <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/cbCheckin"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginRight="@dimen/margin"
             android:layout_marginEnd="@dimen/margin"
-            android:button="@drawable/checkbox_checkin"/>
-    </LinearLayout>
+            android:button="@drawable/checkbox_checkin" />
+
+        <TextView
+            android:id="@+id/tvCheckin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/cbCheckin"
+            android:layout_toStartOf="@id/cbCheckin"
+            android:layout_marginRight="@dimen/margin_s"
+            android:layout_marginEnd="@dimen/margin_s"
+            android:layout_marginBottom="@dimen/margin"
+            tools:text="@string/forgot_checkin" />
+
+        <RatingBar
+            android:id="@+id/rbUserRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cbCheckin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/margin_s"
+            android:layout_marginEnd="@dimen/margin_s"
+            android:numStars="5"
+            android:stepSize="0.5"
+            android:rating="3"
+            style="@style/heartRatingBar" />
+
+        <TextView
+            android:id="@+id/tvPlaceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ivPlacePhoto"
+            android:layout_toEndOf="@id/ivPlacePhoto"
+            android:layout_toLeftOf="@id/tvCheckin"
+            android:layout_toStartOf="@id/tvCheckin"
+            android:layout_marginLeft="@dimen/margin_s"
+            android:layout_marginStart="@dimen/margin_s"
+            tools:text="Place Name Name Name Name Name Very Long Name" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/llMediaActionRow"
@@ -90,7 +108,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvMediaHolder"
         android:layout_width="match_parent"
-        android:layout_height="120dp"/>
+        android:layout_height="@dimen/media_size"/>
 
     <View
         android:id="@+id/viewSeparator"

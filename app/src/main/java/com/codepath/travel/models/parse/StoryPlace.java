@@ -37,15 +37,14 @@ public class StoryPlace extends ParseObject {
         setLatitude(latlng.latitude);
         setLongitude(latlng.longitude);
         setPlaceTypes(place.getPlaceTypes());
-        setRating(place.getRating());
     }
 
     public StoryPlace(Trip trip, SuggestionPlace suggestionPlace) {
         setTrip(trip);
-        setName(suggestionPlace.getName());
         setPlaceId(suggestionPlace.getPlaceId());
-        setRating(suggestionPlace.getRating() != null ? suggestionPlace.getRating() : 0.0);
+        setName(suggestionPlace.getName());
         setPhotoUrl(suggestionPlace.getPhotoUrl());
+        // TODO: add lat/lng if displaying maps
     }
 
     public Trip getTrip() {
