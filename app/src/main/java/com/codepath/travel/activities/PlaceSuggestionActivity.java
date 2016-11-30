@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -124,7 +125,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         createTrip.putExtra(Constants.SUGGESTION_PLACES_LIST_ARG,
                 Parcels.wrap(mSuggestionPlaces));
 
-        startActivityForResult(createTrip, CREATE_STORY_REQUEST); // who is listening for this result?
+        startActivity(createTrip);
         setResult(RESULT_OK);
         finish();
     }
@@ -156,6 +157,18 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
                     mSightsSuggestionArrayAdapter.notifyItemChanged(position);
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // if called from home activity
+                setResult(RESULT_OK);
+                return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

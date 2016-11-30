@@ -215,7 +215,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
             // builder checks this and throws an exception if it is not the case.
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                     .build(this);
-            startActivityForResult(intent, Constants.AUTOCOMLETE_REQUEST);
+            startActivityForResult(intent, Constants.AUTOCOMPLETE_REQUEST);
         } catch (GooglePlayServicesRepairableException e) {
             // Indicates that Google Play Services is either not installed or not up to date. Prompt
             // the user to correct the issue.
@@ -240,7 +240,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         super.onActivityResult(requestCode, resultCode, data);
 
         // Check that the result was from the autocomplete widget.
-        if (requestCode == Constants.AUTOCOMLETE_REQUEST) {
+        if (requestCode == Constants.AUTOCOMPLETE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the edit text.
                 mNewSelectedPlace = PlaceAutocomplete.getPlace(this, data);

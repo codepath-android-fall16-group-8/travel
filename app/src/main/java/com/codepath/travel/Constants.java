@@ -6,7 +6,7 @@ package com.codepath.travel;
 public final class Constants {
     /* Request codes */
     public static final int CREATE_STORY_REQUEST = 1;
-    public static final int AUTOCOMLETE_REQUEST = 2;
+    public static final int AUTOCOMPLETE_REQUEST = 2;
     public static final int PLACE_DETAIL_REQUEST = 3;
 
     /* Intent argument keys */
@@ -18,5 +18,4 @@ public final class Constants {
     public static final String PLACE_ADDED_ARG = "place_added";
     public static final String PLACE_CATEGORY_ARG = "place_category";
     public static final String POSITION_ARG = "position";
-
 }
