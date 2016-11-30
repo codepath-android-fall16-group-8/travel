@@ -172,4 +172,10 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        finish();
+    }
+
 }
