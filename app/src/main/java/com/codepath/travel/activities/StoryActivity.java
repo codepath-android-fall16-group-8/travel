@@ -1,5 +1,12 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.IS_STORY_PLACE;
+import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
+import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
+import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
+import static com.codepath.travel.Constants.PLACE_ID_ARG;
+import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.Constants.POSITION_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
@@ -33,6 +40,7 @@ import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
+import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
@@ -232,6 +240,14 @@ public class StoryActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
+    private void launchPlaceDetailActivity(StoryPlace storyPlace) {
+        Intent placeDetail = new Intent(this, PlaceDetailActivity.class);
+        placeDetail.putExtra(PLACE_ID_ARG, storyPlace.getPlaceId());
+        placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
+        placeDetail.putExtra(IS_STORY_PLACE, true);
+        startActivity(placeDetail);
+    }
+
     private void launchMediaDialogFragment(int position, String mediaId,
             String caption, String data) {
         EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
@@ -328,7 +344,7 @@ public class StoryActivity extends AppCompatActivity implements
     public void onStoryPlaceInfo(int position) {
         StoryPlace storyPlace = mStoryPlaces.get(position);
         Log.d(TAG, String.format("show place at pos: %d, %s, %s", position, storyPlace.getName(), storyPlace.getPlaceId()));
-        // TODO: launch place detail (animate entry from bottom)
+        launchPlaceDetailActivity(storyPlace);
     }
 
     @Override
