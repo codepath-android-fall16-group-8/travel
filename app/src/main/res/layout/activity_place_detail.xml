@@ -98,9 +98,10 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/tvGoogleUrl"
-        style="@style/Widget.AppCompat.RatingBar.Small"
         android:numStars="5"
-        android:stepSize="0.5"/>
+        android:stepSize="0.5"
+        android:isIndicator="true"
+        style="@style/Widget.AppCompat.RatingBar.Small"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvReviews"

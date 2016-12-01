@@ -1,5 +1,6 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.IS_STORY_PLACE;
 import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
 import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
@@ -72,6 +73,9 @@ public class PlaceDetailActivity extends BaseActivity {
     @BindView(R.id.ratingBar) RatingBar ratingBar;
     @BindView(R.id.rvReviews) RecyclerView rvReviews;
 
+    // variables
+    boolean isStoryPlace;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,14 +85,24 @@ public class PlaceDetailActivity extends BaseActivity {
         String placeId = getIntent().getStringExtra(PLACE_ID_ARG);
         String placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
-        cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
+
+        isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE, false);
+        if (isStoryPlace) {
+            cbAddPlace.setVisibility(View.GONE);
+        } else {
+            cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
+        }
 
         GoogleAsyncHttpClient.getPlaceDetails(placeId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
-                    JSONObject result = response.getJSONObject(RESULT_KEY);
-                    setupViews(result);
+                    if (response.has(RESULT_KEY)) {
+                        setupViews(response.getJSONObject(RESULT_KEY));
+                    } else {
+                        Log.e("ERROR", String.format("Null place id from old story place data: %s", placeId));
+                        pbImageLoading.setVisibility(View.GONE);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -180,13 +194,14 @@ public class PlaceDetailActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // if called from place suggestion activity
-                Intent update = new Intent();
-                update.putExtra(PLACE_CATEGORY_ARG,
-                        getIntent().getBooleanExtra(PLACE_CATEGORY_ARG, true));
-                update.putExtra(POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
-                update.putExtra(PLACE_ADDED_ARG, cbAddPlace.isChecked());
-                setResult(RESULT_OK, update);
+                if (!isStoryPlace) {
+                    Intent update = new Intent();
+                    update.putExtra(PLACE_CATEGORY_ARG,
+                            getIntent().getBooleanExtra(PLACE_CATEGORY_ARG, true));
+                    update.putExtra(POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
+                    update.putExtra(PLACE_ADDED_ARG, cbAddPlace.isChecked());
+                    setResult(RESULT_OK, update);
+                }
                 return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);

@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.StoryActivity"
-    tools:showIn="@layout/activity_story">
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/tvTripDates"
@@ -32,15 +29,18 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/cbShare"
         android:layout_toStartOf="@+id/cbShare"
+        android:layout_marginRight="@dimen/margin_s"
+        android:layout_marginEnd="@dimen/margin_s"
         android:layout_alignTop="@+id/cbShare"
         android:layout_alignBottom="@+id/cbShare"
-        android:text="@string/share_label"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:text="@string/share_label" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvStoryPlaces"
         android:layout_below="@+id/tvTripDates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_s"
         android:scrollbars="vertical" />
 </RelativeLayout>

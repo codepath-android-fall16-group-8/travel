@@ -57,9 +57,13 @@
         android:id="@+id/etCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/headerRow"
         android:hint="@string/hint_compose_note"
         style="@style/EditText.FullWidth"/>
+
+    <TextView
+        android:id="@+id/tvCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Space
         android:layout_width="wrap_content"

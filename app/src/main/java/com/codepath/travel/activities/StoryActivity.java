@@ -1,5 +1,12 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.IS_STORY_PLACE;
+import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
+import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
+import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
+import static com.codepath.travel.Constants.PLACE_ID_ARG;
+import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.Constants.POSITION_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
@@ -17,28 +24,27 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.R;
-import com.codepath.travel.adapters.StoryArrayAdapter;
+import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
+import com.codepath.travel.decoration.DividerItemDecoration;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
 import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
-import com.codepath.travel.helper.OnStartDragListener;
-import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
+import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
+import com.daimajia.swipe.util.Attributes;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -57,8 +63,8 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class StoryActivity extends AppCompatActivity implements OnStartDragListener,
-        StoryArrayAdapter.StoryPlaceListener,
+public class StoryActivity extends AppCompatActivity implements
+        SwipeStoryPlaceAdapter.StoryPlaceListener,
         EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         DateRangePickerListener,
@@ -81,12 +87,12 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
     @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
+    @BindView(R.id.tvShare) TextView tvShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
-    private StoryArrayAdapter mAdapter;
-    private ItemTouchHelper mItemTouchHelper;
+    private SwipeStoryPlaceAdapter mAdapter;
     private int mMediaLauncherStoryIndex;
     private String mTripID;
     private Trip mTrip;
@@ -136,6 +142,7 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
     private void setupSharedCheckbox() {
         // only display for logged in user
         if (isOwner) {
+            tvShare.setVisibility(View.VISIBLE);
             cbShare.setVisibility(View.VISIBLE);
             cbShare.setChecked(mTrip.isShared());
             cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -144,20 +151,20 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
                 mTrip.saveInBackground();
             });
         } else {
+            tvShare.setVisibility(View.GONE);
             cbShare.setVisibility(View.GONE);
         }
     }
 
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryArrayAdapter(this, this, mStoryPlaces, isOwner, datesRelation);
-        rvStoryPlaces.setHasFixedSize(true);
+        mAdapter = new SwipeStoryPlaceAdapter(this, mStoryPlaces, isOwner, datesRelation);
+        mAdapter.setMode(Attributes.Mode.Single);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
-
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
+        RecyclerView.ItemDecoration itemDecoration = new
+                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        rvStoryPlaces.addItemDecoration(itemDecoration);
     }
 
     private void getPlacesInTrip() {
@@ -233,10 +240,18 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
         startActivity(intent);
     }
 
-    private void launchComposeNoteDialogFragment(int position, String mediaId,
+    private void launchPlaceDetailActivity(StoryPlace storyPlace) {
+        Intent placeDetail = new Intent(this, PlaceDetailActivity.class);
+        placeDetail.putExtra(PLACE_ID_ARG, storyPlace.getPlaceId());
+        placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
+        placeDetail.putExtra(IS_STORY_PLACE, true);
+        startActivity(placeDetail);
+    }
+
+    private void launchMediaDialogFragment(int position, String mediaId,
             String caption, String data) {
         EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName(), mediaId, caption, data);
+                mStoryPlaces.get(position).getName(), mediaId, caption, data, isOwner);
         fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
     }
 
@@ -303,12 +318,6 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     /* Listeners */
     @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        Log.d("onStartDrag", "dragging...");
-        mItemTouchHelper.startDrag(viewHolder);
-    }
-
-    @Override
     public void cameraOnClick(int position) {
         launchCameraActivity(position);
     }
@@ -320,27 +329,29 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
 
     @Override
     public void noteOnClick(int position) {
-        launchComposeNoteDialogFragment(position, null, null, null);
+        launchMediaDialogFragment(position, null, null, null);
     }
 
     @Override
-    public void storyPlaceMoved(int fromPosition, int toPosition) {
-        Log.d(TAG, String.format("story moved fromPos: %d, toPos: %d", fromPosition, toPosition));
-        // TODO: save order in Parse
-    }
-
-    @Override
-    public void storyPlaceDismissed(int position) {
-        Log.d(TAG, String.format("dismissed story at pos: %d", position));
+    public void onStoryPlaceDelete(int position) {
+        Log.d(TAG, String.format("delete story at pos: %d", position));
         StoryPlace storyPlace = mStoryPlaces.get(position);
         storyPlace.deleteWithMedia();
+        // TODO: show confirm dialog
+    }
+
+    @Override
+    public void onStoryPlaceInfo(int position) {
+        StoryPlace storyPlace = mStoryPlaces.get(position);
+        Log.d(TAG, String.format("show place at pos: %d, %s, %s", position, storyPlace.getName(), storyPlace.getPlaceId()));
+        launchPlaceDetailActivity(storyPlace);
     }
 
     @Override
     public void mediaOnClick(Media media, int mPos, int storyPos) {
         Log.d(TAG, String.format("mediaOnClick, mPos %d, storyPos %d", mPos, storyPos));
-        launchComposeNoteDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
-                media.getDataUrl());
+        launchMediaDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
+                    media.getDataUrl());
     }
 
     @Override
@@ -455,8 +466,8 @@ public class StoryActivity extends AppCompatActivity implements OnStartDragListe
             setResult(RESULT_CANCELED);
             finish();
             return true;
-        } else if (id == R.id.miMap) {
-            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
+//        } else if (id == R.id.miMap) {
+//            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.miCollage) {
             launchStoryCollageActivity();
         } else if (id == R.id.miDelete) {

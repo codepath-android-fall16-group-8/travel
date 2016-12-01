@@ -1,13 +1,17 @@
 package com.codepath.travel.models.parse;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import static com.codepath.travel.models.parse.ParseModelConstants.*;
 
 import android.util.Log;
+
+import java.util.List;
 
 /**
  * Parse model for a media item, which can be text or media.
@@ -72,5 +76,18 @@ public class Media extends ParseObject {
         ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
         mediaQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
         mediaQuery.getFirstInBackground(callback);
+    }
+
+    /**
+     * Find media items that belong to the given story place id and call the given callback.
+     *
+     * @param storyPlace the Parse story place object
+     * @param callback the callback function to call
+     */
+    public static void getMediaForStoryPlace(StoryPlace storyPlace, FindCallback<Media> callback) {
+        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
+        mediaQuery.whereEqualTo(STORY_PLACE_KEY, storyPlace);
+        mediaQuery.addDescendingOrder(UPDATED_AT_KEY);
+        mediaQuery.findInBackground(callback);
     }
 }

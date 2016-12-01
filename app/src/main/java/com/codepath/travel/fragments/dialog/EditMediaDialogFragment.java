@@ -32,6 +32,7 @@ public class EditMediaDialogFragment extends DialogFragment {
     private static final String MEDIA_ID_KEY = "mediaId";
     private static final String CAPTION_KEY = "caption";
     private static final String DATA_KEY = "data";
+    private static final String IS_OWNER_KEY = "isOwner";
 
     @BindView(R.id.btnCancel) ImageButton btnCancel;
     @BindView(R.id.tvPlaceName) TextView tvPlaceName;
@@ -42,6 +43,7 @@ public class EditMediaDialogFragment extends DialogFragment {
     @BindView(R.id.btnSetTripCover) Button btnSetTripCover;
     @BindView(R.id.btnSetUserCover) Button btnSetUserCover;
     @BindView(R.id.etCaption) EditText etCaption;
+    @BindView(R.id.tvCaption) TextView tvCaption;
     @BindView(R.id.btnSave) Button btnSave;
     private Unbinder unbinder;
 
@@ -61,7 +63,7 @@ public class EditMediaDialogFragment extends DialogFragment {
     }
 
     public static EditMediaDialogFragment newInstance(int position, String placeName,
-            String mediaId, String caption, String data) {
+            String mediaId, String caption, String data, boolean isOwner) {
         EditMediaDialogFragment fragment = new EditMediaDialogFragment();
         Bundle args = new Bundle();
         args.putInt(STORY_POSITION_KEY, position);
@@ -69,6 +71,7 @@ public class EditMediaDialogFragment extends DialogFragment {
         args.putString(MEDIA_ID_KEY, mediaId);
         args.putString(CAPTION_KEY, caption);
         args.putString(DATA_KEY, data);
+        args.putBoolean(IS_OWNER_KEY, isOwner);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,45 +96,65 @@ public class EditMediaDialogFragment extends DialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         Bundle args = getArguments();
         tvPlaceName.setText(args.getString(PLACE_NAME_KEY));
+        boolean isOwner = args.getBoolean(IS_OWNER_KEY, false);
 
         String mediaId = args.getString(MEDIA_ID_KEY);
-        if (mediaId != null) {
+        if (mediaId != null && isOwner) {
             btnDelete.setVisibility(View.VISIBLE);
         } else {
             btnDelete.setVisibility(View.INVISIBLE);
         }
 
         String caption = args.getString(CAPTION_KEY);
-        if (caption != null && !TextUtils.isEmpty(caption)) {
-            etCaption.setText(caption);
-            etCaption.setSelection(caption.length());
+        if (isOwner) {
+            tvCaption.setVisibility(View.GONE);
+            if (caption != null && !TextUtils.isEmpty(caption)) {
+                etCaption.setText(caption);
+                etCaption.setSelection(caption.length());
+            }
+        } else {
+            etCaption.setVisibility(View.GONE);
+            if (caption != null && !TextUtils.isEmpty(caption)) {
+                tvCaption.setText(caption);
+            }
         }
 
         btnCancel.setOnClickListener(v -> dismiss());
 
-        btnSave.setOnClickListener(v -> {
-            listener.onSaveCaption(position, etCaption.getText().toString(), mediaId);
-            dismiss();
-        });
+        if (isOwner) {
+            btnSave.setOnClickListener(v -> {
+                listener.onSaveCaption(position, etCaption.getText().toString(), mediaId);
+                dismiss();
+            });
 
-        btnDelete.setOnClickListener(v -> {
-            listener.onDelete(position, mediaId);
-            dismiss();
-        });
+            btnDelete.setOnClickListener(v -> {
+                listener.onDelete(position, mediaId);
+                dismiss();
+            });
+        } else {
+            btnSave.setVisibility(View.GONE);
+            btnDelete.setVisibility(View.INVISIBLE);
+        }
 
         // photo-specific
         String data = args.getString(DATA_KEY);
         if (data != null && !TextUtils.isEmpty(data)) {
             ImageUtils.loadImage(ivPhoto, data, android.R.drawable.gallery_thumb, null);
-            btnSetStoryPlaceCover.setOnClickListener(v -> {
-                listener.onSetStoryPlaceCoverPhoto(position, data);
-            });
-            btnSetTripCover.setOnClickListener(v -> {
-                listener.onSetTripCoverPhoto(data);
-            });
-            btnSetUserCover.setOnClickListener(v -> {
-                listener.onSetUserCoverPhoto(data);
-            });
+            if (isOwner) {
+                btnSetStoryPlaceCover.setOnClickListener(v -> {
+                    listener.onSetStoryPlaceCoverPhoto(position, data);
+                });
+                btnSetTripCover.setOnClickListener(v -> {
+                    listener.onSetTripCoverPhoto(data);
+                });
+                btnSetUserCover.setOnClickListener(v -> {
+                    listener.onSetUserCoverPhoto(data);
+                });
+            } else {
+                btnSetStoryPlaceCover.setVisibility(View.GONE);
+                btnSetTripCover.setVisibility(View.GONE);
+                btnSetUserCover.setVisibility(View.GONE);
+            }
         } else {
             llPhotoView.setVisibility(View.GONE);
         }

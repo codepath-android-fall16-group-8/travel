@@ -86,4 +86,7 @@ dependencies {
     // Parceler
     compile 'org.parceler:parceler-api:1.1.1'
     apt 'org.parceler:parceler:1.1.1'
+
+    // swipe layout
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 }

@@ -18,4 +18,5 @@ public final class Constants {
     public static final String PLACE_ADDED_ARG = "place_added";
     public static final String PLACE_CATEGORY_ARG = "place_category";
     public static final String POSITION_ARG = "position";
+    public static final String IS_STORY_PLACE = "isStoryPlace";
 }
