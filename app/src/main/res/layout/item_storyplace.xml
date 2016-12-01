@@ -37,18 +37,36 @@
         android:orientation="horizontal"
         android:layout_gravity="end"
         android:gravity="center"
-        android:padding="@dimen/margin_s"
+        android:padding="@dimen/margin"
         android:background="@color/green">
 
         <ImageView
             android:id="@+id/ivInfo"
             app:srcCompat="@drawable/ic_info"
             android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"/>
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"/>
 
         <ImageView
-            android:id="@+id/ivEdit"
-            app:srcCompat="@drawable/ic_create"
+            android:id="@+id/ivNote"
+            app:srcCompat="@drawable/ic_add_note"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"/>
+
+        <ImageView
+            android:id="@+id/ivCamera"
+            app:srcCompat="@drawable/ic_add_photo"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"/>
+
+        <ImageView
+            android:id="@+id/ivPhotos"
+            app:srcCompat="@drawable/ic_photo_library"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"/>
     </LinearLayout>

@@ -130,10 +130,10 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @BindView(R.id.ivDelete) ImageView ivDelete;
         @BindView(R.id.bottomRight) LinearLayout rightMenu;
         @BindView(R.id.ivInfo) ImageView ivInfo;
-        @BindView(R.id.ivEdit) ImageView ivEdit;
-//        @BindView(R.id.ivNote) ImageView ivNote;
-//        @BindView(R.id.ivCamera) ImageView ivCamera;
-//        @BindView(R.id.ivGallery) ImageView ivGallery;
+//        @BindView(R.id.ivEdit) ImageView ivEdit;
+        @BindView(R.id.ivNote) ImageView ivNote;
+        @BindView(R.id.ivCamera) ImageView ivCamera;
+        @BindView(R.id.ivPhotos) ImageView ivPhotos;
 
         // strings
         @BindString(R.string.checkin) String checkin;
@@ -198,11 +198,10 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
 
             // right menu
             ivInfo.setOnClickListener(v -> listener.onStoryPlaceInfo(getRealPosition(mStoryPlace)));
-            ivEdit.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
-
-//            ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
-//            ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(mStoryPlace)));
-//            ivGallery.setOnClickListener(v -> listener.galleryOnClick(getRealPosition(mStoryPlace)));
+//            ivEdit.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
+            ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
+            ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(mStoryPlace)));
+            ivPhotos.setOnClickListener(v -> listener.galleryOnClick(getRealPosition(mStoryPlace)));
         }
 
         private void setupCheckinCheckbox(StoryPlace storyPlace) {
@@ -297,6 +296,8 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
             cbCheckin.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!isChecked) {
                     tvCheckin.setText(forgot_checkin);
+                    storyPlace.remove(ParseModelConstants.CHECK_IN_TIME_KEY);
+                    storyPlace.saveInBackground();
                 }
             });
         }

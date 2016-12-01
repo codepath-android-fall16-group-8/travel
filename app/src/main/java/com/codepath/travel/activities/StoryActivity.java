@@ -232,10 +232,10 @@ public class StoryActivity extends AppCompatActivity implements
         startActivity(intent);
     }
 
-    private void launchComposeNoteDialogFragment(int position, String mediaId,
+    private void launchMediaDialogFragment(int position, String mediaId,
             String caption, String data) {
         EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName(), mediaId, caption, data);
+                mStoryPlaces.get(position).getName(), mediaId, caption, data, isOwner);
         fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
     }
 
@@ -313,7 +313,7 @@ public class StoryActivity extends AppCompatActivity implements
 
     @Override
     public void noteOnClick(int position) {
-        launchComposeNoteDialogFragment(position, null, null, null);
+        launchMediaDialogFragment(position, null, null, null);
     }
 
     @Override
@@ -334,8 +334,8 @@ public class StoryActivity extends AppCompatActivity implements
     @Override
     public void mediaOnClick(Media media, int mPos, int storyPos) {
         Log.d(TAG, String.format("mediaOnClick, mPos %d, storyPos %d", mPos, storyPos));
-        launchComposeNoteDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
-                media.getDataUrl());
+        launchMediaDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
+                    media.getDataUrl());
     }
 
     @Override
