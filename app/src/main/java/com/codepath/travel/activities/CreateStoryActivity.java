@@ -57,7 +57,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-public class CreateStoryActivity extends AppCompatActivity implements OnStartDragListener,
+public class CreateStoryActivity extends BaseActivity implements OnStartDragListener,
         DateRangePickerListener {
 
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
@@ -91,7 +91,7 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
         ButterKnife.bind(this);
-
+        initializeCommonViews();
         mDestination = getIntent().getStringExtra(DESTINATION_ARG);
         //Get list of selected places from suggestions screen
         mSelectedSuggestionPlaces = Parcels.unwrap(getIntent().getParcelableExtra(
@@ -293,15 +293,24 @@ public class CreateStoryActivity extends AppCompatActivity implements OnStartDra
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.miDelete) {
-            mNewTrip.deleteInBackground();
-            finish();
-            return true;
+        //int id = item.getItemId();
+        switch (item.getItemId()) {
+            case android.R.id.home :
+            case R.id.miDelete :
+                setResult(RESULT_OK);
+                mNewTrip.deleteInBackground();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK);
+        mNewTrip.deleteInBackground();
+        finish();
     }
 
 }
