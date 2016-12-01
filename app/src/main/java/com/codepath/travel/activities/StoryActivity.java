@@ -56,7 +56,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
@@ -79,9 +78,6 @@ public class StoryActivity extends AppCompatActivity implements
     public static final String TRIP_TITLE_ARG = "trip_title";
 
     private static final String TAG = StoryActivity.class.getSimpleName();
-
-    // strings
-    @BindString(R.string.toolbar_title_story) String toolbarTitle;
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -112,7 +108,7 @@ public class StoryActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         mTripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
-        toolbar.setTitle(String.format(toolbarTitle, mTripTitle));
+        toolbar.setTitle(mTripTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

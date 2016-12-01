@@ -6,13 +6,11 @@ import static com.codepath.travel.Constants.SUGGESTION_PLACES_LIST_ARG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -54,7 +52,6 @@ import java.util.Date;
 
 import butterknife.BindString;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
 public class CreateStoryActivity extends BaseActivity implements OnStartDragListener,
@@ -63,16 +60,18 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
 
     // strings
-    @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
+    @BindString(R.string.default_trip_title) String tripTitleFormat;
     @BindString(R.string.hint_trip_dates) String hintTripDates;
+    @BindString(R.string.error_trip_dates) String errorTripDates;
 
     // Views
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.etTripTitle) EditText etTripTitle;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
-    @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
-    @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
     @BindView(R.id.etPlacesOfInterest) EditText etPlaceOfInterest;
+    @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
+    @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
+    @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
 
     // Listeners
     private ItemTouchHelper mItemTouchHelper;
@@ -85,23 +84,39 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     private String mDestination;
     private String mPhotoReference;
     private Trip mNewTrip;
+    private String defaultTripTitle;
+    private boolean tripDatesSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
-        ButterKnife.bind(this);
         initializeCommonViews();
+
         mDestination = getIntent().getStringExtra(DESTINATION_ARG);
         //Get list of selected places from suggestions screen
         mSelectedSuggestionPlaces = Parcels.unwrap(getIntent().getParcelableExtra(
                 SUGGESTION_PLACES_LIST_ARG));
-        toolbar.setTitle(String.format(toolbarTitle, mDestination));
-        setSupportActionBar(toolbar);
 
+        tripDatesSet = false;
+        defaultTripTitle = String.format(tripTitleFormat, mDestination);
+        etTripTitle.setText(defaultTripTitle);
+        etTripTitle.setSelection(defaultTripTitle.length());
         setUpRecyclerView();
         setUpClickListeners();
         setUpTrip();
+    }
+
+    private void setUpRecyclerView() {
+        mStoryPlaces = new ArrayList<>();
+        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(),this, mStoryPlaces);
+        rvStoryPlaces.setHasFixedSize(true);
+        rvStoryPlaces.setAdapter(mAdapter);
+        rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
+
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
     }
 
     private void setUpTrip() {
@@ -120,8 +135,6 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         mNewTrip = new Trip(currentUser, mDestination);
         mNewTrip.saveInBackground(e -> {
             if (e == null) {
-                tvTripDates.setOnClickListener(
-                        v -> launchDateRangePickerDialog(mNewTrip.getStartDate(), mNewTrip.getEndDate()));
                 addSuggestionPlacesToTrip();
             } else {
                 Log.d(TAG, String.format("Failed to setup trip: %s", e.getMessage()));
@@ -138,6 +151,20 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     }
 
     private void setUpClickListeners() {
+        // Trip Dates
+        tvTripDates.setOnClickListener(v -> {
+            if (tripDatesSet) {
+                launchDateRangePickerDialog(mNewTrip.getStartDate(), mNewTrip.getEndDate());
+            } else {
+                launchDateRangePickerDialog(null, null);
+            }
+        });
+
+        etPlaceOfInterest.setOnClickListener((View view) -> {
+            mPhotoReference = "";
+            openAutocompleteActivity();
+        });
+
         btAddNewPlace.setOnClickListener((View view) -> {
             String placeOfInterest = etPlaceOfInterest.getText().toString();
             if(!placeOfInterest.isEmpty()) {
@@ -149,33 +176,32 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         });
 
         btCreateMyTrip.setOnClickListener((View v) -> {
-            StoryPlace.saveAllInBackground(mStoryPlaces, (ParseException e) -> {
-                if (e == null) {
-                    Toast.makeText(CreateStoryActivity.this, "Trip saved", Toast.LENGTH_LONG).show();
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    Log.d("createStory", String.format("Failed: %s", e.getMessage()));
-                }
-            });
+            // check that trip dates are set
+            if (!tripDatesSet) {
+                showErrorDialog(errorTripDates);
+                return;
+            }
+
+            // check title
+            String tripTitle = etTripTitle.getText().toString();
+            mNewTrip.setTitle(tripTitle.isEmpty() ? defaultTripTitle : tripTitle);
+
+            // save trip
+            mNewTrip.saveInBackground();
+
+            // save places
+            if (!mStoryPlaces.isEmpty()) {
+                StoryPlace.saveAllInBackground(mStoryPlaces, (ParseException e) -> {
+                    if (e == null) {
+                        Toast.makeText(CreateStoryActivity.this, "Trip saved", Toast.LENGTH_LONG).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    } else {
+                        Log.d(TAG, String.format("Failed: %s", e.getMessage()));
+                    }
+                });
+            }
         });
-
-        etPlaceOfInterest.setOnClickListener((View view) -> {
-            mPhotoReference = "";
-            openAutocompleteActivity();
-        });
-    }
-
-    private void setUpRecyclerView() {
-        mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(),this, mStoryPlaces);
-        rvStoryPlaces.setHasFixedSize(true);
-        rvStoryPlaces.setAdapter(mAdapter);
-        rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
-
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
     }
 
     private void addSelectedPlaceInTrip(Place place, String photoReference) {
@@ -275,19 +301,11 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
         mNewTrip.setStartDate(startDate.getTime());
         mNewTrip.setEndDate(endDate.getTime());
-        mNewTrip.saveInBackground();
         tvTripDates.setText(DateUtils.formatDateRange(this, startDate.getTime(), endDate.getTime()));
+        tripDatesSet = true;
     }
 
     /* Toolbar */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_create_story, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -295,12 +313,6 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         // as you specify a parent activity in AndroidManifest.xml.
         //int id = item.getItemId();
         switch (item.getItemId()) {
-            case android.R.id.home :
-            case R.id.miDelete :
-                setResult(RESULT_OK);
-                mNewTrip.deleteInBackground();
-                finish();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
