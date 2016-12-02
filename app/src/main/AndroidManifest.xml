@@ -81,6 +81,7 @@
         </activity>
         <activity
             android:name=".activities.CreateStoryActivity"
+            android:label="@string/toolbar_title_create_story"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.PlaceSuggestionActivity" />
         <activity android:name=".activities.StoryActivity" />

@@ -43,7 +43,10 @@ public class StoryPlace extends ParseObject {
         setTrip(trip);
         setPlaceId(suggestionPlace.getPlaceId());
         setName(suggestionPlace.getName());
-        setPhotoUrl(suggestionPlace.getPhotoUrl());
+        setRating(suggestionPlace.getRating() != null ? suggestionPlace.getRating() : 0.0);
+        if (suggestionPlace.getPhotoUrl() != null) {
+            setPhotoUrl(suggestionPlace.getPhotoUrl());
+        }
         // TODO: add lat/lng if displaying maps
     }
 

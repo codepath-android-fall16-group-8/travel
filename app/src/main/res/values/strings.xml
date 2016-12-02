@@ -11,10 +11,9 @@
     <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
 
-    <string name="toolbar_title_create_story">My planned trip to %1$s</string>
-    <string name="toolbar_title_story">Trip to %1$s</string>
-    <string name="toolbar_title_story_collage">Story: %1$s</string>
     <string name="toolbar_title_place_suggestion">Plan my trip to %1$s</string>
+    <string name="toolbar_title_create_story">Create Trip</string>
+    <string name="toolbar_title_story_collage">Story: %1$s</string>
 
     <string name="view_map">View Map</string>
     <string name="view_collage">View Collage</string>
@@ -42,7 +41,10 @@
     <string name="search_user">Find Friends</string>
 
     <!-- Create Trip -->
-    <string name="hint_places_of_interest">visit place</string>
+    <string name="default_trip_title">Trip to %1$s</string>
+    <string name="hint_trip_title">Trip Title</string>
+    <string name="hint_places_of_interest">Find more places</string>
+    <string name="error_trip_dates">Please select trip dates</string>
 
     <!-- Story Activity -->
     <!-- Confirm Delete Trip Dialog -->
@@ -58,7 +60,7 @@
     <string name="set_user_cover">Set user cover</string>
 
     <!-- Trip Date Selection -->
-    <string name="hint_trip_dates">Set Trip Dates</string>
+    <string name="hint_trip_dates">Select Trip Dates</string>
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
 
