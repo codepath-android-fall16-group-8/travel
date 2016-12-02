@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
@@ -39,6 +40,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     @BindView(R.id.btnCart) ImageButton mStoryCart;
     @BindView(R.id.rvRestaurantPlaces) RecyclerView mRvRestaurantPlaces;
     @BindView(R.id.rvSightPlaces) RecyclerView mRvSightPlaces;
+    @BindView(R.id.tvPlaceCount) TextView mTvPlaceCount;
 
     //Member variable
     private String mDestination;
@@ -59,6 +61,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         setContentView(R.layout.activity_place_suggestion);
         initializeCommonViews();
 
+
         mDestination = getIntent().getStringExtra(Constants.DESTINATION_ARG);
         mLatLng = getIntent().getStringExtra(Constants.LATLNG_ARG);
         setActionBarTitle(String.format(toolbarTitle, mDestination));
@@ -76,6 +79,9 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         mRvSightPlaces.setAdapter(mSightsSuggestionArrayAdapter);
         mSightLinearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRvSightPlaces.setLayoutManager(mSightLinearLayoutManager);
+
+        mTvPlaceCount.setText(String.valueOf(mSuggestionPlaces.size()));
+        mTvPlaceCount.setVisibility(View.GONE);
 
         setUpClickListeners();
         showPlacesToEat();
@@ -110,12 +116,18 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     @Override
     public void addPlace(SuggestionPlace suggestionPlace) {
         mSuggestionPlaces.add(suggestionPlace);
+        mTvPlaceCount.setVisibility(View.VISIBLE);
+        mTvPlaceCount.setText(String.valueOf(mSuggestionPlaces.size()));
 
     }
 
     @Override
     public void removePlace(SuggestionPlace suggestionPlace) {
         mSuggestionPlaces.remove(suggestionPlace);
+        mTvPlaceCount.setText(String.valueOf(mSuggestionPlaces.size()));
+        if(mSuggestionPlaces.isEmpty()) {
+            mTvPlaceCount.setVisibility(View.GONE);
+        }
     }
 
     /* Navigation */
