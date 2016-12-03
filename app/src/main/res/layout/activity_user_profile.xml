@@ -15,7 +15,7 @@
         <FrameLayout
             android:id="@+id/flCoverPicContainer"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/profile_cover_pic_height"
+            android:layout_height="@dimen/thumbnail_size"
             tools:background="@color/cardview_light_background"/>
         <FrameLayout
             android:id="@+id/flUserPicContainer"
@@ -23,8 +23,8 @@
             android:layout_alignLeft="@+id/flCoverPicContainer"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="180dp"
-            android:layout_width="@dimen/profile_view_user_pic_width"
-            android:layout_height="@dimen/profile_view_user_pic_height"
+            android:layout_width="@dimen/thumbnail_size"
+            android:layout_height="@dimen/thumbnail_size"
             tools:background="@color/cardview_dark_background"/>
 
         <TextView

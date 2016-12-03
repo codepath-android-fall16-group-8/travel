@@ -86,8 +86,8 @@
 
             <ImageView
                 android:id="@+id/ivPlacePhoto"
-                android:layout_width="@dimen/photo_size"
-                android:layout_height="@dimen/photo_size"
+                android:layout_width="@dimen/thumbnail_size"
+                android:layout_height="@dimen/thumbnail_size"
                 android:scaleType="centerCrop"
                 tools:src="@mipmap/ic_launcher" />
 
