@@ -4,8 +4,20 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="icon_size">24dp</dimen>
-    <dimen name="margin_s">5dp</dimen>
-    <dimen name="margin">10dp</dimen>
+    <!-- subtitles -->
+    <dimen name="subtitle_height">48dp</dimen>
+    <!-- vertical space between content -->
+    <dimen name="space">8dp</dimen>
+
+    <!-- card view -->
+    <dimen name="cv_elevation">2dp</dimen>
+    <dimen name="cv_corner_radius">2dp</dimen>
+
+    <dimen name="textDrawablePadding">8dp</dimen>
+
+    <!-- TODO: replace these usages -->
+    <dimen name="margin_s">@dimen/space</dimen>
+    <dimen name="margin">@dimen/activity_horizontal_margin</dimen>
 
     <!-- Navigation Drawer -->
     <dimen name="nav_header_top_margin">40dp</dimen>
