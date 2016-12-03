@@ -27,4 +27,6 @@
     <!-- Story View -->
     <dimen name="media_size">120dp</dimen>
 
+    <!-- place suggestion activity -->
+    <dimen name="destination_backdrop">200dp</dimen>
 </resources>
