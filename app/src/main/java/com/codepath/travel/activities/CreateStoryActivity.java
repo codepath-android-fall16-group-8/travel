@@ -1,8 +1,5 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.Constants.DESTINATION_ARG;
-import static com.codepath.travel.Constants.SUGGESTION_PLACES_LIST_ARG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.travel.Constants;
-import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
@@ -27,9 +23,10 @@ import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DateRangePickerListener;
-import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.SuggestionPlace;
+import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -37,7 +34,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -82,6 +78,7 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     private StoryPlaceArrayAdapter mAdapter;
     private Place mNewSelectedPlace;
     private String mDestination;
+    private String mDestinationPhotoRef;
     private String mPhotoReference;
     private Trip mNewTrip;
     private String defaultTripTitle;
@@ -93,10 +90,11 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         setContentView(R.layout.activity_create_story);
         initializeCommonViews();
 
-        mDestination = getIntent().getStringExtra(DESTINATION_ARG);
+        mDestination = getIntent().getStringExtra(Constants.PLACE_NAME_ARG);
+        mDestinationPhotoRef = getIntent().getStringExtra(Constants.PLACE_PHOTO_REF_ARG);
         //Get list of selected places from suggestions screen
         mSelectedSuggestionPlaces = Parcels.unwrap(getIntent().getParcelableExtra(
-                SUGGESTION_PLACES_LIST_ARG));
+                Constants.SUGGESTION_PLACES_LIST_ARG));
 
         tripDatesSet = false;
         defaultTripTitle = String.format(tripTitleFormat, mDestination);
@@ -133,6 +131,9 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
             currentUser.saveInBackground();
         }
         mNewTrip = new Trip(currentUser, mDestination);
+        if(mDestinationPhotoRef != null) {
+            mNewTrip.setCoverPicUrl(GoogleAsyncHttpClient.getPlacePhotoUrl(mDestinationPhotoRef));
+        }
         mNewTrip.saveInBackground(e -> {
             if (e == null) {
                 addSuggestionPlacesToTrip();
@@ -210,12 +211,9 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         mAdapter.notifyDataSetChanged();
     }
 
-    private void addPhotoReferenceByPlaceID(String placeID) {
+    private void getPhotoReferenceByPlaceID(String placeID) {
         {   //To get photo reference for a place in create story view
-            RequestParams params = new RequestParams();
-            params.put("placeid", placeID);
-            params.put("key", GoogleAsyncHttpClient.GOOGLE_PLACES_SEARCH_API_KEY);
-            GoogleAsyncHttpClient.get(GoogleAsyncHttpClient.PLACE_DETAILS_URL, params, new JsonHttpResponseHandler() {
+            GoogleAsyncHttpClient.getPlaceDetails(placeID, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -271,7 +269,7 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
                 // Get the user's selected place from the edit text.
                 mNewSelectedPlace = PlaceAutocomplete.getPlace(this, data);
                 //Get photo reference for it by querying api
-                addPhotoReferenceByPlaceID(mNewSelectedPlace.getId());
+                getPhotoReferenceByPlaceID(mNewSelectedPlace.getId());
                 Log.i(TAG, "Place Selected: " + mNewSelectedPlace.getName());
                 etPlaceOfInterest.setText(mNewSelectedPlace.getName());
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
