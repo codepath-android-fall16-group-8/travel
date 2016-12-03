@@ -1,5 +1,36 @@
 package com.codepath.travel.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.codepath.travel.R;
+import com.codepath.travel.adapters.ReviewsAdapter;
+import com.codepath.travel.helper.ImageUtils;
+import com.codepath.travel.models.Review;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import butterknife.BindString;
+import butterknife.BindView;
+import cz.msebera.android.httpclient.Header;
+
 import static com.codepath.travel.Constants.IS_STORY_PLACE;
 import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
 import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
@@ -21,37 +52,6 @@ import static com.codepath.travel.net.GooglePlaceConstants.RESULT_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.REVIEWS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.WEBSITE_KEY;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RatingBar;
-import android.widget.TextView;
-
-import com.codepath.travel.net.GoogleAsyncHttpClient;
-import com.codepath.travel.R;
-import com.codepath.travel.adapters.ReviewsAdapter;
-import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.Review;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import cz.msebera.android.httpclient.Header;
-
 public class PlaceDetailActivity extends BaseActivity {
 
     // Strings
@@ -62,7 +62,7 @@ public class PlaceDetailActivity extends BaseActivity {
     // Views
     @BindView(R.id.cbAddPlace) AppCompatCheckBox cbAddPlace;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
-    @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
+    @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
     @BindView(R.id.tvPhoneNumber) TextView tvPhoneNumber;
     @BindView(R.id.tvAddress) TextView tvAddress;
     @BindView(R.id.tvOpenNow) TextView tvOpenNow;
@@ -122,7 +122,7 @@ public class PlaceDetailActivity extends BaseActivity {
             String photoRef = data.getJSONArray(PHOTOS_KEY)
                     .getJSONObject(0).getString(PHOTO_REF_KEY);
             String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
-            ImageUtils.loadImage(ivPlacePhoto, photoUrl, R.drawable.ic_photoholder,
+            ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder,
                     pbImageLoading);
         }
 
