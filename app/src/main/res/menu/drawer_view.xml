@@ -1,21 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/nav_home" />
         <item
             android:id="@+id/nav_profile"
-            android:icon="@android:drawable/ic_menu_info_details"
+            android:icon="@drawable/ic_info"
             android:title="@string/nav_profile" />
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/places_ic_search"
-            android:title="Search" />
+            android:title="@string/nav_find_users" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/com_facebook_button_like_icon_selected"
-            android:title="Logout" />
+            android:icon="@drawable/ic_logout"
+            android:title="@string/nav_logout" />
         <item
             android:id="@+id/nav_delete_account"
-            android:icon="@drawable/com_parse_ui_facebook_login_logo"
-            android:title="Delete Account" />
+            android:icon="@drawable/ic_delete"
+            android:title="@string/nav_delete" />
     </group>
 </menu>

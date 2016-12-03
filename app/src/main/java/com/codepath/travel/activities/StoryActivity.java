@@ -1,12 +1,8 @@
 package com.codepath.travel.activities;
 
 import static com.codepath.travel.Constants.IS_STORY_PLACE;
-import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
-import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
-import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
-import static com.codepath.travel.Constants.POSITION_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
@@ -30,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
 import com.codepath.travel.decoration.DividerItemDecoration;
@@ -40,7 +37,6 @@ import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
-import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
@@ -68,14 +64,6 @@ public class StoryActivity extends AppCompatActivity implements
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         DateRangePickerListener,
         DatePickerListener {
-
-    public final String APP_TAG = "TravelTrails";
-    public static final int START_CAMERA_REQUEST_CODE = 123;
-    public static final int PICK_IMAGE_FROM_GALLERY_CODE = 456;
-
-    // activity intent args
-    public static final String TRIP_ID_ARG = "trip_id";
-    public static final String TRIP_TITLE_ARG = "trip_title";
 
     private static final String TAG = StoryActivity.class.getSimpleName();
 
@@ -107,16 +95,17 @@ public class StoryActivity extends AppCompatActivity implements
 
         ButterKnife.bind(this);
 
-        mTripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
+        mTripTitle = getIntent().getStringExtra(Constants.TRIP_TITLE_ARG);
         toolbar.setTitle(mTripTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
+        isOwner = getIntent().getBooleanExtra(Constants.IS_OWNER_ARG, false);
+
+        mTripID = getIntent().getStringExtra(Constants.TRIP_ID_ARG);
         Trip.getTripForObjectId(mTripID, (trip, e) -> {
             if (e == null) {
                 mTrip = trip;
-                isOwner = mTrip.getUser().getObjectId().equals(ParseUser.getCurrentUser().getObjectId());
                 Date start = trip.getStartDate();
                 Date end = trip.getEndDate();
                 datesRelation = DateUtils.todayInRange(start, end);
@@ -164,7 +153,7 @@ public class StoryActivity extends AppCompatActivity implements
     }
 
     private void getPlacesInTrip() {
-        Trip.getPlaces(mTripID, (places, se) -> {
+        Trip.getPlacesForTripId(mTripID, (places, se) -> {
             if (se == null) {
                 mStoryPlaces.addAll(places);
                 mAdapter.notifyDataSetChanged();
@@ -209,11 +198,11 @@ public class StoryActivity extends AppCompatActivity implements
             // Use `getExternalFilesDir` on Context to access package-specific directories.
             // This way, we don't need to request external read/write runtime permissions.
             File mediaStorageDir = new File(
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG);
+                    getExternalFilesDir(Environment.DIRECTORY_PICTURES), Constants.APP_TAG);
 
             // Create the storage directory if it does not exist
             if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-                Log.d(APP_TAG, "failed to create directory");
+                Log.d(Constants.APP_TAG, "failed to create directory");
             }
 
             // Return the file target for the photo based on filename
@@ -231,8 +220,8 @@ public class StoryActivity extends AppCompatActivity implements
     /* Navigation */
     private void launchStoryCollageActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
-        intent.putExtra(TRIP_ID_ARG, mTripID);
-        intent.putExtra(TRIP_TITLE_ARG, mTripTitle);
+        intent.putExtra(Constants.TRIP_ID_ARG, mTripID);
+        intent.putExtra(Constants.TRIP_TITLE_ARG, mTripTitle);
         startActivity(intent);
     }
 
@@ -273,7 +262,7 @@ public class StoryActivity extends AppCompatActivity implements
                 MediaStore.EXTRA_OUTPUT, getPhotoFileUri(mPhotoURL)
         );
         if (startCamera.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startCamera, START_CAMERA_REQUEST_CODE);
+            startActivityForResult(startCamera, Constants.START_CAMERA_REQUEST_CODE);
         }
     }
 
@@ -283,18 +272,18 @@ public class StoryActivity extends AppCompatActivity implements
         Intent startGallery =
                 new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         if (startGallery.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startGallery, PICK_IMAGE_FROM_GALLERY_CODE);
+            startActivityForResult(startGallery, Constants.PICK_IMAGE_FROM_GALLERY_CODE);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == START_CAMERA_REQUEST_CODE) {
+        if (resultCode == RESULT_OK && requestCode == Constants.START_CAMERA_REQUEST_CODE) {
             // See code above
             Uri takenPhotoUri = getPhotoFileUri(mPhotoURL);
             Bitmap selectedImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
             compressAndSaveImage(selectedImage);
-        } else if (resultCode == RESULT_OK && requestCode == PICK_IMAGE_FROM_GALLERY_CODE) {
+        } else if (resultCode == RESULT_OK && requestCode == Constants.PICK_IMAGE_FROM_GALLERY_CODE) {
             Uri photoURI = data.getData();
             try {
                 Bitmap selectedImage =
@@ -378,7 +367,7 @@ public class StoryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onDelete(int storyPos, String mediaId) {
+    public void onDeleteMedia(int storyPos, String mediaId) {
         if (mediaId != null) {
             Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
                 if (e == null) {
@@ -412,7 +401,7 @@ public class StoryActivity extends AppCompatActivity implements
 
     @Override
     public void onDeleteTrip() {
-        Trip.deleteTrip(mTripID);
+        Trip.deleteTripForId(mTripID);
         setResult(RESULT_OK);
         finish();
     }
@@ -450,6 +439,16 @@ public class StoryActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_story, menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!isOwner) {
+            // don't show delete menu option unless this trip belongs to the logged in user
+            menu.removeItem(R.id.miDelete);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override

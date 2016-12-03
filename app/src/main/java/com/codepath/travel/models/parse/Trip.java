@@ -22,7 +22,7 @@ import java.util.Date;
  */
 @ParseClassName(TRIP_CLASS_NAME)
 public class Trip extends ParseObject {
-    private static final String TAG = Media.class.getSimpleName();
+    private static final String TAG = Trip.class.getSimpleName();
 
     public Trip() {
         super();
@@ -199,6 +199,36 @@ public class Trip extends ParseObject {
     }
 
     /**
+     * Find all upcoming trips for a user ordered by ascending start date.
+     * Upcoming trips encompass trips that are current or in the future.
+     *
+     * @param userId the user object id
+     * @param includeUser flag to include the user object in the results
+     * @param callback the callback function to call
+     */
+    public static void getUpcomingTripsForUser(String userId, boolean includeUser,
+            FindCallback<Trip> callback) {
+        ParseQuery<Trip> upcomingTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        upcomingTrips.whereGreaterThanOrEqualTo(END_DATE_KEY, new Date()); // ends now or today
+
+        // TODO: can remove after data cleanup since all trips will have dates
+        ParseQuery<Trip> datelessTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        datelessTrips.whereDoesNotExist(START_DATE_KEY); // has no start date
+
+        ArrayList<ParseQuery<Trip>> queries = new ArrayList<>();
+        queries.add(upcomingTrips);
+        queries.add(datelessTrips);
+
+        ParseQuery<Trip> tripQuery = ParseQuery.or(queries);
+        tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
+        tripQuery.addAscendingOrder(START_DATE_KEY);
+        if (includeUser) {
+            tripQuery.include(USER_KEY);
+        }
+        tripQuery.findInBackground(callback);
+    }
+
+    /**
      * Find all planned trips for a user ordered by ascending start date.
      * Planned trips encompass trips with no dates and trips with future dates. Trips with no dates
      * will get sorted to the beginning of the results.
@@ -210,8 +240,11 @@ public class Trip extends ParseObject {
     public static void getPlannedTripsForUser(String userId, boolean includeUser, FindCallback<Trip> callback) {
         ParseQuery<Trip> futureTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
         futureTrips.whereGreaterThan(START_DATE_KEY, new Date()); // starts after today
+
+        // TODO: can remove after data cleanup since all trips will have dates
         ParseQuery<Trip> datelessTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
         datelessTrips.whereDoesNotExist(START_DATE_KEY); // has no start date
+
         ArrayList<ParseQuery<Trip>> queries = new ArrayList<>();
         queries.add(futureTrips);
         queries.add(datelessTrips);
@@ -222,6 +255,23 @@ public class Trip extends ParseObject {
         if (includeUser) {
             tripQuery.include(USER_KEY);
         }
+        tripQuery.findInBackground(callback);
+    }
+
+    /**
+     * Find all trips shared by the given user's followed users.
+     *
+     * @param userId the user object id
+     * @param callback the callback function to call
+     */
+    public static void getFollowingTrips(String userId, FindCallback<Trip> callback) {
+        ParseQuery<ParseUser> followingQuery = User.getFollowingRelation(
+                ParseObject.createWithoutData(ParseUser.class, userId)).getQuery();
+
+        ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
+        tripQuery.whereMatchesQuery(USER_KEY, followingQuery);
+        tripQuery.addDescendingOrder(START_DATE_KEY);
+        tripQuery.include(USER_KEY);
         tripQuery.findInBackground(callback);
     }
 
@@ -250,9 +300,22 @@ public class Trip extends ParseObject {
      * @param tripId the Parse object id of the trip to find
      * @param callback the callback function to call
      */
-    public static void getPlaces(String tripId, FindCallback<StoryPlace> callback) {
+    public static void getPlacesForTripId(String tripId, FindCallback<StoryPlace> callback) {
         ParseQuery<StoryPlace> storyQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
         storyQuery.whereEqualTo(TRIP_KEY, ParseObject.createWithoutData(Trip.class, tripId));
+        storyQuery.addAscendingOrder(CHECK_IN_TIME_KEY);
+        storyQuery.findInBackground(callback);
+    }
+
+    /**
+     * Find story places that belong to the given trip and call the given callback.
+     *
+     * @param trip the trip to find
+     * @param callback the callback function to call
+     */
+    public static void getPlaces(Trip trip, FindCallback<StoryPlace> callback) {
+        ParseQuery<StoryPlace> storyQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
+        storyQuery.whereEqualTo(TRIP_KEY, trip);
         storyQuery.addAscendingOrder(CHECK_IN_TIME_KEY);
         storyQuery.findInBackground(callback);
     }
@@ -263,28 +326,37 @@ public class Trip extends ParseObject {
      *
      * @param tripId the trip id of the trip to delete
      */
-    public static void deleteTrip(String tripId) {
-        Log.d("deleteTrip", String.format("Deleting trip with id: %s", tripId));
+    public static void deleteTripForId(String tripId) {
         getTripForObjectId(tripId, (trip, e) -> {
             if (e == null) {
-                getPlaces(tripId, (storyPlaces, e1) -> {
-                    if (e1 == null) {
-                        for (StoryPlace storyPlace : storyPlaces) {
-                            storyPlace.deleteWithMedia();
-                        }
-                        trip.deleteInBackground(e11 -> {
-                            if (e11 != null) {
-                                Log.d(TAG, String.format("Failed to delete trip: %s",
-                                        e11.getMessage()));
-                            }
-                        });
-                    } else {
-                        Log.d(TAG, String.format("Failed to find story places for deleteTrip: %s",
-                                e1.getMessage()));
+                deleteTrip(trip);
+            } else {
+                Log.d(TAG, String.format("Failed to find trip for deleteTripForId: %s",
+                        e.getMessage()));
+            }
+        });
+    }
+
+    /**
+     * Delete the given trip id and all of its related data (story places, media).
+     *
+     * @param trip the trip to delete
+     */
+    public static void deleteTrip(Trip trip) {
+        Log.d(TAG, String.format("Deleting trip (%s)", trip.getObjectId()));
+        getPlaces(trip, (storyPlaces, e) -> {
+            if (e == null) {
+                for (StoryPlace storyPlace : storyPlaces) {
+                    storyPlace.deleteWithMedia();
+                }
+                trip.deleteInBackground(e1 -> {
+                    if (e1 != null) {
+                        Log.d(TAG, String.format("Failed to delete trip: %s", e1.getMessage()));
                     }
                 });
             } else {
-                Log.d(TAG, String.format("Failed to find trip for deleteTrip: %s", e.getMessage()));
+                Log.d(TAG, String.format("Failed to find story places for deleteTrip: %s",
+                        e.getMessage()));
             }
         });
     }

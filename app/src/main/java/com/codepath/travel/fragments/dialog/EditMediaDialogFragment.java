@@ -52,7 +52,7 @@ public class EditMediaDialogFragment extends DialogFragment {
 
     public interface EditMediaListener {
         void onSaveCaption(int position, String caption, String mediaId);
-        void onDelete(int position, String mediaId);
+        void onDeleteMedia(int position, String mediaId);
         void onSetStoryPlaceCoverPhoto(int position, String coverUrl);
         void onSetTripCoverPhoto(String coverUrl);
         void onSetUserCoverPhoto(String coverUrl);
@@ -128,7 +128,7 @@ public class EditMediaDialogFragment extends DialogFragment {
             });
 
             btnDelete.setOnClickListener(v -> {
-                listener.onDelete(position, mediaId);
+                listener.onDeleteMedia(position, mediaId);
                 dismiss();
             });
         } else {

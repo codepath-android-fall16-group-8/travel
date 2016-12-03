@@ -25,6 +25,7 @@ import com.codepath.travel.adapters.HomePagerAdapter;
 import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
+import com.codepath.travel.models.parse.User;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
@@ -51,7 +52,7 @@ import static com.codepath.travel.models.parse.User.setProfilePicUrl;
 import static com.parse.ParseUser.getCurrentUser;
 
 public class HomeActivity extends AppCompatActivity implements TripClickListener, PlaceSelectionListener {
-    //Class variables
+    // Class variables
     private static final String TAG = HomeActivity.class.getSimpleName();
     private static final int LOGIN_REQUEST = 0;
     private static final int CREATE_STORY_REQUEST = 1;
@@ -70,6 +71,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private ImageView ivProfileImage;
     private TextView tvProfileName;
     private RelativeLayout nvHeader;
+
+    // Member variables
+    private HomePagerAdapter mHomePagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,24 +111,26 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
         drawerToggle = setupDrawerToggle();
         mDrawer.addDrawerListener(drawerToggle);
+
+        // setup tabs
+        mHomePagerAdapter = new HomePagerAdapter(getSupportFragmentManager(), this, null);
+        tabViewPager.setAdapter(mHomePagerAdapter);
+        tabLayout.setupWithViewPager(tabViewPager);
     }
 
     // Get the userId from the cached currentUser object
     private void startWithCurrentUser() {
         ParseUser pUser = getCurrentUser();
+        // update nav drawer views
         this.tvProfileName.setText(pUser.getUsername());
         ImageUtils.loadImageCircle(this.ivProfileImage, getProfilePicUrl(pUser),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
         ImageUtils.loadBackground(nvHeader, getCoverPicUrl(pUser));
 
-        tabViewPager.setAdapter(
-            new HomePagerAdapter(
-            getSupportFragmentManager(),
-            this,
-            getCurrentUser().getObjectId()
-            )
-        );
-        tabLayout.setupWithViewPager(tabViewPager);
+        // update tab data using current user
+        mHomePagerAdapter.setUser(pUser.getObjectId());
+        mHomePagerAdapter.notifyDataSetChanged();
+        tabViewPager.setCurrentItem(0); // reset to first tab
     }
 
     private void newFBAccountSetup(ParseUser pUser) {
@@ -175,10 +181,11 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         startActivityForResult(builder.build(), LOGIN_REQUEST);
     }
 
-    private void launchStoryActivity(String tripId, String tripTitle) {
+    private void launchStoryActivity(String tripId, String tripTitle, boolean isOwner) {
         Intent openStory = new Intent(HomeActivity.this, StoryActivity.class);
-        openStory.putExtra(StoryActivity.TRIP_TITLE_ARG, tripTitle);
-        openStory.putExtra(StoryActivity.TRIP_ID_ARG, tripId);
+        openStory.putExtra(Constants.TRIP_TITLE_ARG, tripTitle);
+        openStory.putExtra(Constants.TRIP_ID_ARG, tripId);
+        openStory.putExtra(Constants.IS_OWNER_ARG, isOwner);
         startActivityForResult(openStory, STORY_REQUEST);
     }
 
@@ -186,16 +193,25 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         Log.d(TAG, String.format("Logging out for user: %s",
                 getCurrentUser().getUsername()));
         ParseUser.logOut();
+        mDrawer.closeDrawers();
         launchLoginActivity();
     }
 
     private void deleteAccount() {
-        Log.d(TAG, String.format("Deleting account for user: %s",
-                getCurrentUser().getUsername()));
-        // TODO: delete user's data
-        getCurrentUser().deleteEventually();
-        ParseUser.logOut();
+        Log.d(TAG, String.format("Deleting account for user: %s", getCurrentUser().getUsername()));
+        User.deleteUserAndData(getCurrentUser());
         launchLoginActivity();
+    }
+
+    private void showUserProfile(String userID) {
+        Intent intent = new Intent(this, ProfileViewActivity.class);
+        intent.putExtra(ProfileViewActivity.USER_ID, userID);
+        startActivity(intent);
+    }
+
+    private void showSearchActivity() {
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -221,8 +237,8 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
     /* Listeners */
     @Override
-    public void onTripClick(String tripId, String tripTitle) {
-        launchStoryActivity(tripId, tripTitle);
+    public void onTripClick(String tripId, String tripTitle, boolean isOwner) {
+        launchStoryActivity(tripId, tripTitle, isOwner);
     }
 
     @Override
@@ -238,8 +254,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
     @Override
     public void onProfileClick(ParseUser pUser) {
-        Log.d(TAG, String.format("onProfileClick: %s", pUser.getUsername()));
-        // TODO: navigate to provile view
+        Intent viewProfile = new Intent(this, ProfileViewActivity.class);
+        viewProfile.putExtra(ProfileViewActivity.USER_ID, pUser.getObjectId());
+        startActivity(viewProfile);
     }
 
     /* Navigation Drawer */
@@ -274,22 +291,19 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     public void selectDrawerItem(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
             case R.id.nav_logout:
-                    logout();
+                logout();
                 break;
             case R.id.nav_search:
                 showSearchActivity();
                 break;
             case R.id.nav_delete_account:
-                    deleteAccount();
+                deleteAccount();
                 break;
             case R.id.nav_profile:
                 showUserProfile(ParseUser.getCurrentUser().getObjectId());
                 break;
             default: break;
         }
-
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
     }
 
@@ -309,25 +323,13 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         return super.onOptionsItemSelected(item);
     }
 
-    // all private methods below
-    private void showUserProfile(String userID) {
-        Intent intent = new Intent(this, ProfileViewActivity.class);
-        intent.putExtra(ProfileViewActivity.USER_ID, userID);
-        startActivity(intent);
-    }
-
-    private void showSearchActivity() {
-        Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public void onPlaceSelected(Place place) {
         Log.i(TAG, "Place Selected: " + place.getName());
         String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
         Intent createTrip = new Intent(this, PlaceSuggestionActivity.class);
         String destination = place.getName().toString();
-        if(!destination.isEmpty() && !LatLng.isEmpty()) {
+        if (!destination.isEmpty() && !LatLng.isEmpty()) {
             createTrip.putExtra(
                     Constants.DESTINATION_ARG,
                     destination
@@ -335,7 +337,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             createTrip.putExtra(Constants.LATLNG_ARG,
                     LatLng);
             startActivityForResult(createTrip, CREATE_STORY_REQUEST);
-        }else {
+        } else {
             Toast.makeText(this, "Please add a destination", Toast.LENGTH_LONG).show();
         }
     }

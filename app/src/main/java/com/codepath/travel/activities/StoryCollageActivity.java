@@ -1,7 +1,7 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.activities.StoryActivity.TRIP_ID_ARG;
-import static com.codepath.travel.activities.StoryActivity.TRIP_TITLE_ARG;
+import static com.codepath.travel.Constants.TRIP_ID_ARG;
+import static com.codepath.travel.Constants.TRIP_TITLE_ARG;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,7 +58,7 @@ public class StoryCollageActivity extends AppCompatActivity {
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
 
         mStoryPlaces = new ArrayList<>();
-        Trip.getPlaces(mTripID, new FindCallback<StoryPlace>() {
+        Trip.getPlacesForTripId(mTripID, new FindCallback<StoryPlace>() {
             @Override
             public void done(List<StoryPlace> places, ParseException e) {
                 if (e == null) {

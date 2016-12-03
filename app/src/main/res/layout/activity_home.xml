@@ -21,11 +21,11 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="?attr/colorPrimaryDark">
                 <fragment
-                android:id="@+id/autocomplete_fragment_new_trip"
-                android:name="com.codepath.travel.fragments.CustomPlaceAutoCompleteFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                    android:id="@+id/autocomplete_fragment_new_trip"
+                    android:name="com.codepath.travel.fragments.CustomPlaceAutoCompleteFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:layout="@layout/layout_place_autocomplete" />
         </android.support.v7.widget.Toolbar>
 
         <include
