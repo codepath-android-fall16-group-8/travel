@@ -1,6 +1,7 @@
 package com.codepath.travel.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,6 +102,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         String photoRef = getIntent().getStringExtra(DESTINATION_PHOTO_ARG);
         String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
         ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder, pbImageLoading);
+        //getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     private void setUpClickListeners() {
