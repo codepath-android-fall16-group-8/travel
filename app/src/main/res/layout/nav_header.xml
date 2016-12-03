@@ -1,25 +1,34 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
-    android:id="@+id/rlHeader"
-    android:background="@drawable/background_splash"
-    android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:gravity="bottom">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivCover"
+        app:layout_widthPercent="100%"
+        app:layout_aspectRatio="178%"
+        android:src="@drawable/background_splash"
+        android:tint="@color/colorTransparentBackground"
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/ivProfilePic"
         android:layout_width="@dimen/profile_pic_size"
         android:layout_height="@dimen/profile_pic_size"
-        android:src="@drawable/com_facebook_profile_picture_blank_portrait" />
+        android:layout_marginTop="@dimen/nav_header_top_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ivProfilePic"
-        android:text="Profile"
-        android:textColor="@android:color/white"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
-</RelativeLayout>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        tools:text="Username"
+        android:textAppearance="@style/navHeaderText"/>
+</android.support.percent.PercentRelativeLayout>

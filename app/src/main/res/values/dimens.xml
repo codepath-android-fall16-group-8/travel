@@ -3,28 +3,25 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <!-- Shared -->
+    <dimen name="icon_size">24dp</dimen>
     <dimen name="margin_s">5dp</dimen>
     <dimen name="margin">10dp</dimen>
-    <dimen name="icon_size">24dp</dimen>
-    <dimen name="profile_pic_size">48dp</dimen>
-    <dimen name="photo_size">30dp</dimen>
 
-    <!-- Trips List -->
-    <dimen name="trip_horizontal_list_height">175dp</dimen>
-    <dimen name="trip_horizontal_list_width">150dp</dimen>
-    <dimen name="single_trip_height">100dp</dimen>
+    <!-- Navigation Drawer -->
+    <dimen name="nav_header_top_margin">40dp</dimen>
+
+    <!-- Image Dimensions -->
+    <dimen name="profile_pic_size">56dp</dimen>
+    <dimen name="thumbnail_size">56dp</dimen>
 
     <!-- Collage Activity -->
     <dimen name="item_collage_width">200dp</dimen>
     <dimen name="item_collage_height">100dp</dimen>
 
-    <!-- Profile View -->
-    <dimen name="profile_cover_pic_height">200dp</dimen>
-    <dimen name="profile_view_user_pic_width">60dp</dimen>
-    <dimen name="profile_view_user_pic_height">60dp</dimen>
-
     <!-- Story View -->
     <dimen name="media_size">120dp</dimen>
+
+    <!-- Text -->
+    <dimen name="nav_header_text">14sp</dimen>
 
 </resources>

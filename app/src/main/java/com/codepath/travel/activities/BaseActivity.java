@@ -6,7 +6,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.codepath.travel.R;
-import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.ErrorMessageDialogFragment;
 
 import butterknife.BindView;

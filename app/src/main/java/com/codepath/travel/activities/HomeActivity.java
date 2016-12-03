@@ -68,9 +68,10 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
     // Views in Navigation view
     private ActionBarDrawerToggle drawerToggle;
+    private RelativeLayout nvHeader;
+    private ImageView ivCover;
     private ImageView ivProfileImage;
     private TextView tvProfileName;
-    private RelativeLayout nvHeader;
 
     // Member variables
     private HomePagerAdapter mHomePagerAdapter;
@@ -104,9 +105,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private void setupViews() {
         setSupportActionBar(toolbar);
 
-        nvHeader = (RelativeLayout)nvDrawer.getHeaderView(0);
+        nvHeader = (RelativeLayout) nvDrawer.getHeaderView(0);
+        this.ivCover = (ImageView) nvHeader.findViewById(R.id.ivCover);
         this.ivProfileImage = (ImageView) nvHeader.findViewById(R.id.ivProfilePic);
-        this.ivProfileImage.setImageResource(0);
         this.tvProfileName = (TextView) nvHeader.findViewById(R.id.tvName);
 
         drawerToggle = setupDrawerToggle();
@@ -122,10 +123,10 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private void startWithCurrentUser() {
         ParseUser pUser = getCurrentUser();
         // update nav drawer views
-        this.tvProfileName.setText(pUser.getUsername());
+        ImageUtils.loadImage(ivCover, getCoverPicUrl(pUser));
         ImageUtils.loadImageCircle(this.ivProfileImage, getProfilePicUrl(pUser),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
-        ImageUtils.loadBackground(nvHeader, getCoverPicUrl(pUser));
+        this.tvProfileName.setText(pUser.getUsername());
 
         // update tab data using current user
         mHomePagerAdapter.setUser(pUser.getObjectId());

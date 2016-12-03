@@ -5,11 +5,11 @@
     <color name="colorAccent">#303F9F</color>
 
     <color name="transparent">#00000000</color>
-    <color name="colorTransparentBackground">#80FFFFFF</color>
+    <color name="colorTransparentBackground">#60000000</color>
     <color name="green">#008000</color>
     <color name="tango">#F07621</color>
     <color name="dodger_blue">#1DA1F2</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">@android:color/white</color>
     <color name="lightGray">#CECECE</color>
     <color name="heart">#CC817C</color>
     <color name="red">#BC3F3C</color>

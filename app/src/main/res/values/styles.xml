@@ -4,6 +4,9 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <!-- Translucent status bar so the navigation drawer comes out slides out underneath the status bar -->
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@android:color/darker_gray</item>
@@ -69,6 +72,21 @@
         <item name="android:progressDrawable">@drawable/rating_bar_heart_full</item>
         <item name="android:minHeight">23dp</item>
         <item name="android:maxHeight">25dp</item>
+    </style>
+
+    <!-- Roboto Medium, 14sp, #FFFFFF -->
+    <style name="navHeaderText" parent="Base.TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <!-- Custom Tab Layout -->
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+    <!-- overriding textAllCaps so icons render -->
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
     </style>
 
 </resources>
