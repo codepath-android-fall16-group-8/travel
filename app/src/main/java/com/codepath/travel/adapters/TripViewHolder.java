@@ -23,6 +23,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
     @BindView(R.id.rlTrip) RelativeLayout rlTrip;
+    @BindView(R.id.tvLocation) TextView tvLocation;
 
     public TripViewHolder(View itemView) {
         super(itemView);
@@ -46,5 +47,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     }
 
     public RelativeLayout getRelativeLayout(){ return this.rlTrip; }
+
+    public TextView getTripLocation() { return this.tvLocation; }
 }
 

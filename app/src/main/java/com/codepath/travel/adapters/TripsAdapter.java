@@ -78,6 +78,11 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         tvTripTitle.setText(trip.getTitle());
         TextView tvTripDates = viewHolder.getTripDates();
         tvTripDates.setText(DateUtils.formatDateRange(mContext, trip.getStartDate(), trip.getEndDate()));
+        TextView tvLocation = viewHolder.getTripLocation();
+        if(trip.getDestinationPlaceName() != null) {
+            tvLocation.setText(trip.getDestinationPlaceName());
+        }
+
 
         // sharing checkbox (currently for my trips tab only)
         CheckBox cbShare = viewHolder.cbShare;
