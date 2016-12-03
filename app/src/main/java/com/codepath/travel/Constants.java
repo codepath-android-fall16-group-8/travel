@@ -13,13 +13,13 @@ public final class Constants {
     public static final int PICK_IMAGE_FROM_GALLERY_CODE = 456;
 
     /* Intent argument keys */
-    public static final String DESTINATION_ARG = "destination";
     public static final String LATLNG_ARG = "latlong";
     public static final String SUGGESTION_PLACES_LIST_ARG = "suggestion_places_list";
     public static final String PLACE_ID_ARG = "place_id";
     public static final String PLACE_NAME_ARG = "place_name";
     public static final String PLACE_ADDED_ARG = "place_added";
     public static final String PLACE_CATEGORY_ARG = "place_category";
+    public static final String PLACE_PHOTO_REF_ARG = "place_photo_ref";
     public static final String POSITION_ARG = "position";
     public static final String IS_STORY_PLACE = "isStoryPlace";
 

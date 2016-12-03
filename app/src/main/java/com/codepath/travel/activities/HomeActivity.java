@@ -329,11 +329,13 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
         Intent createTrip = new Intent(this, PlaceSuggestionActivity.class);
         String destination = place.getName().toString();
-        if (!destination.isEmpty() && !LatLng.isEmpty()) {
+        String destinationId = place.getId();
+        if(!destination.isEmpty() && !LatLng.isEmpty()) {
             createTrip.putExtra(
-                    Constants.DESTINATION_ARG,
+                    Constants.PLACE_NAME_ARG,
                     destination
             );
+            createTrip.putExtra(Constants.PLACE_ID_ARG, destinationId);
             createTrip.putExtra(Constants.LATLNG_ARG,
                     LatLng);
             startActivityForResult(createTrip, CREATE_STORY_REQUEST);
