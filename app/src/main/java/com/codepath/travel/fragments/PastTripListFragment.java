@@ -9,23 +9,17 @@ import com.codepath.travel.models.parse.Trip;
  */
 public class PastTripListFragment extends TripListFragment {
 
-    public static PastTripListFragment newInstance(String userId, boolean fetchUser) {
+    public static PastTripListFragment newInstance(String userId, boolean showUser) {
         PastTripListFragment fragment = new PastTripListFragment();
         Bundle args = new Bundle();
         args.putString(USER_ID_ARG, userId);
-        args.putBoolean(FETCH_USER_ARG, fetchUser);
+        args.putBoolean(SHOW_USER_ARG, showUser);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void populateTrips() {
-        if (mUserId == null) {
-            return;
-        }
-        mTrips.clear();
-        Trip.getPastTripsForUser(mUserId, fetchUser, (trips, e) -> {
-            resetTripAdapter(trips, e);
-        });
+    public void getTrips() {
+        Trip.getPastTripsForUser(mUserId, showUser, this::updateTrips);
     }
 }

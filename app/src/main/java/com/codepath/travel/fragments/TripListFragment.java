@@ -17,6 +17,7 @@ import com.codepath.travel.adapters.TripsAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.models.parse.Trip;
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * Fragment to display a horizontal scrolling recycler view of trips.
+ * Fragment to display a recycler view of trips.
  */
 public class TripListFragment extends Fragment {
     private static final String TAG = TripListFragment.class.getSimpleName();
     protected static final String USER_ID_ARG = "userId";
-    protected static final String FETCH_USER_ARG = "fetchUser";
+    protected static final String SHOW_USER_ARG = "showUser";
+    protected static final String SHOW_SHARING_ARG = "showSharing";
 
     // views
     @BindView(R.id.rvTrips) RecyclerView rvTrips;
@@ -44,13 +46,16 @@ public class TripListFragment extends Fragment {
     protected TripsAdapter mTripsAdapter;
     protected TripClickListener mListener;
     protected String mUserId;
-    protected boolean fetchUser;
+    protected boolean showUser;
+    protected boolean showSharing;
 
-    public static TripListFragment newInstance(String userId, boolean fetchUser) {
+    public static TripListFragment newInstance(String userId, boolean showUser,
+            boolean showSharing) {
         TripListFragment fragment = new TripListFragment();
         Bundle args = new Bundle();
         args.putString(USER_ID_ARG, userId);
-        args.putBoolean(FETCH_USER_ARG, fetchUser);
+        args.putBoolean(SHOW_USER_ARG, showUser);
+        args.putBoolean(SHOW_SHARING_ARG, showSharing);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,12 +63,14 @@ public class TripListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTrips = new ArrayList<>();
 
-        mTripsAdapter = new TripsAdapter(getContext(), mTrips, fetchUser);
         Bundle args = getArguments();
         mUserId = args.getString(USER_ID_ARG);
-        fetchUser = args.getBoolean(FETCH_USER_ARG);
+        showUser = args.getBoolean(SHOW_USER_ARG, false);
+        showSharing = args.getBoolean(SHOW_SHARING_ARG, false);
+
+        mTrips = new ArrayList<>();
+        mTripsAdapter = new TripsAdapter(getContext(), mTrips, showUser, showSharing);
     }
 
     @Override
@@ -84,7 +91,14 @@ public class TripListFragment extends Fragment {
         ItemClickSupport.addTo(rvTrips).setOnItemClickListener(
                 (recyclerView, position, v) -> {
                     Trip trip = mTrips.get(position);
-                    mListener.onTripClick(trip.getObjectId(), trip.getTitle());
+                    boolean isOwner = false;
+                    String curUserId = ParseUser.getCurrentUser().getObjectId();
+                    if (trip.getUser() != null) {
+                        isOwner = trip.getUser().getObjectId().equals(curUserId);
+                    } else {
+                        isOwner = mUserId.equals(curUserId);
+                    }
+                    mListener.onTripClick(trip.getObjectId(), trip.getTitle(), isOwner);
                 }
         );
 
@@ -97,16 +111,18 @@ public class TripListFragment extends Fragment {
             return;
         }
         mTrips.clear();
-        Trip.getAllTripsForUser(mUserId, fetchUser, (trips, e) -> {
-            resetTripAdapter(trips, e);
-        });
+        getTrips();
+    }
+
+    protected void getTrips() {
+        Trip.getAllTripsForUser(mUserId, showUser, this::updateTrips);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (!(context instanceof TripClickListener)) {
-            throw new RuntimeException("Activity should implement ImagePickerFragmentListener");
+            throw new RuntimeException("Activity should implement TripClickListener");
         }
         mListener = (TripClickListener) context;
     }
@@ -120,7 +136,6 @@ public class TripListFragment extends Fragment {
 
     public void setUser(String userId) {
         mUserId = userId;
-        populateTrips();
     }
 
     protected void showNoTripsFound() {
@@ -128,7 +143,7 @@ public class TripListFragment extends Fragment {
         tvNoTripsFound.setVisibility(View.VISIBLE);
     }
 
-    protected void resetTripAdapter(List<Trip> trips, ParseException e) {
+    protected void updateTrips(List<Trip> trips, ParseException e) {
         if (e == null && trips.size() > 0) {
             mTrips.addAll(trips);
             pbLoading.setVisibility(View.GONE);
@@ -136,7 +151,7 @@ public class TripListFragment extends Fragment {
         } else {
             showNoTripsFound();
             if (e != null) {
-                Log.d(TAG, String.format("Failed to populate all trips: %s", e.getMessage()));
+                Log.d(TAG, String.format("Failed to populate trips: %s", e.getMessage()));
             }
         }
     }

@@ -14,7 +14,6 @@ import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
-import com.parse.ParseUser;
 
 import java.util.List;
 
@@ -29,13 +28,15 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<Trip> mTrips;
     private Context mContext;
-    private boolean showProfilePhoto;
     private TripClickListener listener;
+    private boolean showProfilePhoto;
+    private boolean showSharing;
 
-    public TripsAdapter(Context context, List<Trip> trips, boolean showProfilePhoto) {
+    public TripsAdapter(Context context, List<Trip> trips, boolean showProfilePhoto, boolean showSharing) {
         this.mTrips = trips;
         this.mContext = context;
         this.showProfilePhoto = showProfilePhoto;
+        this.showSharing = showSharing;
         this.listener = (TripClickListener) context;
     }
 
@@ -64,6 +65,7 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 R.drawable.ic_photoholder,
                 viewHolder.getProgressBar());
 
+        // profile photo (currently for following tab only)
         ImageView ivProfilePhoto = viewHolder.getProfilePhoto();
         if (showProfilePhoto) {
             ImageUtils.loadImageCircle(ivProfilePhoto, getProfilePicUrl(trip.getUser()),
@@ -77,8 +79,9 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView tvTripDates = viewHolder.getTripDates();
         tvTripDates.setText(DateUtils.formatDateRange(mContext, trip.getStartDate(), trip.getEndDate()));
 
+        // sharing checkbox (currently for my trips tab only)
         CheckBox cbShare = viewHolder.cbShare;
-        if (ParseUser.getCurrentUser().getObjectId().equals(trip.getUser().getObjectId())) {
+        if (showSharing) {
             cbShare.setVisibility(View.VISIBLE);
             cbShare.setChecked(trip.isShared());
             cbShare.setOnCheckedChangeListener(

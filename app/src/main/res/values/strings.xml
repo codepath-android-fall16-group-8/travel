@@ -3,9 +3,7 @@
     <string name="parse_app_id">traveltrails</string>
     <string name="google_api_key">AIzaSyCOhSebiVixAE8Aq5atvtzWJAhHuZH5l_U</string>
     <string name="facebook_app_id">646488778862200</string>
-    <!-- Account Management -->
-    <string name="logout">Logout</string>
-    <string name="deleteAccount">Delete Account</string>
+
     <!-- App related strings -->
     <string name="app_name">Travel</string>
     <string name="confirm_story">confirm to create story</string>
@@ -24,6 +22,11 @@
     <!-- Navigation drawer -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">My Profile</string>
+    <string name="nav_find_users">Search Users</string>
+    <string name="nav_logout">Logout</string>
+    <string name="nav_delete">Delete Account</string>
 
     <!-- Group strings by activity -->
 
@@ -33,9 +36,6 @@
     <string name="planned_trips">Planned Trips</string>
     <string name="past_trips">Past Trips</string>
     <string name="current_trip">Current Trip</string>
-
-    <!-- Navigation View Strings -->
-    <string name="nav_profile">Profile</string>
 
     <!-- Search User DialogFrgament -->
     <string name="search_user">Find Friends</string>
