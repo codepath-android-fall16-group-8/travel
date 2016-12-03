@@ -26,6 +26,7 @@ import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
 import com.codepath.travel.models.parse.User;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
@@ -35,14 +36,18 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
 import static com.codepath.travel.models.parse.User.getCoverPicUrl;
 import static com.codepath.travel.models.parse.User.getProfilePicUrl;
@@ -326,22 +331,39 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     @Override
     public void onPlaceSelected(Place place) {
         Log.i(TAG, "Place Selected: " + place.getName());
-        String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
-        Intent createTrip = new Intent(this, PlaceSuggestionActivity.class);
-        String destination = place.getName().toString();
-        String destinationId = place.getId();
-        if(!destination.isEmpty() && !LatLng.isEmpty()) {
-            createTrip.putExtra(
-                    Constants.PLACE_NAME_ARG,
-                    destination
-            );
-            createTrip.putExtra(Constants.PLACE_ID_ARG, destinationId);
-            createTrip.putExtra(Constants.LATLNG_ARG,
-                    LatLng);
-            startActivityForResult(createTrip, CREATE_STORY_REQUEST);
-        } else {
-            Toast.makeText(this, "Please add a destination", Toast.LENGTH_LONG).show();
-        }
+        GoogleAsyncHttpClient.getPlaceDetails(place.getId(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONObject result = response.getJSONObject("result");
+                    JSONArray photos = result.getJSONArray("photos");
+                    if (photos.length() > 0) {
+                        String photoReference = photos.getJSONObject(0).getString("photo_reference");
+                        String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
+                        Intent createTrip = new Intent(HomeActivity.this, PlaceSuggestionActivity.class);
+                        String destination = place.getName().toString();
+                        String destinationId = place.getId();
+                        if(!destination.isEmpty() && !LatLng.isEmpty()) {
+                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_NAME_ARG, destination);
+                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_ID_ARG, destinationId);
+                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_LAT_LONG_ARG, LatLng);
+                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_PHOTO_ARG, photoReference);
+                            startActivityForResult(createTrip, CREATE_STORY_REQUEST);
+                        } else {
+                            Toast.makeText(HomeActivity.this, "Please add a destination", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                // TODO: Show error snackbar
+                Log.e("ERROR", t.toString());
+            }
+        });
     }
 
     @Override

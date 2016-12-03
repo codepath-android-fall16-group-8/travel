@@ -8,11 +8,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
+import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.SuggestionPlace;
@@ -31,11 +34,19 @@ import cz.msebera.android.httpclient.Header;
 
 public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartListener {
 
+    // Intent ARGS
+    public static final String DESTINATION_NAME_ARG = "destination_name";
+    public static final String DESTINATION_ID_ARG = "destination_id";
+    public static final String DESTINATION_LAT_LONG_ARG = "destination_lat_long";
+    public static final String DESTINATION_PHOTO_ARG = "destination_photo";
+
     // Strings
     @BindString(R.string.toolbar_title_place_suggestion) String toolbarTitle;
 
     //Views
     @BindView(R.id.btnCart) ImageButton mStoryCart;
+    @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
+    @BindView(R.id.pbBackDropImageLoading) ProgressBar pbImageLoading;
     @BindView(R.id.rvRestaurantPlaces) RecyclerView mRvRestaurantPlaces;
     @BindView(R.id.rvSightPlaces) RecyclerView mRvSightPlaces;
     @BindView(R.id.tvPlaceCount) TextView mTvPlaceCount;
@@ -60,10 +71,10 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         setContentView(R.layout.activity_place_suggestion);
         initializeCommonViews();
 
-        mDestination = getIntent().getStringExtra(Constants.PLACE_NAME_ARG);
+        mDestination = getIntent().getStringExtra(DESTINATION_NAME_ARG);
         //Get cover photo url for trip
-        getPhotoReferenceByPlaceID(getIntent().getStringExtra(Constants.PLACE_ID_ARG));
-        mLatLng = getIntent().getStringExtra(Constants.LATLNG_ARG);
+        getPhotoReferenceByPlaceID(getIntent().getStringExtra(DESTINATION_ID_ARG));
+        mLatLng = getIntent().getStringExtra(DESTINATION_LAT_LONG_ARG);
         setActionBarTitle(String.format(toolbarTitle, mDestination));
 
         mSuggestionPlaces = new ArrayList<>();
@@ -86,6 +97,10 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         setUpClickListeners();
         showPlacesToEat();
         showPointsOfInterest();
+
+        String photoRef = getIntent().getStringExtra(DESTINATION_PHOTO_ARG);
+        String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
+        ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder, pbImageLoading);
     }
 
     private void setUpClickListeners() {

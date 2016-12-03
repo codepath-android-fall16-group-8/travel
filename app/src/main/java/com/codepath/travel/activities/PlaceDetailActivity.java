@@ -123,7 +123,7 @@ public class PlaceDetailActivity extends BaseActivity {
                     .getJSONObject(0).getString(PHOTO_REF_KEY);
             String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
             ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder,
-                    pbImageLoading);
+            pbImageLoading);
         }
 
         // address
