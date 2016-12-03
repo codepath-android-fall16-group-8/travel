@@ -7,6 +7,9 @@
     <dimen name="margin_s">5dp</dimen>
     <dimen name="margin">10dp</dimen>
 
+    <!-- Navigation Drawer -->
+    <dimen name="nav_header_top_margin">40dp</dimen>
+
     <!-- Image Dimensions -->
     <dimen name="profile_pic_size">56dp</dimen>
     <dimen name="thumbnail_size">56dp</dimen>

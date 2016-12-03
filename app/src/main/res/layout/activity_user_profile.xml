@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.codepath.travel.activities.ProfileViewActivity">
+
+    <!-- AppBarLayout must be first child of CoordinatorLayout -->
     <include
         android:id="@+id/toolbarHolder"
         layout="@layout/layout_app_bar"/>
 
-    <RelativeLayout
+    <android.support.percent.PercentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Images should have 3:2 (150%) aspect ratio, but trying 16:9 (178%) for now -->
         <FrameLayout
             android:id="@+id/flCoverPicContainer"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/thumbnail_size"
+            app:layout_widthPercent="100%"
+            app:layout_aspectRatio="150%"
             tools:background="@color/cardview_light_background"/>
         <FrameLayout
             android:id="@+id/flUserPicContainer"
             android:layout_centerHorizontal="true"
-            android:layout_alignLeft="@+id/flCoverPicContainer"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="180dp"
+            android:layout_alignStart="@+id/flCoverPicContainer"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="230dp"
             android:layout_width="@dimen/thumbnail_size"
             android:layout_height="@dimen/thumbnail_size"
             tools:background="@color/cardview_dark_background"/>
@@ -31,11 +41,9 @@
             android:id="@+id/tvProfileUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="aalshfaslkfhasll"
-            android:layout_below="@+id/flCoverPicContainer"
-            android:layout_toRightOf="@+id/flUserPicContainer"
+            tools:text="Username"
+            android:layout_alignBottom="@+id/flUserPicContainer"
             android:layout_toEndOf="@+id/flUserPicContainer"
-            android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="11dp"/>
 
@@ -46,8 +54,7 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_person_add"
             android:layout_below="@id/flCoverPicContainer"
-            android:layout_marginRight="10dp"
-            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/margin"
             android:layout_alignParentEnd="true"/>
 
         <LinearLayout
@@ -63,18 +70,18 @@
                 android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/tvFollowersCount"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="@dimen/margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/tvFollowingLabel"
                 android:text="@string/following"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="@dimen/margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/tvFollowingCount"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="@dimen/margin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -83,7 +90,7 @@
             android:layout_below="@+id/followersholder"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/layout_tabs"/>
-    </RelativeLayout>
+            layout="@layout/layout_tabs" />
+    </android.support.percent.PercentRelativeLayout>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

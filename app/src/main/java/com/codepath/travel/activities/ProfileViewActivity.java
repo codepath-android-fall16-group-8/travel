@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
@@ -26,9 +25,8 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * Created by rpraveen on 11/19/16.
+ * Activity for displaying a user's profile.
  */
-
 public class ProfileViewActivity
     extends BaseActivity
     implements ImagePickerFragment.ImagePickerFragmentListener, TripClickListener {
