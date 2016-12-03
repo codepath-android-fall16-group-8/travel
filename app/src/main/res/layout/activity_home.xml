@@ -26,9 +26,11 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:minHeight="?attr/actionBarSize"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 android:background="?attr/colorPrimaryDark"
-                app:layout_scrollFlags="scroll|enterAlways|snap">
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:theme="@style/ToolbarTheme"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
 
                 <!-- Google Places search auto complete fragment -->
                 <fragment
@@ -53,7 +55,7 @@
     <!-- Navigation View (DrawerLayout's second child) -->
     <android.support.design.widget.NavigationView
         android:id="@+id/nvView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"

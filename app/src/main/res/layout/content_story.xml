@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <TextView
         android:id="@+id/tvTripDates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:text="@string/hint_trip_dates"
-        android:drawableLeft="@drawable/ic_calendar"
         android:drawableStart="@drawable/ic_calendar"
-        android:gravity="center_vertical"/>
+        android:drawableTint="@color/colorTransparentBackground"
+        style="@style/textViewWithDrawable"/>
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/cbShare"
         android:button="@drawable/checkbox_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -34,13 +36,14 @@
         android:layout_alignTop="@+id/cbShare"
         android:layout_alignBottom="@+id/cbShare"
         android:gravity="center_vertical"
-        android:text="@string/share_label" />
+        android:text="@string/share_label"
+        android:textAppearance="@style/subheaderText"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvStoryPlaces"
         android:layout_below="@+id/tvTripDates"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_s"
+        android:layout_marginTop="@dimen/space"
         android:scrollbars="vertical" />
 </RelativeLayout>

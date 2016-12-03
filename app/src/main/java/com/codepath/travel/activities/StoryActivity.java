@@ -147,9 +147,6 @@ public class StoryActivity extends AppCompatActivity implements
         mAdapter.setMode(Attributes.Mode.Single);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
-        rvStoryPlaces.addItemDecoration(itemDecoration);
     }
 
     private void getPlacesInTrip() {

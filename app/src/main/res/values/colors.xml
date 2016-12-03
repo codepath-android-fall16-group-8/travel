@@ -13,4 +13,9 @@
     <color name="heart">#CC817C</color>
     <color name="red">#BC3F3C</color>
     <color name="darkGray">#4c4c4c</color>
+
+    <!-- TEXT COLORS -->
+    <color name="subheaderText">#87000000</color>
+    <color name="captionText">#54000000</color>
+>>>>>>> styles
 </resources>
