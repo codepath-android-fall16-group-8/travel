@@ -56,7 +56,8 @@
             android:layout_marginTop="@dimen/space"
             android:drawableStart="@drawable/ic_date"
             android:drawableTint="@color/colorTransparentBackground"
-            style="@style/textViewWithDrawable" />
+            style="@style/textViewWithDrawable"
+            android:textAppearance="@style/body1Text"/>
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
@@ -80,6 +81,7 @@
             android:layout_marginLeft="170dp"
             android:drawableStart="@drawable/ic_location"
             android:drawableTint="@color/colorTransparentBackground"
-            style="@style/textViewWithDrawable"/>
+            style="@style/textViewWithDrawable"
+            android:textAppearance="@style/body1Text"/>
     </android.support.percent.PercentRelativeLayout>
 </android.support.v7.widget.CardView>

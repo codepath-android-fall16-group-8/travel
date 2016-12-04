@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
-import com.codepath.travel.decoration.DividerItemDecoration;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;

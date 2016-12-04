@@ -83,7 +83,7 @@
         <item name="android:textColor">@color/subheaderText</item>
     </style>
 
-    <!-- Subheading (Roboto Regular, 16sp) -->
+    <!-- Subheader (Roboto Regular, 16sp) -->
     <style name="subheaderText" parent="Base.TextAppearance.AppCompat.Subhead">
         <item name="android:textColor">@color/subheaderText</item>
     </style>

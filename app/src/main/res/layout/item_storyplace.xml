@@ -4,6 +4,7 @@
     xmlns:swipe="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,65 +12,77 @@
     swipe:rightEdgeSwipeOffset="0dp">
 
     <!-- Swipe Menu: Left side -->
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/bottomLeft"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_gravity="start"
-        android:gravity="center"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:background="@color/red">
+        style="@style/cardViewBase"
+        card_view:cardElevation="0dp"
+        card_view:cardBackgroundColor="@color/red"
+        android:layout_gravity="start">
 
-        <ImageView
-            android:id="@+id/ivDelete"
-            app:srcCompat="@drawable/ic_delete"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="@dimen/activity_horizontal_margin">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/ivDelete"
+                app:srcCompat="@drawable/ic_delete"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <!-- Swipe Menu: Right side -->
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/bottomRight"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        style="@style/cardViewBase"
+        card_view:cardElevation="0dp"
         android:layout_gravity="end"
-        android:gravity="center"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:background="@color/green">
+        card_view:cardBackgroundColor="@color/green">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="@dimen/activity_horizontal_margin">
 
-        <ImageView
-            android:id="@+id/ivInfo"
-            app:srcCompat="@drawable/ic_info"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"/>
+            <ImageView
+                android:id="@+id/ivInfo"
+                app:srcCompat="@drawable/ic_info"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"/>
 
-        <ImageView
-            android:id="@+id/ivNote"
-            app:srcCompat="@drawable/ic_add_note"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"/>
+            <ImageView
+                android:id="@+id/ivNote"
+                app:srcCompat="@drawable/ic_add_note"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"/>
 
-        <ImageView
-            android:id="@+id/ivCamera"
-            app:srcCompat="@drawable/ic_add_photo"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_marginRight="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"/>
+            <ImageView
+                android:id="@+id/ivCamera"
+                app:srcCompat="@drawable/ic_add_photo"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginEnd="@dimen/margin"/>
 
-        <ImageView
-            android:id="@+id/ivPhotos"
-            app:srcCompat="@drawable/ic_photo_library"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"/>
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/ivPhotos"
+                app:srcCompat="@drawable/ic_photo_library"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"/>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
     <!-- Top View (recycler view item) -->
     <!-- Too much nesting? -->
@@ -86,8 +99,7 @@
             <RelativeLayout
                 android:id="@+id/llHeader"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_s">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/ivPlacePhoto"
@@ -144,6 +156,7 @@
                 android:id="@+id/rvMediaHolder"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/media_size"
+                android:layout_marginTop="@dimen/space"
                 android:layout_marginBottom="@dimen/margin_s"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
