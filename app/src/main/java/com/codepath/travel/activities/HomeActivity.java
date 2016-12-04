@@ -237,7 +237,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             etAutocomplete.setText("");
         } else if (resultCode == RESULT_OK && requestCode == STORY_REQUEST) {
             // trip deleted
-            tabViewPager.getAdapter().notifyDataSetChanged();
+            mHomePagerAdapter.notifyDataSetChanged();
         }
     }
 

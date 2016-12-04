@@ -3,12 +3,14 @@ package com.codepath.travel.adapters;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.codepath.travel.R.id.swipe;
 import static com.codepath.travel.helper.DateUtils.FUTURE;
 import static com.codepath.travel.helper.DateUtils.PAST;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,7 +19,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -125,10 +126,10 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @BindView(R.id.rvMediaHolder) RecyclerView rvMediaItems;
 
         // swipe views
-        @BindView(R.id.swipe) SwipeLayout swipeLayout;
-        @BindView(R.id.bottomLeft) LinearLayout leftMenu;
+        @BindView(swipe) SwipeLayout swipeLayout;
+        @BindView(R.id.bottomLeft) CardView leftMenu;
         @BindView(R.id.ivDelete) ImageView ivDelete;
-        @BindView(R.id.bottomRight) LinearLayout rightMenu;
+        @BindView(R.id.bottomRight) CardView rightMenu;
         @BindView(R.id.ivInfo) ImageView ivInfo;
 //        @BindView(R.id.ivEdit) ImageView ivEdit;
         @BindView(R.id.ivNote) ImageView ivNote;
@@ -158,7 +159,8 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         public void setupSwipe(boolean enabled) {
             if (enabled) {
                 swipeLayout.setSwipeEnabled(true);
-                swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+                swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+                swipeLayout.setClickToClose(true);
                 setupListeners();
             } else {
                 swipeLayout.setSwipeEnabled(false);
@@ -202,6 +204,45 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
             ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
             ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(mStoryPlace)));
             ivPhotos.setOnClickListener(v -> listener.galleryOnClick(getRealPosition(mStoryPlace)));
+
+            // click listener on surface view to swipe right on tap
+            swipeLayout.getSurfaceView().setOnClickListener(v -> {
+                for (SwipeLayout layout : getOpenLayouts()) {
+                    layout.close(true);
+                }
+                swipeLayout.open(true, SwipeLayout.DragEdge.Right);
+            });
+
+            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onStartOpen(SwipeLayout layout) {
+                }
+
+                @Override
+                public void onOpen(SwipeLayout layout) {
+
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout layout) {
+
+                }
+
+                @Override
+                public void onClose(SwipeLayout layout) {
+
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+                }
+            });
         }
 
         private void setupCheckinCheckbox(StoryPlace storyPlace) {
