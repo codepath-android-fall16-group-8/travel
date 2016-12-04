@@ -33,7 +33,7 @@
             android:name="com.facebook.sdk.PERMISSIONS"
             android:value="email" />
         <uses-library android:required="true" android:name="com.google.android.maps" />
-        
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key" />

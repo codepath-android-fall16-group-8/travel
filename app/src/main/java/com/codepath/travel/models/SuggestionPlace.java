@@ -20,6 +20,10 @@ public class SuggestionPlace {
     private static final String RATING_KEY = "rating";
     private static final String PHOTOS_KEY = "photos";
     private static final String PHOTO_REF_KEY = "photo_reference";
+    private static final String GEOMETRY_KEY = "geometry";
+    private static final String LOCATION_KEY = "location";
+    private static final String LATITUDE_KEY = "lat";
+    private static final String LONGITUDE_KEY = "lng";
 
     // fields must be public
     String name;
@@ -27,6 +31,8 @@ public class SuggestionPlace {
     String placeId;
     String photoUrl;
     boolean selected;
+    double latitude;
+    double longitude;
 
     public SuggestionPlace() {
         // empty constructor needed by the Parceler library
@@ -50,6 +56,10 @@ public class SuggestionPlace {
                     this.photoUrl = photos.getJSONObject(0).getString(PHOTO_REF_KEY);
                 }
             }
+            JSONObject geometry = place.getJSONObject(GEOMETRY_KEY);
+            JSONObject location = geometry.getJSONObject(LOCATION_KEY);
+            this.latitude = location.getDouble(LATITUDE_KEY);
+            this.longitude = location.getDouble(LONGITUDE_KEY);
         } catch (JSONException e) {
             Log.d("Parse place failed", e.toString());
         }
@@ -94,4 +104,12 @@ public class SuggestionPlace {
     public boolean isSelected() { return selected; }
 
     public void setSelected(boolean selected) { this.selected = selected; }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
 }

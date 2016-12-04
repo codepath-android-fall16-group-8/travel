@@ -223,6 +223,8 @@ public class StoryActivity extends AppCompatActivity implements
 
     private void launchStoryMapActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryMapViewActivity.class);
+        intent.putExtra(StoryMapViewActivity.TRIP_ID_ARG, mTripID);
+        intent.putExtra(StoryMapViewActivity.TRIP_TITLE_ARG, mTripTitle);
         startActivity(intent);
     }
 
