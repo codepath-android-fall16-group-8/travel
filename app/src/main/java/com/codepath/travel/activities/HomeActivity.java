@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     private void startWithCurrentUser() {
         ParseUser pUser = getCurrentUser();
         // update nav drawer views
-        ImageUtils.loadImage(ivCover, getCoverPicUrl(pUser));
+        ImageUtils.loadImage(ivCover, getCoverPicUrl(pUser), R.drawable.com_facebook_profile_picture_blank_portrait, null);
         ImageUtils.loadImageCircle(this.ivProfileImage, getProfilePicUrl(pUser),
                 R.drawable.com_facebook_profile_picture_blank_portrait);
         this.tvProfileName.setText(pUser.getUsername());
