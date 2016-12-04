@@ -94,4 +94,8 @@ dependencies {
 
     // swipe layout
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
+
+    // maps
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
 }
