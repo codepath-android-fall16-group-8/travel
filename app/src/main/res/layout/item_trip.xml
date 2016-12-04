@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rlTrip"
             android:layout_marginTop="@dimen/space"
-            android:textAppearance="@style/titleText"
+            android:textAppearance="@style/textLarge"
             android:textColor="@color/darkGray"/>
 
         <TextView
@@ -55,9 +55,11 @@
             android:layout_below="@+id/tvTripTitle"
             android:layout_marginTop="@dimen/space"
             android:drawableStart="@drawable/ic_date"
-            android:drawableTint="@color/colorTransparentBackground"
-            style="@style/textViewWithDrawable"
-            android:textAppearance="@style/body1Text"/>
+            android:drawableTint="@color/secondary_text"
+            android:drawablePadding="@dimen/textDrawablePadding"
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_text" />
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
@@ -74,14 +76,17 @@
             android:id="@+id/tvLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="San Francisco"
+            android:layout_marginLeft="170dp"
             android:layout_alignBaseline="@+id/tvTripDates"
             android:layout_alignParentBottom="true"
             android:layout_alignBottom="@+id/tvTripDates"
-            android:layout_marginLeft="170dp"
-            android:drawableStart="@drawable/ic_location"
-            android:drawableTint="@color/colorTransparentBackground"
-            style="@style/textViewWithDrawable"
-            android:textAppearance="@style/body1Text"/>
+            android:drawableLeft="@drawable/ic_location"
+            android:drawableTint="@color/secondary_text"
+            android:drawablePadding="@dimen/textDrawablePadding"
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:textColor="@color/secondary_text"
+            tools:text="San Francisco"/>
+
     </android.support.percent.PercentRelativeLayout>
 </android.support.v7.widget.CardView>

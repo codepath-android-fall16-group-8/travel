@@ -127,7 +127,8 @@
                     android:layout_marginEnd="@dimen/margin_s"
                     android:layout_marginBottom="@dimen/margin"
                     tools:text="@string/forgot_checkin"
-                    android:textAppearance="@style/body1Text"/>
+                    android:textAppearance="@style/textMedium"
+                    android:textColor="@color/tertiary_text"/>
 
                 <RatingBar
                     android:id="@+id/rbUserRating"
@@ -149,7 +150,7 @@
                     android:layout_toStartOf="@id/tvCheckin"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
                     tools:text="Place Name Name Name Name Name Very Long Name"
-                    android:textAppearance="@style/body2Text"/>
+                    android:textAppearance="@style/textMediumBold"/>
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView

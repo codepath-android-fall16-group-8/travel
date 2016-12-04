@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/space"
-            android:textAppearance="@style/subheaderText"
+            android:textAppearance="@style/textLarge"
             android:text="@string/start_date" />
 
         <TextView
@@ -24,7 +24,7 @@
             android:layout_below="@id/tvStartLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/body1Text"
+            android:textAppearance="@style/textMedium"
             tools:text="Nov 11, 2016" />
 
         <View
@@ -43,7 +43,7 @@
             android:layout_toEndOf="@+id/verticalLine"
             android:layout_marginLeft="@dimen/margin"
             android:layout_marginBottom="@dimen/space"
-            android:textAppearance="@style/subheaderText"
+            android:textAppearance="@style/textLarge"
             android:text="@string/end_date" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_toRightOf="@+id/verticalLine"
             android:layout_toEndOf="@+id/verticalLine"
             android:layout_marginLeft="@dimen/margin"
-            android:textAppearance="@style/body1Text"
+            android:textAppearance="@style/textMedium"
             tools:text="Dec 11, 2016" />
     </RelativeLayout>
 
@@ -63,7 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/rlDatesContainer"
-        android:background="@color/lightGray" />
+        android:background="@color/divider" />
 
     <LinearLayout
         android:id="@+id/llDurationRow"
@@ -78,7 +78,7 @@
             android:id="@+id/tvDurationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/body1Text"
+            android:textAppearance="@style/textMedium"
             android:text="@string/duration_label"/>
 
         <TextView
@@ -88,7 +88,7 @@
             tools:text="1 month"
             android:layout_marginLeft="@dimen/textDrawablePadding"
             android:layout_marginStart="@dimen/textDrawablePadding"
-            android:textAppearance="@style/body1Text"/>
+            android:textAppearance="@style/textMedium"/>
 
     </LinearLayout>
 
@@ -97,7 +97,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@+id/llDurationRow"
-        android:background="@color/lightGray" />
+        android:background="@color/divider" />
 
     <ScrollView
         android:id="@+id/calendarHolder"

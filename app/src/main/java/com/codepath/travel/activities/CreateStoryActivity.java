@@ -56,6 +56,7 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
 
     // strings
+    @BindString(R.string.toolbar_title_create_story) String toolbarTitle;
     @BindString(R.string.default_trip_title) String tripTitleFormat;
     @BindString(R.string.hint_trip_dates) String hintTripDates;
     @BindString(R.string.error_trip_dates) String errorTripDates;
@@ -89,10 +90,11 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
         initializeCommonViews();
+        toolbar.setTitle(toolbarTitle);
 
         mDestination = getIntent().getStringExtra(Constants.PLACE_NAME_ARG);
         mDestinationPhotoRef = getIntent().getStringExtra(Constants.PLACE_PHOTO_REF_ARG);
-        //Get list of selected places from suggestions screen
+        // Get list of selected places from suggestions screen
         mSelectedSuggestionPlaces = Parcels.unwrap(getIntent().getParcelableExtra(
                 Constants.SUGGESTION_PLACES_LIST_ARG));
 
@@ -311,6 +313,9 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         // as you specify a parent activity in AndroidManifest.xml.
         //int id = item.getItemId();
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -320,6 +325,7 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     public void onBackPressed() {
         mNewTrip.deleteInBackground();
         super.onBackPressed();
+        finish();
     }
 
 }
