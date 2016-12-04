@@ -29,4 +29,7 @@
 
     <!-- place suggestion activity -->
     <dimen name="destination_backdrop">200dp</dimen>
+    
+    <!-- place suggestion card -->
+    <dimen name="suggestion_place_image_height">200dp</dimen>
 </resources>

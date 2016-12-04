@@ -85,4 +85,8 @@
     <string name="free">Free</string>
     <string name="reviews">Reviews</string>
 
+    <!-- Places suggestion activity -->
+    <string name="saved_places">Saved Places: </string>
+    <string name="create_story">Create Story</string>
+
 </resources>

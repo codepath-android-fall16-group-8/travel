@@ -72,5 +72,48 @@
         <item name="android:minHeight">23dp</item>
         <item name="android:maxHeight">25dp</item>
     </style>
+    
+    <!-- View Pager Tabs Styling -->
+    <style name="pagerTabs">
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="tabPaddingStart">12dp</item>
+        <item name="tabPaddingEnd">12dp</item>
+        <item name="tabBackground">@color/white</item>
+        <item name="tabTextAppearance">@style/tabTextAppearance</item>
+    </style>
+
+    <style name="tabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="textAllCaps">false</item>
+    </style>
+    <!-- end view pager styling -->
+
+    <!-- Places Suggestion Activity Style -->
+    <style name="storySuggestionToolbar">
+        <!-- android:textColorPrimary is the color of the title text in the Toolbar  -->
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <!-- actionMenuTextColor is the color of the text of action (menu) items  -->
+        <item name="actionMenuTextColor">@color/white</item>
+        <!-- Tints the input fields like checkboxes and text fields -->
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+    <style name="suggestionPlaceTitle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+    </style>
+    <style name="suggestionStoryCardStyle" parent="Theme.AppCompat.Light">
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="cardElevation">8dp</item>
+    </style>
+    <!-- end story suggestion -->
 
 </resources>

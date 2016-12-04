@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.viewholders.SuggestedPlaceViewHolder;
+import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.SuggestionPlace;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<SuggestedP
     private final int DEFAULT = 0;
 
     private List<SuggestionPlace> mSuggestionPlaces;
-    Context mContext;
+    private Context mContext;
+    private PlacesCartListener mPlacesCardListener;
 
     public PlaceSuggestionArrayAdapter(List<SuggestionPlace> suggestionPlaces, Context context) {
         mSuggestionPlaces = suggestionPlaces;
         mContext = context;
+        mPlacesCardListener = (PlacesCartListener) mContext;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class PlaceSuggestionArrayAdapter extends RecyclerView.Adapter<SuggestedP
     public void onBindViewHolder(final SuggestedPlaceViewHolder holder, int position) {
         SuggestionPlace suggestionPlace = mSuggestionPlaces.get(position);
         holder.populate(suggestionPlace);
-        //holder.listeners(suggestionPlace, placesCartListener);
+        holder.listeners(suggestionPlace, mPlacesCardListener);
     }
 
     @Override

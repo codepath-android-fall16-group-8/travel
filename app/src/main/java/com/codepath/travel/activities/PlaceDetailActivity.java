@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.ReviewsAdapter;
+import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.Review;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
@@ -31,12 +32,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
 
-import static com.codepath.travel.Constants.IS_STORY_PLACE;
-import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
-import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
-import static com.codepath.travel.Constants.PLACE_ID_ARG;
-import static com.codepath.travel.Constants.PLACE_NAME_ARG;
-import static com.codepath.travel.Constants.POSITION_ARG;
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_ADDR_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_PHONE_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.GOOGLE_URL_KEY;
@@ -53,6 +48,12 @@ import static com.codepath.travel.net.GooglePlaceConstants.REVIEWS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.WEBSITE_KEY;
 
 public class PlaceDetailActivity extends BaseActivity {
+
+    // Intent args
+    public static final String PLACE_ID_ARG = "place_id";
+    public static final String PLACE_NAME_ARG = "place_name";
+    public static final String IS_STORY_PLACE_ARG = "is_story_place";
+    public static final String POSITION_ARG = "position";
 
     // Strings
     @BindString(R.string.open) String open;
@@ -86,11 +87,11 @@ public class PlaceDetailActivity extends BaseActivity {
         String placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
 
-        isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE, false);
+        isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE_ARG, false);
         if (isStoryPlace) {
             cbAddPlace.setVisibility(View.GONE);
         } else {
-            cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
+            //cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
         }
 
         GoogleAsyncHttpClient.getPlaceDetails(placeId, new JsonHttpResponseHandler() {
@@ -196,10 +197,8 @@ public class PlaceDetailActivity extends BaseActivity {
             case android.R.id.home:
                 if (!isStoryPlace) {
                     Intent update = new Intent();
-                    update.putExtra(PLACE_CATEGORY_ARG,
-                            getIntent().getBooleanExtra(PLACE_CATEGORY_ARG, true));
-                    update.putExtra(POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
-                    update.putExtra(PLACE_ADDED_ARG, cbAddPlace.isChecked());
+                    update.putExtra(PlacesListFragment.POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
+                    update.putExtra(PlacesListFragment.PLACE_ADDED_ARG, cbAddPlace.isChecked());
                     setResult(RESULT_OK, update);
                 }
                 return super.onOptionsItemSelected(item);

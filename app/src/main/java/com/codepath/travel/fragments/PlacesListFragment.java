@@ -1,5 +1,6 @@
 package com.codepath.travel.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.codepath.travel.R;
+import com.codepath.travel.activities.PlaceDetailActivity;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
+import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,6 +35,13 @@ import cz.msebera.android.httpclient.Header;
 
 public class PlacesListFragment extends Fragment {
   private static final String TAG = PlacesListFragment.class.getSimpleName();
+
+  // activity request code
+  private static final int PLACE_DETAIL_REQUEST = 100;
+
+  // intent args
+  public static final String POSITION_ARG = "position";
+  public static final String PLACE_ADDED_ARG = "place_added";
 
   // args
   protected static final String DESTINATION_LAT_LONG_ARG = "destination_lat_long";
@@ -79,7 +89,11 @@ public class PlacesListFragment extends Fragment {
   public void onViewCreated(View view, Bundle savedInstanceState) {
     rvPlaces.setHasFixedSize(true);
     rvPlaces.setAdapter(mPlacesSuggestionAdapter);
-    rvPlaces.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+    rvPlaces.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+    // recycler view items -> place detail activity
+    ItemClickSupport.addTo(rvPlaces).setOnItemClickListener(
+            (recyclerView, position, v) -> launchPlaceDetailActivity(position)
+    );
     populatePlaces();
   }
 
@@ -101,5 +115,15 @@ public class PlacesListFragment extends Fragment {
         Log.e("ERROR", t.toString());
       }
     });
+  }
+
+  private void launchPlaceDetailActivity(int position) {
+    SuggestionPlace suggestionPlace = mPlaces.get(position);
+    Intent placeDetail = new Intent(getActivity(), PlaceDetailActivity.class);
+    placeDetail.putExtra(PlaceDetailActivity.PLACE_ID_ARG, suggestionPlace.getPlaceId());
+    placeDetail.putExtra(PlaceDetailActivity.PLACE_NAME_ARG, suggestionPlace.getName());
+    placeDetail.putExtra(PlaceDetailActivity.IS_STORY_PLACE_ARG, suggestionPlace.isSelected());
+    placeDetail.putExtra(PlaceDetailActivity.POSITION_ARG, position);
+    startActivityForResult(placeDetail, PLACE_DETAIL_REQUEST);
   }
 }
