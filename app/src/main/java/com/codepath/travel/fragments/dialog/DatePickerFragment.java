@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
@@ -66,6 +67,7 @@ public class DatePickerFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_date_picker, parent, false);
         unbinder = ButterKnife.bind(this, view);
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         Bundle args = getArguments();
         long dateMillis = args.getLong(DATE_KEY, -1);

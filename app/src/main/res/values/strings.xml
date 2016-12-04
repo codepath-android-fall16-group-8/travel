@@ -1,7 +1,8 @@
 <resources>
     <!-- APIs and Integrations -->
     <string name="parse_app_id">traveltrails</string>
-    <string name="google_api_key">AIzaSyCOhSebiVixAE8Aq5atvtzWJAhHuZH5l_U</string>
+    <!--<string name="google_api_key">AIzaSyCOhSebiVixAE8Aq5atvtzWJAhHuZH5l_U</string>-->
+    <string name="google_api_key">AIzaSyDkD4R2rlb7BRRwDOm3E1G4iRGGRbtBbe8</string> <!-- huyen's 2nd key -->
     <string name="facebook_app_id">646488778862200</string>
 
     <!-- App related strings -->
@@ -63,6 +64,7 @@
     <string name="hint_trip_dates">Select Trip Dates</string>
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
+    <string name="duration_label">Duration:</string>
 
     <!-- Sharing -->
     <string name="share_trip">Share Trip</string>

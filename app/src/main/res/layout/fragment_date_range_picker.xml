@@ -2,31 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin">
 
     <RelativeLayout
         android:id="@+id/rlDatesContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin" >
+        android:layout_marginBottom="@dimen/space" >
 
         <TextView
+            android:id="@+id/tvStartLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvStartLabel"
+            android:layout_marginBottom="@dimen/space"
+            android:textAppearance="@style/subheaderText"
             android:text="@string/start_date" />
 
         <TextView
-            android:layout_below="@+id/tvStartLabel"
+            android:id="@+id/tvStartDate"
+            android:layout_below="@id/tvStartLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvStartDate"
+            android:textAppearance="@style/body1Text"
             tools:text="Nov 11, 2016" />
 
         <View
             android:id="@+id/verticalLine"
             android:layout_width="1dp"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="false"
             android:background="@color/lightGray"
             android:layout_centerInParent="true" />
@@ -38,6 +42,8 @@
             android:layout_toRightOf="@+id/verticalLine"
             android:layout_toEndOf="@+id/verticalLine"
             android:layout_marginLeft="@dimen/margin"
+            android:layout_marginBottom="@dimen/space"
+            android:textAppearance="@style/subheaderText"
             android:text="@string/end_date" />
 
         <TextView
@@ -48,6 +54,7 @@
             android:layout_toRightOf="@+id/verticalLine"
             android:layout_toEndOf="@+id/verticalLine"
             android:layout_marginLeft="@dimen/margin"
+            android:textAppearance="@style/body1Text"
             tools:text="Dec 11, 2016" />
     </RelativeLayout>
 
@@ -64,21 +71,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewSeparator1"
         android:orientation="horizontal"
-        android:padding="@dimen/margin">
+        android:layout_marginTop="@dimen/space"
+        android:layout_marginBottom="@dimen/space">
 
         <TextView
             android:id="@+id/tvDurationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration:"/>
+            android:textAppearance="@style/body1Text"
+            android:text="@string/duration_label"/>
 
         <TextView
             android:id="@+id/tvDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="1 month"
-            android:layout_marginLeft="@dimen/margin"
-            android:layout_marginStart="@dimen/margin"/>
+            android:layout_marginLeft="@dimen/textDrawablePadding"
+            android:layout_marginStart="@dimen/textDrawablePadding"
+            android:textAppearance="@style/body1Text"/>
 
     </LinearLayout>
 
@@ -89,29 +99,37 @@
         android:layout_below="@+id/llDurationRow"
         android:background="@color/lightGray" />
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_below="@+id/viewSeparator2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <ScrollView
+        android:id="@+id/calendarHolder"
+        android:layout_below="@id/viewSeparator2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space">
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
     <Button
         android:id="@+id/btnSave"
-        android:text="Save"
+        android:text="@string/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendarView"
+        android:layout_below="@id/calendarHolder"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:enabled="false"/>
+        android:enabled="false"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
     <Button
         android:id="@+id/btnCancel"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendarView"
-        android:layout_toLeftOf="@+id/btnSave"
-        android:layout_toStartOf="@+id/btnSave" />
+        android:layout_below="@id/calendarHolder"
+        android:layout_toLeftOf="@id/btnSave"
+        android:layout_toStartOf="@id/btnSave"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
 </RelativeLayout>

@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin">
+    android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
         android:id="@+id/tvDateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/checkin_date"
-        android:layout_marginBottom="@dimen/margin"/>
+        android:layout_marginBottom="@dimen/space"
+        android:textAppearance="@style/subheaderText"/>
 
     <TextView
         android:id="@+id/tvDate"
@@ -18,7 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Nov 23, 2016"
-        android:layout_marginBottom="@dimen/margin"/>
+        android:layout_marginBottom="@dimen/space"
+        android:textAppearance="@style/body1Text"/>
 
     <View
         android:id="@+id/viewSeparator"
@@ -27,28 +29,36 @@
         android:layout_below="@+id/tvDate"
         android:background="@color/lightGray" />
 
-    <CalendarView
-        android:id="@+id/calendarView"
+    <ScrollView
+        android:id="@+id/calendarHolder"
         android:layout_below="@+id/viewSeparator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space">
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 
     <Button
         android:id="@+id/btnSave"
-        android:text="Save"
+        android:text="@string/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendarView"
+        android:layout_below="@id/calendarHolder"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
     <Button
         android:id="@+id/btnCancel"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/calendarView"
-        android:layout_toLeftOf="@+id/btnSave"
-        android:layout_toStartOf="@+id/btnSave" />
+        android:layout_below="@id/calendarHolder"
+        android:layout_toLeftOf="@id/btnSave"
+        android:layout_toStartOf="@id/btnSave"
+        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog" />
 
 </RelativeLayout>
