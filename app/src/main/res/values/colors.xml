@@ -1,21 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#303F9F</color>
-
-    <color name="transparent">#00000000</color>
-    <color name="colorTransparentBackground">#60000000</color>
-    <color name="green">#008000</color>
-    <color name="tango">#F07621</color>
-    <color name="white">@android:color/white</color>
-    <color name="lightGray">#CECECE</color>
-    <color name="heart">#CC817C</color>
-    <color name="red">#BC3F3C</color>
-    <color name="darkGray">#4c4c4c</color>
+    <!-- MAIN COLORS -->
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#E64A19</color>
+    <color name="colorPrimaryLight">#FFCCBC</color>
+    <color name="colorAccent">#FF9800</color>
 
     <!-- TEXT COLORS -->
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="tertiary_text">@color/lightGray</color>
     <color name="subheaderText">#87000000</color>
     <color name="captionText">#54000000</color>
->>>>>>> styles
+
+    <!-- ITEM COLORS -->
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">@color/lightGray</color>
+
+    <!-- OTHER COLORS -->
+    <color name="transparent">#00000000</color>
+    <color name="colorTransparentBackground">#60000000</color>
+    <color name="white">@android:color/white</color>
+    <color name="lightGray">#BDBDBD</color>
+    <color name="darkGray">#4c4c4c</color>
+    <color name="red">#BC3F3C</color>
+    <color name="green">#008000</color>
+    <color name="tango">#F07621</color>
+    <color name="heart">#CC817C</color>
+
 </resources>

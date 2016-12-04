@@ -62,45 +62,26 @@
     </style>
 
 
-    <!-- TAB LAYOUT -->
-    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabTextAppearance">@style/MyCustomTextAppearance</item>
-    </style>
-    <!-- overriding textAllCaps so icons render -->
-    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="textAllCaps">false</item>
+    <!-- TEXT STYLES -->
+    <!-- Large 16sp (Roboto Regular) -->
+    <style name="textLarge" parent="Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
-
-    <!-- TEXT STYLES (Roboto) -->
-    <!-- Headline (Roboto Regular, 24sp) -->
-    <style name="headlineText" parent="Base.TextAppearance.AppCompat.Headline">
-        <item name="android:textColor">@color/subheaderText</item>
+    <!-- Medium 14sp, slightly bolder (Roboto Medium) -->
+    <style name="textMediumBold" parent="Base.TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">@color/secondary_text</item>
     </style>
 
-    <!-- Title (Roboto Medium, 20sp) -->
-    <style name="titleText" parent="Base.TextAppearance.AppCompat.Title">
-        <item name="android:textColor">@color/subheaderText</item>
+    <!-- Medium 14sp (Roboto Regular) -->
+    <style name="textMedium" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/secondary_text</item>
     </style>
 
-    <!-- Subheading (Roboto Regular, 16sp) -->
-    <style name="subheaderText" parent="Base.TextAppearance.AppCompat.Subhead">
-        <item name="android:textColor">@color/subheaderText</item>
-    </style>
-
-    <!-- Body 2 (Roboto Medium, 14sp) -->
-    <style name="body2Text" parent="Base.TextAppearance.AppCompat.Body2">
-        <item name="android:textColor">@color/subheaderText</item>
-    </style>
-
-    <!-- Body 1 (Roboto Regular, 14sp) -->
-    <style name="body1Text" parent="Base.TextAppearance.AppCompat.Body1">
-        <item name="android:textColor">@color/subheaderText</item>
-    </style>
-
-    <!-- Caption (12sp) -->
-    <style name="captionText" parent="Base.TextAppearance.AppCompat.Caption">
-        <item name="android:textColor">@color/captionText</item>
+    <!-- Small (12sp) -->
+    <style name="textSmall" parent="Base.TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/secondary_text</item>
     </style>
 
     <!-- UI ELEMENTS -->
@@ -133,7 +114,7 @@
 
     <style name="tabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textColor">@color/secondary_text</item>
         <item name="textAllCaps">false</item>
     </style>
     <!-- end view pager styling -->
@@ -176,7 +157,6 @@
 
     <style name="textViewWithDrawable">
         <item name="android:drawablePadding">@dimen/textDrawablePadding</item>
-        <item name="android:textAppearance">@style/subheaderText</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 
