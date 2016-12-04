@@ -1,5 +1,7 @@
 package com.codepath.travel.models;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,17 +36,22 @@ public class SuggestionPlace {
      * Constructor to get required values from jsonObject
      * @param jsonObject
      */
-    public SuggestionPlace(JSONObject jsonObject) {
+    public SuggestionPlace(JSONObject place) {
         super();
         try {
-            setName(jsonObject.getString(NAME_KEY));
-            setPlaceId(jsonObject.getString(PLACE_ID_KEY));
-            setRating(jsonObject.getDouble(RATING_KEY));
-            setPhotoUrl(jsonObject.getJSONArray(PHOTOS_KEY).getJSONObject(0) != null
-                    ? jsonObject.getJSONArray(PHOTOS_KEY).getJSONObject(0).getString(PHOTO_REF_KEY)
-                    : null);
+            this.name = place.getString(NAME_KEY);
+            this.placeId = place.getString(PLACE_ID_KEY);
+            if (place.has(RATING_KEY)) {
+                this.rating = place.getDouble(RATING_KEY);
+            }
+            if (place.has(PHOTOS_KEY)) {
+                JSONArray photos = place.getJSONArray(PHOTOS_KEY);
+                if (photos.length() > 0) {
+                    this.photoUrl = photos.getJSONObject(0).getString(PHOTO_REF_KEY);
+                }
+            }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d("Parse place failed", e.toString());
         }
     }
 
@@ -72,32 +79,16 @@ public class SuggestionPlace {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Double getRating() {
         return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
     }
 
     public String getPlaceId() {
         return placeId;
     }
 
-    public void setPlaceId(String placeId) {
-        this.placeId = placeId;
-    }
-
     public String getPhotoUrl() {
         return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
     }
 
     public boolean isSelected() { return selected; }

@@ -1,11 +1,37 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.Constants.IS_STORY_PLACE;
-import static com.codepath.travel.Constants.PLACE_ADDED_ARG;
-import static com.codepath.travel.Constants.PLACE_CATEGORY_ARG;
-import static com.codepath.travel.Constants.PLACE_ID_ARG;
-import static com.codepath.travel.Constants.PLACE_NAME_ARG;
-import static com.codepath.travel.Constants.POSITION_ARG;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.codepath.travel.R;
+import com.codepath.travel.adapters.ReviewsAdapter;
+import com.codepath.travel.fragments.PlacesListFragment;
+import com.codepath.travel.helper.ImageUtils;
+import com.codepath.travel.models.Review;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import butterknife.BindString;
+import butterknife.BindView;
+import cz.msebera.android.httpclient.Header;
+
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_ADDR_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_PHONE_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.GOOGLE_URL_KEY;
@@ -21,38 +47,13 @@ import static com.codepath.travel.net.GooglePlaceConstants.RESULT_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.REVIEWS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.WEBSITE_KEY;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RatingBar;
-import android.widget.TextView;
-
-import com.codepath.travel.net.GoogleAsyncHttpClient;
-import com.codepath.travel.R;
-import com.codepath.travel.adapters.ReviewsAdapter;
-import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.models.Review;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
-import butterknife.BindString;
-import butterknife.BindView;
-import cz.msebera.android.httpclient.Header;
-
 public class PlaceDetailActivity extends BaseActivity {
+
+    // Intent args
+    public static final String PLACE_ID_ARG = "place_id";
+    public static final String PLACE_NAME_ARG = "place_name";
+    public static final String IS_STORY_PLACE_ARG = "is_story_place";
+    public static final String POSITION_ARG = "position";
 
     // Strings
     @BindString(R.string.open) String open;
@@ -62,7 +63,7 @@ public class PlaceDetailActivity extends BaseActivity {
     // Views
     @BindView(R.id.cbAddPlace) AppCompatCheckBox cbAddPlace;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
-    @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
+    @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
     @BindView(R.id.tvPhoneNumber) TextView tvPhoneNumber;
     @BindView(R.id.tvAddress) TextView tvAddress;
     @BindView(R.id.tvOpenNow) TextView tvOpenNow;
@@ -86,11 +87,11 @@ public class PlaceDetailActivity extends BaseActivity {
         String placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
 
-        isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE, false);
+        isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE_ARG, false);
         if (isStoryPlace) {
             cbAddPlace.setVisibility(View.GONE);
         } else {
-            cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
+            //cbAddPlace.setChecked(getIntent().getBooleanExtra(PLACE_ADDED_ARG, false));
         }
 
         GoogleAsyncHttpClient.getPlaceDetails(placeId, new JsonHttpResponseHandler() {
@@ -122,8 +123,8 @@ public class PlaceDetailActivity extends BaseActivity {
             String photoRef = data.getJSONArray(PHOTOS_KEY)
                     .getJSONObject(0).getString(PHOTO_REF_KEY);
             String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
-            ImageUtils.loadImage(ivPlacePhoto, photoUrl, R.drawable.ic_photoholder,
-                    pbImageLoading);
+            ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder,
+            pbImageLoading);
         }
 
         // address
@@ -196,10 +197,8 @@ public class PlaceDetailActivity extends BaseActivity {
             case android.R.id.home:
                 if (!isStoryPlace) {
                     Intent update = new Intent();
-                    update.putExtra(PLACE_CATEGORY_ARG,
-                            getIntent().getBooleanExtra(PLACE_CATEGORY_ARG, true));
-                    update.putExtra(POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
-                    update.putExtra(PLACE_ADDED_ARG, cbAddPlace.isChecked());
+                    update.putExtra(PlacesListFragment.POSITION_ARG, getIntent().getIntExtra(POSITION_ARG, 0));
+                    update.putExtra(PlacesListFragment.PLACE_ADDED_ARG, cbAddPlace.isChecked());
                     setResult(RESULT_OK, update);
                 }
                 return super.onOptionsItemSelected(item);

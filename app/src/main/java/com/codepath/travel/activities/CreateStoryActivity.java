@@ -318,9 +318,8 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK);
         mNewTrip.deleteInBackground();
-        finish();
+        super.onBackPressed();
     }
 
 }
