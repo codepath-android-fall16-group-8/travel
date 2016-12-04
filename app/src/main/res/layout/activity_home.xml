@@ -4,43 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RelativeLayout
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- Main Content (DrawerLayout's first child) -->
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.codepath.travel.activities.HomeActivity">
 
-        <android.support.v7.widget.Toolbar
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/toolbar"
-            android:layout_height="wrap_content"
+        <!-- AppBarLayout must be first child of CoordinatorLayout -->
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/toolbarLayout"
             android:layout_width="match_parent"
-            android:fitsSystemWindows="true"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:background="?attr/colorPrimaryDark">
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimaryDark"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                app:theme="@style/ToolbarTheme"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <!-- Google Places search auto complete fragment -->
                 <fragment
                     android:id="@+id/autocomplete_fragment_new_trip"
                     android:name="com.codepath.travel.fragments.CustomPlaceAutoCompleteFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:layout="@layout/layout_place_autocomplete" />
-        </android.support.v7.widget.Toolbar>
+            </android.support.v7.widget.Toolbar>
 
+        </android.support.design.widget.AppBarLayout>
+
+        <!-- Tab Layout (ViewPager) -->
         <include
-            android:layout_below="@+id/toolbar"
+            android:layout_below="@id/toolbarLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            layout="@layout/layout_tabs"/>
-    </RelativeLayout>
+            layout="@layout/layout_tabs"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    </android.support.design.widget.CoordinatorLayout>
 
+    <!-- Navigation View (DrawerLayout's second child) -->
     <android.support.design.widget.NavigationView
         android:id="@+id/nvView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@android:color/white"
         app:menu="@menu/drawer_view"
-        app:headerLayout="@layout/nav_header"/>
+        app:headerLayout="@layout/nav_header" />
 </android.support.v4.widget.DrawerLayout>

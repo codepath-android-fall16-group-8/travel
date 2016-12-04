@@ -4,6 +4,9 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <!-- Translucent status bar so the navigation drawer comes out slides out underneath the status bar -->
+        <item name="android:windowTranslucentStatus">true</item>
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@android:color/darker_gray</item>
@@ -19,8 +22,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+
+    <!-- TOOLBAR STYLES -->
     <style name="AppTheme.AppBarOverlay" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -45,18 +50,61 @@
         <item name="colorControlHighlight">@color/colorAccent</item>
 
         <!-- Enable these below if you want clicking icons to trigger a ripple effect -->
-        <!--
         <item name="selectableItemBackground">?android:selectableItemBackground</item>
         <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
-        -->
     </style>
 
-    <!-- This configures the styles for the title within the Toolbar  -->
+    <!-- This configures the styles for the title within the Toolbar (20sp)-->
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">21sp</item>
-        <item name="android:textStyle">italic</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
+
+    <!-- TAB LAYOUT -->
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+    <!-- overriding textAllCaps so icons render -->
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
+
+    <!-- TEXT STYLES (Roboto) -->
+    <!-- Headline (Roboto Regular, 24sp) -->
+    <style name="headlineText" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">@color/subheaderText</item>
+    </style>
+
+    <!-- Title (Roboto Medium, 20sp) -->
+    <style name="titleText" parent="Base.TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/subheaderText</item>
+    </style>
+
+    <!-- Subheading (Roboto Regular, 16sp) -->
+    <style name="subheaderText" parent="Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">@color/subheaderText</item>
+    </style>
+
+    <!-- Body 2 (Roboto Medium, 14sp) -->
+    <style name="body2Text" parent="Base.TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">@color/subheaderText</item>
+    </style>
+
+    <!-- Body 1 (Roboto Regular, 14sp) -->
+    <style name="body1Text" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/subheaderText</item>
+    </style>
+
+    <!-- Caption (12sp) -->
+    <style name="captionText" parent="Base.TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/captionText</item>
+    </style>
+
+    <!-- UI ELEMENTS -->
+    <!-- EditText, Full Width -->
     <style name="EditText.FullWidth" parent="Widget.AppCompat.EditText">
         <item name="android:padding">20dp</item>
         <item name="android:background">@null</item>
@@ -66,7 +114,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- User Rating Bar (for Story Place) -->
+    <!-- Rating Bar w/ hearts -->
     <style name="heartRatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/rating_bar_heart_full</item>
         <item name="android:minHeight">23dp</item>
@@ -115,5 +163,21 @@
         <item name="cardElevation">8dp</item>
     </style>
     <!-- end story suggestion -->
+
+    <style name="cardViewBase" parent="Base.CardView">
+        <item name="android:clickable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardCornerRadius">@dimen/cv_corner_radius</item>
+        <item name="cardElevation">@dimen/cv_elevation</item>
+        <item name="contentPadding">@dimen/space</item>
+        <item name="cardUseCompatPadding">true</item>
+    </style>
+
+    <style name="textViewWithDrawable">
+        <item name="android:drawablePadding">@dimen/textDrawablePadding</item>
+        <item name="android:textAppearance">@style/subheaderText</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 
 </resources>

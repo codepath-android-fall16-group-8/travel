@@ -29,11 +29,11 @@ public class Trip extends ParseObject {
     }
 
     // for use until we use API places
-    public Trip(ParseUser user, String title) {
+    public Trip(ParseUser user, String destinationName) {
         super();
         setDefaultACL(user);
         setUser(user);
-        setTitle(title);
+        setDestinationPlaceName(destinationName);
     }
 
     public Trip(ParseUser user, String title, Place destination) {
@@ -66,6 +66,14 @@ public class Trip extends ParseObject {
 
     public void setDestinationPlaceId(String destinationPlaceId) {
         put(DESTINATION_PLACE_ID_KEY, destinationPlaceId);
+    }
+
+    public String getDestinationPlaceName() {
+        return getString(DESTINATION_PLACE_NAME_KEY);
+    }
+
+    public void setDestinationPlaceName(String destinationPlaceName) {
+        put(DESTINATION_PLACE_NAME_KEY, destinationPlaceName);
     }
 
     public String getCoverPicUrl() {

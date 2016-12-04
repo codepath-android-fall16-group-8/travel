@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <EditText
         android:id="@+id/etAutocomplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableRight="@drawable/places_ic_search"
+        android:drawableRight="@drawable/ic_search"
         android:inputType="none"
         android:textSize="14sp"
         android:cursorVisible="false"
@@ -17,6 +17,6 @@
         android:hint="@string/destination_hint"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
-        />
+        android:background="@android:color/transparent" />
 
 </LinearLayout>
