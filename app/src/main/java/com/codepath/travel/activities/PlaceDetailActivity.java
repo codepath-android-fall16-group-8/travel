@@ -1,6 +1,7 @@
 package com.codepath.travel.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,6 +57,8 @@ public class PlaceDetailActivity extends BaseActivity {
     public static final String PLACE_NAME_ARG = "place_name";
     public static final String IS_STORY_PLACE_ARG = "is_story_place";
     public static final String POSITION_ARG = "position";
+    public static final String LAT_ARG = "latitude";
+    public static final String LONG_ARG = "longitude";
 
     // Strings
     @BindString(R.string.open) String open;
@@ -88,6 +91,9 @@ public class PlaceDetailActivity extends BaseActivity {
 
     // variables
     private boolean isStoryPlace;
+    private String placeName;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +102,7 @@ public class PlaceDetailActivity extends BaseActivity {
         initializeCommonViews();
 
         String placeId = getIntent().getStringExtra(PLACE_ID_ARG);
-        String placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
+        placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
         tvPlaceName.setText(placeName);
         isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE_ARG, false);
@@ -167,20 +173,11 @@ public class PlaceDetailActivity extends BaseActivity {
             String address = data.getString(FORMATTED_ADDR_KEY);
             tvAddress.setText(address);
             // open up maps with directions
-            tvAddress.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PlaceDetailActivity.this, address, Toast.LENGTH_SHORT).show();
-                }
-            });
-            tvDirections.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PlaceDetailActivity.this, address, Toast.LENGTH_SHORT).show();
-                }
-            });
+            tvAddress.setOnClickListener(v -> onAddressClick(address));
+            tvDirections.setOnClickListener(v -> onDirectionsClick(address));
         }
 
+        // phone number
         if (data.has(INTL_PHONE_KEY)) {
             setupPhoneNumber(data.getString(INTL_PHONE_KEY));
         } else if (data.has(FORMATTED_PHONE_KEY)) {
@@ -189,42 +186,23 @@ public class PlaceDetailActivity extends BaseActivity {
 
         // website
         if (data.has(WEBSITE_KEY)) {
+            // use website if it is available, otherwise default to google url below
             String website = data.getString(WEBSITE_KEY);
             tvWebAddress.setText(website);
             // open up web browser
-            tvWebAddress.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PlaceDetailActivity.this, website, Toast.LENGTH_SHORT).show();
-                }
-            });
-            tvWebsite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PlaceDetailActivity.this, website, Toast.LENGTH_SHORT).show();
-                }
-            });
-
+            tvWebAddress.setOnClickListener(v -> onWebAddressClick(website));
+            tvWebsite.setOnClickListener(v -> onWebAddressClick(website));
         } else {
             tvWebsite.setVisibility(View.GONE);
             // google url
             if (data.has(GOOGLE_URL_KEY)) {
+                // google url is basically just map view with the location coordinates.
                 tvGoogleUrl.setVisibility(View.VISIBLE);
-                String website = data.getString(GOOGLE_URL_KEY);
+                String googleUrl = data.getString(GOOGLE_URL_KEY);
                 tvGoogleUrl.setText(website);
                 // open up maps
-                tvGoogleUrl.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(PlaceDetailActivity.this, website, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                tvWebsite.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(PlaceDetailActivity.this, website, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                tvGoogleUrl.setOnClickListener(v -> onGoogleUrlClick(googleUrl));
+                tvWebsite.setOnClickListener(v -> onGoogleUrlClick(googleUrl));
             }
         }
 
@@ -266,18 +244,52 @@ public class PlaceDetailActivity extends BaseActivity {
         tvPhoneNumber.setVisibility(View.VISIBLE);
         tvCall.setVisibility(View.VISIBLE);
         tvPhoneNumber.setText(phone);
-        tvPhoneNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(PlaceDetailActivity.this, phone, Toast.LENGTH_SHORT).show();
-            }
-        });
-        tvCall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(PlaceDetailActivity.this, phone, Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        // open phone intent
+        tvPhoneNumber.setOnClickListener(v -> onPhoneClick(phone));
+        tvCall.setOnClickListener(v -> onPhoneClick(phone));
+    }
+
+    /* Navigation */
+    private void onDirectionsClick(String address) {
+        String data = String.format("google.navigation:q=%s", address);
+        launchMapsIntent(data);
+    }
+
+    private void onAddressClick(String address) {
+        String data = String.format("geo:0,0?q=%s(%s)", address, placeName);
+        launchMapsIntent(data);
+    }
+
+    private void onPhoneClick(String phoneNumber) {
+        String uri = String.format("tel:%s", phoneNumber);
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+        phoneIntent.setData(Uri.parse(uri));
+        if (phoneIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(phoneIntent);
+        }
+    }
+
+    private void onWebAddressClick(String webAddress) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webAddress));
+        if (browserIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(browserIntent);
+        }
+    }
+
+    private void onGoogleUrlClick(String googleUrl) {
+        Toast.makeText(PlaceDetailActivity.this, "GoogleURL: " + googleUrl, Toast.LENGTH_SHORT).show();
+        launchMapsIntent(googleUrl);
+    }
+
+    private void launchMapsIntent(String data) {
+        Intent mapsIntent = new Intent();
+        mapsIntent.setAction(Intent.ACTION_VIEW);
+        mapsIntent.setPackage("com.google.android.apps.maps");
+        mapsIntent.setData(Uri.parse(data));
+        if (mapsIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapsIntent);
+        }
     }
 
     @Override
