@@ -146,14 +146,6 @@
         <item name="android:layout_marginLeft">12dp</item>
         <item name="android:layout_marginTop">12dp</item>
     </style>
-    <style name="suggestionStoryCardStyle" parent="Theme.AppCompat.Light">
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:foreground">?android:attr/selectableItemBackground</item>
-        <item name="cardCornerRadius">8dp</item>
-        <item name="cardElevation">8dp</item>
-    </style>
     <!-- end story suggestion -->
 
     <style name="cardViewBase" parent="Base.CardView">
@@ -174,6 +166,12 @@
     <style name="textDrawableRow">
         <item name="android:drawablePadding">@dimen/activity_horizontal_margin</item>
         <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="collapsedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>

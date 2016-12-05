@@ -8,7 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".activities.PlaceSuggestionActivity">
 
-    <include layout="@layout/layout_app_bar_with_backdrop" />
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/destination_backdrop"
+        android:background="@android:color/white"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/layout_app_bar_with_backdrop" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

@@ -1,28 +1,18 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
-
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.PlacesPagerAdapter;
-import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.SuggestionPlace;
@@ -33,8 +23,9 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindString;
 import butterknife.BindView;
+
+import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
 
 public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartListener {
 
@@ -45,7 +36,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     public static final String DESTINATION_PHOTO_ARG = "destination_photo";
 
     // Strings
-    @BindString(R.string.toolbar_title_place_suggestion) String toolbarTitle;
+    //@BindString(R.string.toolbar_title_place_suggestion) String toolbarTitle;
 
     //Views
     @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
@@ -53,7 +44,8 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
     @BindView(R.id.tvSavedPlacesCount) TextView tvSavedPlacesCount;
-    @BindView(R.id.btCreateTrip) Button btCreateTrip;
+    //@BindView(R.id.btCreateTrip) Button btCreateTrip;
+    @BindView(R.id.tvCreateTrip) TextView tvCreateTrip;
     //Member variable
     private String mDestination;
     private String mLatLng;
@@ -68,7 +60,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
 
         mDestination = getIntent().getStringExtra(DESTINATION_NAME_ARG);
         mLatLng = getIntent().getStringExtra(DESTINATION_LAT_LONG_ARG);
-        setActionBarTitle(String.format(toolbarTitle, mDestination));
+        setActionBarTitle(mDestination);
 
         tabViewPager.setAdapter(new PlacesPagerAdapter(getSupportFragmentManager(), this, mLatLng));
         tabLayout.setupWithViewPager(tabViewPager);
@@ -84,8 +76,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     }
 
     private void setUpClickListeners() {
-        // cart button -> create story activity
-        btCreateTrip.setOnClickListener((View v) -> {
+        tvCreateTrip.setOnClickListener((View v) -> {
             launchCreateStoryActivity();
         });
     }
@@ -122,29 +113,6 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
             // required data: which fragment, the position, and the star state
         }
     }
-//
-//
-//    private void getPhotoReferenceByPlaceID(String placeID) {
-//        {   //To get photo reference for cover photo
-//            GoogleAsyncHttpClient.getPlaceDetails(placeID, new JsonHttpResponseHandler() {
-//
-//                @Override
-//                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                    try {
-//                        mDestinationPhotoRef = response.getJSONObject("result").getJSONArray("photos").getJSONObject(0).getString("photo_reference");
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
-//                    //Show error snackbar
-//                    Log.e("ERROR", t.toString());
-//                }
-//            });
-//        }
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -166,7 +134,14 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
 
     private void setCreateState() {
         tvSavedPlacesCount.setText("" + mStoryPlaces.size());
-        btCreateTrip.setEnabled(mStoryPlaces.size() == 0 ? false : true);
+        if(mStoryPlaces.size() != 0) {
+            tvCreateTrip.setTextColor(getResources().getColor(R.color.com_facebook_blue));
+            tvCreateTrip.setEnabled(true);
+        }else{
+            tvCreateTrip.setTextColor(getResources().getColor(R.color.lightGray));
+            tvCreateTrip.setEnabled(false);
+        }
+
     }
 
 }
