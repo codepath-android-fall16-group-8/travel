@@ -17,7 +17,8 @@
         <RelativeLayout
             android:id="@+id/activity_place_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/white">
 
             <ProgressBar
                 android:id="@+id/pbImageLoading"
@@ -132,13 +133,16 @@
 
             </LinearLayout>
 
-            <!-- TODO: replace with static map -->
-            <TextView
+            <fragment
+                xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/mapView"
+                class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/detail_map_height"
                 android:layout_below="@id/llActions"
-                android:text="Map Placeholder" />
+                map:cameraZoom="7"
+                map:mapType="normal"
+                map:liteMode="true"/>
 
             <!-- Info section with place details -->
             <LinearLayout
@@ -156,7 +160,7 @@
                     android:layout_marginBottom="@dimen/space"
                     android:drawableLeft="@drawable/ic_location"
                     android:textAppearance="@style/textMedium"
-                    style="@style/textViewWithDrawable"
+                    style="@style/textDrawableRow"
                     tools:text="Place Address"/>
 
                 <TextView
@@ -166,28 +170,51 @@
                     android:layout_marginBottom="@dimen/space"
                     android:drawableLeft="@drawable/ic_call"
                     android:textAppearance="@style/textMedium"
-                    style="@style/textViewWithDrawable"
+                    style="@style/textDrawableRow"
                     android:visibility="gone"
                     tools:text="Place Phone Number"/>
 
-                <TextView
-                    android:id="@+id/tvOpenNow"
+                <LinearLayout
+                    android:id="@+id/llHours"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/space"
-                    android:drawableLeft="@drawable/ic_clock"
-                    android:textAppearance="@style/textMedium"
-                    style="@style/textViewWithDrawable"
-                    tools:text="Open Now"/>
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                <!-- Show tvWebAddress if available, otherwise use tvGoogleurl -->
+                    <ImageView
+                        android:id="@+id/ivClockIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
+                        app:srcCompat="@drawable/ic_clock"/>
+
+                    <TextView
+                        android:id="@+id/tvOpenNow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/textMedium"
+                        android:layout_gravity="center"
+                        tools:text="Open Now"/>
+
+                    <TextView
+                        android:id="@+id/tvHours"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/textMedium"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        tools:text="Hours hours\nhours hours\nhours hours "/>
+                </LinearLayout>
+
+                <!-- Show tvWebAddress if available, otherwise use tvGoogleUrl -->
                 <TextView
                     android:id="@+id/tvWebAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_earth"
                     android:textAppearance="@style/textMedium"
-                    style="@style/textViewWithDrawable"
+                    style="@style/textDrawableRow"
                     android:maxLines="1"
                     android:ellipsize="end"
                     tools:text="Place Website http://www.reallylongwebadress.com"/>
@@ -198,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_earth"
                     android:textAppearance="@style/textMedium"
-                    style="@style/textViewWithDrawable"
+                    style="@style/textDrawableRow"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:visibility="gone"
@@ -220,6 +247,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/viewSeparator2"
                 android:orientation="horizontal"
+                android:gravity="center"
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView

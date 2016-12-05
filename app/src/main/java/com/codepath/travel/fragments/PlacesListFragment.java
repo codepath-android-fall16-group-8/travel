@@ -1,5 +1,7 @@
 package com.codepath.travel.fragments;
 
+import static com.codepath.travel.activities.PlaceDetailActivity.LAT_LNG_ARG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,7 @@ import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -122,6 +125,7 @@ public class PlacesListFragment extends Fragment {
     placeDetail.putExtra(PlaceDetailActivity.PLACE_NAME_ARG, suggestionPlace.getName());
     placeDetail.putExtra(PlaceDetailActivity.POSITION_ARG, position);
     placeDetail.putExtra(PLACE_ADDED_ARG, suggestionPlace.isSelected());
+    placeDetail.putExtra(LAT_LNG_ARG, new LatLng(suggestionPlace.getLatitude(), suggestionPlace.getLongitude()));
     startActivityForResult(placeDetail, Constants.PLACE_DETAIL_REQUEST);
   }
 }

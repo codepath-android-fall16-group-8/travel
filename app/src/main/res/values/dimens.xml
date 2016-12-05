@@ -39,6 +39,9 @@
     <!-- place suggestion card -->
     <dimen name="suggestion_place_image_height">200dp</dimen>
 
+    <!-- place detail -->
+    <dimen name="detail_map_height">150dp</dimen>
+
     <!-- Text -->
     <dimen name="nav_header_text">14sp</dimen>
 
