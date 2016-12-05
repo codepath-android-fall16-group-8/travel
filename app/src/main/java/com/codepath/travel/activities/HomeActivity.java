@@ -337,22 +337,23 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
                     JSONObject result = response.getJSONObject("result");
-                    JSONArray photos = result.getJSONArray("photos");
-                    if (photos.length() > 0) {
-                        String photoReference = photos.getJSONObject(0).getString("photo_reference");
-                        String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
-                        Intent createTrip = new Intent(HomeActivity.this, PlaceSuggestionActivity.class);
-                        String destination = place.getName().toString();
-                        String destinationId = place.getId();
-                        if(!destination.isEmpty() && !LatLng.isEmpty()) {
-                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_NAME_ARG, destination);
-                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_ID_ARG, destinationId);
-                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_LAT_LONG_ARG, LatLng);
-                            createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_PHOTO_ARG, photoReference);
-                            startActivityForResult(createTrip, CREATE_STORY_REQUEST);
-                        } else {
-                            Toast.makeText(HomeActivity.this, "Please add a destination", Toast.LENGTH_LONG).show();
-                        }
+                    String photoReference = "";
+                    if (result.has("photos")) {
+                        JSONArray photos = result.getJSONArray("photos");
+                        photoReference = photos.getJSONObject(0).getString("photo_reference");
+                    }
+                    String LatLng = String.format("%f,%f",place.getLatLng().latitude,place.getLatLng().longitude);
+                    Intent createTrip = new Intent(HomeActivity.this, PlaceSuggestionActivity.class);
+                    String destination = place.getName().toString();
+                    String destinationId = place.getId();
+                    if(!destination.isEmpty() && !LatLng.isEmpty()) {
+                        createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_NAME_ARG, destination);
+                        createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_ID_ARG, destinationId);
+                        createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_LAT_LONG_ARG, LatLng);
+                        createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_PHOTO_ARG, photoReference);
+                        startActivityForResult(createTrip, CREATE_STORY_REQUEST);
+                    } else {
+                        Toast.makeText(HomeActivity.this, "Please add a destination", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
