@@ -171,4 +171,9 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="textDrawableRow">
+        <item name="android:drawablePadding">@dimen/activity_horizontal_margin</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
 </resources>

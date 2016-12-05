@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -91,8 +92,9 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
 
     @BindView(R.id.tvAddress) TextView tvAddress;
     @BindView(R.id.tvPhoneNumber) TextView tvPhoneNumber;
+    @BindView(R.id.llHours) LinearLayout llHours;
     @BindView(R.id.tvOpenNow) TextView tvOpenNow;
-//    @BindView(R.id.tvHours) TextView tvHours;
+    @BindView(R.id.tvHours) TextView tvHours;
     @BindView(R.id.tvWebAddress) TextView tvWebAddress;
     @BindView(R.id.tvGoogleUrl) TextView tvGoogleUrl;
 
@@ -168,7 +170,7 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
                 .position(mLatLng)
                 .title(placeName)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 7f));
     }
 
     private void setupViews(JSONObject data) throws JSONException {
@@ -241,8 +243,9 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
             }
         }
 
-        // open now
+        // hours
         if (data.has(OPENING_HOURS_KEY)) {
+            llHours.setVisibility(View.VISIBLE);
             JSONObject openingHours = data.getJSONObject(OPENING_HOURS_KEY);
             boolean openNow = openingHours.getBoolean(OPEN_KEY);
             if (openNow) {
@@ -260,12 +263,14 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
                 hoursList.add(rawHours.getString(i));
             }
             String hours = TextUtils.join("\n", hoursList);
-//            tvHours.setText(hours);
-            tvOpenNow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(PlaceDetailActivity.this, hours, Toast.LENGTH_LONG).show();
-                }
+            tvHours.setText(hours);
+            tvOpenNow.setOnClickListener(v -> {
+                tvOpenNow.setVisibility(View.GONE);
+                tvHours.setVisibility(View.VISIBLE);
+            });
+            tvHours.setOnClickListener(v -> {
+                tvHours.setVisibility(View.GONE);
+                tvOpenNow.setVisibility(View.VISIBLE);
             });
         }
 
