@@ -1,11 +1,5 @@
 package com.codepath.travel.activities;
 
-import static com.codepath.travel.Constants.IS_STORY_PLACE;
-import static com.codepath.travel.Constants.PLACE_ID_ARG;
-import static com.codepath.travel.Constants.PLACE_NAME_ARG;
-import static com.codepath.travel.helper.DateUtils.formatDateRange;
-import static com.codepath.travel.models.parse.User.setCoverPicUrl;
-
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -30,9 +24,9 @@ import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
+import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
-import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
@@ -55,6 +49,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.codepath.travel.Constants.IS_STORY_PLACE;
+import static com.codepath.travel.Constants.PLACE_ID_ARG;
+import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.helper.DateUtils.formatDateRange;
+import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
 @RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements
@@ -218,6 +218,13 @@ public class StoryActivity extends AppCompatActivity implements
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
         intent.putExtra(Constants.TRIP_ID_ARG, mTripID);
         intent.putExtra(Constants.TRIP_TITLE_ARG, mTripTitle);
+        startActivity(intent);
+    }
+
+    private void launchStoryMapActivity() {
+        Intent intent = new Intent(StoryActivity.this, StoryMapViewActivity.class);
+        intent.putExtra(StoryMapViewActivity.TRIP_ID_ARG, mTripID);
+        intent.putExtra(StoryMapViewActivity.TRIP_TITLE_ARG, mTripTitle);
         startActivity(intent);
     }
 
@@ -457,8 +464,8 @@ public class StoryActivity extends AppCompatActivity implements
             setResult(RESULT_CANCELED);
             finish();
             return true;
-//        } else if (id == R.id.miMap) {
-//            Toast.makeText(this, "TODO: show map!", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.miMap) {
+            launchStoryMapActivity();
         } else if (id == R.id.miCollage) {
             launchStoryCollageActivity();
         } else if (id == R.id.miDelete) {

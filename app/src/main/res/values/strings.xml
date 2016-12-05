@@ -91,4 +91,7 @@
     <string name="saved_places">Saved Places: </string>
     <string name="create_story">Create Story</string>
 
+    <!-- Maps Story activity -->
+    <string name="google_maps_api_key">AIzaSyAS09XEATHFoSrPgxeC0ItjctwmxdLi9AQ</string>
+
 </resources>

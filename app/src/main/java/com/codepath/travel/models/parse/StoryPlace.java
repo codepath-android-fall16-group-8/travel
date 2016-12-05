@@ -1,5 +1,8 @@
 package com.codepath.travel.models.parse;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.codepath.travel.models.SuggestionPlace;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,10 +14,20 @@ import com.parse.ParseQuery;
 import java.util.Date;
 import java.util.List;
 
-import static com.codepath.travel.models.parse.ParseModelConstants.*;
-
-import android.text.TextUtils;
-import android.util.Log;
+import static com.codepath.travel.models.parse.ParseModelConstants.CHECK_IN_TIME_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.LATITUDE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.LONGITUDE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.MEDIA_CLASS_NAME;
+import static com.codepath.travel.models.parse.ParseModelConstants.NAME_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.OBJECT_ID_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.ORDER_POSITION_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.PHOTO_URL;
+import static com.codepath.travel.models.parse.ParseModelConstants.PLACE_ID_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.PLACE_TYPES_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.RATING_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.STORY_PLACE_CLASS_NAME;
+import static com.codepath.travel.models.parse.ParseModelConstants.STORY_PLACE_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.TRIP_KEY;
 
 /**
  * Parse model for a travel story/trip.
@@ -46,7 +59,8 @@ public class StoryPlace extends ParseObject {
         if (suggestionPlace.getPhotoUrl() != null) {
             setPhotoUrl(suggestionPlace.getPhotoUrl());
         }
-        // TODO: add lat/lng if displaying maps
+        setLatitude(suggestionPlace.getLatitude());
+        setLongitude(suggestionPlace.getLongitude());
     }
 
     public Trip getTrip() {

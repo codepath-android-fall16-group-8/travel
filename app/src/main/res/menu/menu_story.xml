@@ -11,6 +11,13 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/miMap"
+        android:orderInCategory="30"
+        android:title="Map"
+        android:icon="@android:drawable/ic_menu_mapmode"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/miDelete"
         android:title="@string/delete_trip"
         android:icon="@android:drawable/ic_menu_delete"

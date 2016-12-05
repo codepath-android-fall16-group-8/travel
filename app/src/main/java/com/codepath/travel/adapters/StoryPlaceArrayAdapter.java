@@ -64,7 +64,9 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    mDragStartListener.onStartDrag(holder);
+                    if (mDragStartListener != null) {
+                        mDragStartListener.onStartDrag(holder);
+                    }
                 }
                 return false;
             }
