@@ -17,12 +17,15 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true"
-            app:expandedTitleMarginBottom="100dp"
-            app:contentScrim="@color/colorPrimary">
+            app:contentScrim="@color/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:expandedTitleTextAppearance="@style/collapsedAppBar"
+            app:expandedTitleGravity="center_horizontal">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,16 +35,100 @@
                 <FrameLayout
                     android:id="@+id/flCoverPicContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     tools:background="@color/cardview_light_background"/>
+
                 <FrameLayout
-                    android:id="@+id/flUserPicContainer"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="40dp"
-                    android:layout_marginTop="150dp"
+                    android:id="@+id/flUserPicBorderContainer"
                     android:layout_width="@dimen/thumbnail_size"
                     android:layout_height="@dimen/thumbnail_size"
-                    tools:background="@color/cardview_dark_background"/>
+                    android:background="@drawable/layout_border"
+                    android:layout_marginTop="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true">
+                    <FrameLayout
+                        android:id="@+id/flUserPicContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlFollow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/flUserPicBorderContainer">
+                <ImageView
+                    android:id="@+id/ivFollowUser"
+                    android:visibility="gone"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_person_add" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/profileFollowContainer"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/rlFollow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/followersContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvFollowersCount"
+                            tools:text="0"
+                            android:textStyle="bold"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tvFollowersLabel"
+                            android:layout_below="@+id/tvFollowersCount"
+                            android:layout_gravity="center"
+                            android:text="@string/followers"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/followingContainer"
+                        android:layout_toRightOf="@+id/followersContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvFollowingCount"
+                            tools:text="0"
+                            android:textStyle="bold"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/tvFollowingLabel"
+                            android:layout_below="@+id/tvFollowingCount"
+                            android:text="@string/following"
+                            android:textStyle="bold"
+                            android:layout_marginStart="@dimen/margin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </RelativeLayout>
+                </RelativeLayout>
             </RelativeLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -50,72 +137,6 @@
                 app:titleTextColor="@android:color/white"
                 app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>
-
-        <RelativeLayout
-            android:id="@+id/profileFollowContainer"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_below="@+id/flUserPicContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:id="@+id/followersContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tvFollowersCount"
-                    tools:text="0"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="@dimen/margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/tvFollowersLabel"
-                    android:layout_below="@+id/tvFollowersCount"
-                    android:layout_gravity="center"
-                    android:text="@string/followers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/followingContainer"
-                android:layout_toRightOf="@+id/followersContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tvFollowingCount"
-                    tools:text="0"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="@dimen/margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/tvFollowingLabel"
-                    android:layout_below="@+id/tvFollowingCount"
-                    android:text="@string/following"
-                    android:layout_marginStart="@dimen/margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </RelativeLayout>
-
-            <ImageButton
-                android:id="@+id/ivFollowUser"
-                android:visibility="gone"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_person_add"/>
-        </RelativeLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"

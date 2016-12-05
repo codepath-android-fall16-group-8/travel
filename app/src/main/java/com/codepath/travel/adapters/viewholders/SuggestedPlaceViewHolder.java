@@ -37,9 +37,9 @@ public class SuggestedPlaceViewHolder extends RecyclerView.ViewHolder {
             rbPlaceRating.setRating(suggestionPlace.getRating().floatValue());
         }
         if (suggestionPlace.isSelected()) {
-            ivAddSuggestionPlace.setImageResource(android.R.drawable.star_big_on);
+            ivAddSuggestionPlace.setImageResource(R.drawable.ic_tick);
         } else {
-            ivAddSuggestionPlace.setImageResource(android.R.drawable.star_big_off);
+            ivAddSuggestionPlace.setImageResource(R.drawable.ic_add);
         }
         ivSuggestionPlacePhoto.setImageResource(0);
 
@@ -51,13 +51,13 @@ public class SuggestedPlaceViewHolder extends RecyclerView.ViewHolder {
     public void listeners(SuggestionPlace suggestionPlace, PlacesCartListener placesCartListener) {
         ivAddSuggestionPlace.setOnClickListener((View view) -> {
             if (suggestionPlace.isSelected()) {
-                ivAddSuggestionPlace.setImageResource(android.R.drawable.star_big_off);
+                ivAddSuggestionPlace.setImageResource(R.drawable.ic_add);
                 suggestionPlace.setSelected(false);
                 //Remove place id from cart
                 placesCartListener.removePlace(suggestionPlace);
 
             } else {
-                ivAddSuggestionPlace.setImageResource(android.R.drawable.star_big_on);
+                ivAddSuggestionPlace.setImageResource(R.drawable.ic_tick);
                 suggestionPlace.setSelected(true);
                 //Add place id to cart
                 placesCartListener.addPlace(suggestionPlace);

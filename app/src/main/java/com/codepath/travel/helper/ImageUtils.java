@@ -118,17 +118,4 @@ public class ImageUtils {
                     .into(imageView);
         }
     }
-//
-//    public static void loadBackground(RelativeLayout relativeLayout, String imageUrl) {
-//        if (!TextUtils.isEmpty(imageUrl)) {
-//            Context context = relativeLayout.getContext();
-//            Glide.with(context).load(imageUrl).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>() {
-//                @Override
-//                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                    Drawable drawable = new BitmapDrawable(context.getResources(), resource);
-//                    relativeLayout.setBackground(drawable);
-//                }
-//            });
-//        }
-//    }
 }

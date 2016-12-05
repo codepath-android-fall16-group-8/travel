@@ -10,7 +10,7 @@
     <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
 
-    <string name="toolbar_title_place_suggestion">Plan my trip to %1$s</string>
+    <string name="toolbar_title_place_suggestion">%1$s</string>
     <string name="toolbar_title_create_story">Create Trip</string>
     <string name="toolbar_title_story_collage">Story: %1$s</string>
 
@@ -91,7 +91,7 @@
     <string name="website">WEBSITE</string>
 
     <!-- Places suggestion activity -->
-    <string name="saved_places">Saved Places: </string>
+    <string name="saved_places">Places Added: </string>
     <string name="create_story">Create Story</string>
 
     <!-- Maps Story activity -->
