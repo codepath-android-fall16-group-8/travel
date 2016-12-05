@@ -43,6 +43,7 @@
     <dimen name="detail_map_height">150dp</dimen>
 
     <!-- Text -->
+    <dimen name="toolbarTitle">20sp</dimen>
     <dimen name="nav_header_text">14sp</dimen>
 
 </resources>

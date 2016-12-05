@@ -19,24 +19,26 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 
 /**
- * Created by rpraveen on 11/20/16.
+ * Search activity for finding friends.
  */
-
 public class SearchActivity extends BaseActivity {
 
+  @BindString(R.string.search_user) String toolbarTitle;
   @BindView(R.id.tvNoUsersFound) TextView tvNoUsersFound;
-  @BindView(R.id.pbSearching) ProgressBar pbSearching;
+  @BindView(R.id.pbLoading) ProgressBar pbLoading;
 
   @Override
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     setContentView(R.layout.activity_search_users);
     initializeCommonViews();
+    setActionBarTitle(toolbarTitle);
     tvNoUsersFound.setVisibility(View.GONE);
-    pbSearching.setVisibility(View.GONE);
+    pbLoading.setVisibility(View.GONE);
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
     fragmentTransaction.replace(R.id.flUsersContainer, UserListFragment.newInstance(), UserListFragment.TAG);
     fragmentTransaction.commit();
@@ -54,10 +56,10 @@ public class SearchActivity extends BaseActivity {
     searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
       @Override
       public boolean onQueryTextSubmit(String query) {
-        pbSearching.setVisibility(View.VISIBLE);
+        pbLoading.setVisibility(View.VISIBLE);
         tvNoUsersFound.setVisibility(View.GONE);
         User.findUsersByName(query, (List<ParseUser> objects, ParseException e) -> {
-          pbSearching.setVisibility(View.GONE);
+          pbLoading.setVisibility(View.GONE);
           if (e != null) {
             Log.d("Error ", e.toString());
             return;
