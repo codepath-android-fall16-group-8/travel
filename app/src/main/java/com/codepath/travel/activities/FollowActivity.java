@@ -45,9 +45,11 @@ public class FollowActivity extends BaseActivity {
     ParseUser user = ParseUser.createWithoutData(ParseUser.class, userID);
 
     if (getIntent().getBooleanExtra(SHOW_FOLLOWERS, true)) {
+      setActionBarTitle("Followers");
       populateFollowers(user);
       return;
     }
+    setActionBarTitle("Following");
     populateFollowing(user);
   }
 

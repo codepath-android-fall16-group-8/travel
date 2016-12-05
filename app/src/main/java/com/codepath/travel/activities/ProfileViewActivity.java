@@ -1,7 +1,9 @@
 package com.codepath.travel.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -41,7 +43,7 @@ public class ProfileViewActivity
     private static final String PROFILE_PIC = "profile_pic";
 
     // views
-    @BindView(R.id.tvProfileUserName) TextView tvProfileUserName;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
     @BindView(R.id.ivFollowUser) ImageView ivFollowUser;
@@ -146,10 +148,10 @@ public class ProfileViewActivity
     // all private methods below
 
     private void initializeViews(ParseUser user) {
-        tvProfileUserName.setText(user.getUsername());
 
         setActionBarTitle(user.getUsername());
-
+        collapsingToolbar.setTitle(user.getUsername());
+        collapsingToolbar.setExpandedTitleColor(Color.WHITE);
         tabViewPager.setAdapter(
             new ProfilePagerAdapter(
                 getSupportFragmentManager(),

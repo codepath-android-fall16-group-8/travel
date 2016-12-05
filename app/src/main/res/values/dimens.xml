@@ -24,7 +24,7 @@
 
     <!-- Image Dimensions -->
     <dimen name="profile_pic_size">56dp</dimen>
-    <dimen name="thumbnail_size">56dp</dimen>
+    <dimen name="thumbnail_size">80dp</dimen>
 
     <!-- Collage Activity -->
     <dimen name="item_collage_width">200dp</dimen>
