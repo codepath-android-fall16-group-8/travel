@@ -36,6 +36,7 @@ import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
 import com.daimajia.swipe.util.Attributes;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -54,6 +55,7 @@ import permissions.dispatcher.NeedsPermission;
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
 import static com.codepath.travel.activities.PlaceDetailActivity.IS_STORY_PLACE_ARG;
+import static com.codepath.travel.activities.PlaceDetailActivity.LAT_LNG_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
@@ -234,6 +236,7 @@ public class StoryActivity extends AppCompatActivity implements
         placeDetail.putExtra(PLACE_ID_ARG, storyPlace.getPlaceId());
         placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
         placeDetail.putExtra(IS_STORY_PLACE_ARG, true);
+        placeDetail.putExtra(LAT_LNG_ARG, new LatLng(storyPlace.getLatitude(), storyPlace.getLongitude()));
         startActivity(placeDetail);
     }
 

@@ -30,7 +30,7 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
     public void populate(Review review) {
         tvAuthor.setText(review.getAuthor());
-        rbRating.setRating(review.getRating());
+        rbRating.setRating((float) review.getRating());
         tvTime.setText(review.getTimestamp());
 
         String text = review.getText();

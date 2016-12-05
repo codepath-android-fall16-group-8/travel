@@ -17,7 +17,8 @@
         <RelativeLayout
             android:id="@+id/activity_place_detail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/white">
 
             <ProgressBar
                 android:id="@+id/pbImageLoading"
@@ -132,13 +133,16 @@
 
             </LinearLayout>
 
-            <!-- TODO: replace with static map -->
-            <TextView
+            <fragment
+                xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/mapView"
+                class="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/detail_map_height"
                 android:layout_below="@id/llActions"
-                android:text="Map Placeholder" />
+                map:cameraZoom="13"
+                map:mapType="normal"
+                map:liteMode="true"/>
 
             <!-- Info section with place details -->
             <LinearLayout
@@ -220,6 +224,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/viewSeparator2"
                 android:orientation="horizontal"
+                android:gravity="center"
                 android:padding="@dimen/activity_horizontal_margin">
 
                 <TextView

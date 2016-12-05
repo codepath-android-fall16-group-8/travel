@@ -22,6 +22,13 @@ import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.Review;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -30,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
@@ -50,20 +58,23 @@ import static com.codepath.travel.net.GooglePlaceConstants.RESULT_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.REVIEWS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.WEBSITE_KEY;
 
-public class PlaceDetailActivity extends BaseActivity {
+public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallback {
 
     // Intent args
     public static final String PLACE_ID_ARG = "place_id";
     public static final String PLACE_NAME_ARG = "place_name";
     public static final String IS_STORY_PLACE_ARG = "is_story_place";
     public static final String POSITION_ARG = "position";
-    public static final String LAT_ARG = "latitude";
-    public static final String LONG_ARG = "longitude";
+    public static final String LAT_LNG_ARG = "latLng";
 
     // Strings
     @BindString(R.string.open) String open;
     @BindString(R.string.closed) String closed;
     @BindString(R.string.free) String free;
+
+    // Colors
+    @BindColor(R.color.green) int green;
+    @BindColor(R.color.red) int red;
 
     // Views
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
@@ -92,8 +103,8 @@ public class PlaceDetailActivity extends BaseActivity {
     // variables
     private boolean isStoryPlace;
     private String placeName;
-    private double latitude;
-    private double longitude;
+    private LatLng mLatLng;
+    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +116,8 @@ public class PlaceDetailActivity extends BaseActivity {
         placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
         tvPlaceName.setText(placeName);
+
+        // star
         isStoryPlace = getIntent().getBooleanExtra(IS_STORY_PLACE_ARG, false);
         if (isStoryPlace) {
             // hide the saved checkbox if launched from the story activity
@@ -114,6 +127,13 @@ public class PlaceDetailActivity extends BaseActivity {
             cbAddPlace.setChecked(getIntent().getBooleanExtra(PlacesListFragment.PLACE_ADDED_ARG, false));
         }
 
+        // Get the map and register for the ready callback
+        mLatLng = getIntent().getParcelableExtra(LAT_LNG_ARG);
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
+        mapFragment.getMapAsync(this);
+
+        // fetch place data
         GoogleAsyncHttpClient.getPlaceDetails(placeId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -137,6 +157,20 @@ public class PlaceDetailActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Called when the map is ready.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.addMarker(new MarkerOptions()
+                .position(mLatLng)
+                .title(placeName)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 13f));
+    }
+
     private void setupViews(JSONObject data) throws JSONException {
         // place photo
         if (data.has(PHOTOS_KEY)) {
@@ -149,11 +183,12 @@ public class PlaceDetailActivity extends BaseActivity {
 
         // rating
         if (data.has(RATING_KEY)) {
-            float rating = data.getLong(RATING_KEY);
-            tvRating.setText(String.valueOf(rating));
-            tvReviewsRating.setText(String.valueOf(rating));
-            rbRating.setRating(rating);
-            rbReviewsRating.setRating(rating);
+            double rating = data.getDouble(RATING_KEY);
+            String ratingString = String.format("%.1f", rating);
+            tvRating.setText(ratingString);
+            tvReviewsRating.setText(ratingString);
+            rbRating.setRating((float) rating);
+            rbReviewsRating.setRating((float) rating);
         }
 
         // price level
@@ -210,7 +245,13 @@ public class PlaceDetailActivity extends BaseActivity {
         if (data.has(OPENING_HOURS_KEY)) {
             JSONObject openingHours = data.getJSONObject(OPENING_HOURS_KEY);
             boolean openNow = openingHours.getBoolean(OPEN_KEY);
-            tvOpenNow.setText(openNow ? open : closed);
+            if (openNow) {
+                tvOpenNow.setText(open);
+                tvOpenNow.setTextColor(green);
+            } else {
+                tvOpenNow.setText(closed);
+                tvOpenNow.setTextColor(red);
+            }
 
             // hours
             JSONArray rawHours = openingHours.getJSONArray(HOURS_KEY);
