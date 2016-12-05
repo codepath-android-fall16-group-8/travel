@@ -18,4 +18,8 @@ public final class GooglePlaceConstants {
     public static final String PRICE_KEY = "price_level";
     public static final String RATING_KEY = "rating";
     public static final String REVIEWS_KEY = "reviews";
+    public static final String GEOMETRY_KEY = "geometry";
+    public static final String LOCATION_KEY = "location";
+    public static final String LATITUDE = "lat";
+    public static final String LONGITUDE = "lng";
 }

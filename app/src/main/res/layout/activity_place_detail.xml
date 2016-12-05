@@ -132,13 +132,15 @@
 
             </LinearLayout>
 
-            <!-- TODO: replace with static map -->
-            <TextView
+
+            <fragment
                 android:id="@+id/mapView"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_margin="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/llActions"
-                android:text="Map Placeholder" />
+                android:layout_height="300dp"
+                android:layout_below="@+id/llActions"
+                android:layout_weight="0.59"/>
 
             <!-- Info section with place details -->
             <LinearLayout

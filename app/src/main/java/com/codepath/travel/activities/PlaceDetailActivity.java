@@ -21,6 +21,15 @@ import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.Review;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -33,12 +42,15 @@ import butterknife.BindString;
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
 
-import static com.codepath.travel.R.string.website;
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_ADDR_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.FORMATTED_PHONE_KEY;
+import static com.codepath.travel.net.GooglePlaceConstants.GEOMETRY_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.GOOGLE_URL_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.HOURS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.INTL_PHONE_KEY;
+import static com.codepath.travel.net.GooglePlaceConstants.LATITUDE;
+import static com.codepath.travel.net.GooglePlaceConstants.LOCATION_KEY;
+import static com.codepath.travel.net.GooglePlaceConstants.LONGITUDE;
 import static com.codepath.travel.net.GooglePlaceConstants.OPENING_HOURS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.OPEN_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.PHOTOS_KEY;
@@ -50,6 +62,8 @@ import static com.codepath.travel.net.GooglePlaceConstants.REVIEWS_KEY;
 import static com.codepath.travel.net.GooglePlaceConstants.WEBSITE_KEY;
 
 public class PlaceDetailActivity extends BaseActivity {
+
+    private static final String TAG = PlaceDetailActivity.class.getSimpleName();
 
     // Intent args
     public static final String PLACE_ID_ARG = "place_id";
@@ -88,6 +102,7 @@ public class PlaceDetailActivity extends BaseActivity {
 
     // variables
     private boolean isStoryPlace;
+    private SupportMapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -259,6 +274,39 @@ public class PlaceDetailActivity extends BaseActivity {
             rvReviews.setLayoutManager(new LinearLayoutManager(PlaceDetailActivity.this));
         } else {
             rvReviews.setVisibility(View.GONE);
+        }
+        MapsInitializer.initialize(getApplicationContext());
+        // map
+        mMapFragment =
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView));
+
+        if (mMapFragment != null) {
+            mMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap map) {
+                    try {
+                    if (data.has(GEOMETRY_KEY)) {
+                        JSONObject geometry = data.getJSONObject(GEOMETRY_KEY);
+                        JSONObject location = geometry.getJSONObject(LOCATION_KEY);
+                        double latitude = location.getDouble(LATITUDE);
+                        double longitude = location.getDouble(LONGITUDE);
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        LatLng placeCoOrdinates = new LatLng(latitude, longitude);
+                        Marker marker = map.addMarker(
+                            new MarkerOptions()
+                                .position(placeCoOrdinates)
+                        );
+                        builder.include(marker.getPosition());
+
+                        LatLngBounds bounds = new LatLngBounds(placeCoOrdinates, placeCoOrdinates);
+                        map.setLatLngBoundsForCameraTarget(bounds);
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(placeCoOrdinates, 12.0f));
+                    }
+                    } catch (JSONException e) {
+                        Log.d(TAG, "map parse failed");
+                    }
+                }
+            });
         }
     }
 
