@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlBackground"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:padding="@dimen/margin"
-    android:backgroundTint="@color/colorTransparentBackground"
-    android:backgroundTintMode="src_over">
+    android:layout_height="72dp"
+    style="@style/cardViewBase">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivProfilePhoto"
-        android:layout_width="@dimen/profile_pic_size"
-        android:layout_height="@dimen/profile_pic_size"
-        android:layout_marginRight="@dimen/margin"
-        android:layout_marginEnd="@dimen/margin"
-        app:srcCompat="@drawable/ic_photoholder" />
+        <ImageView
+            android:id="@+id/ivProfilePhoto"
+            android:layout_width="@dimen/profile_pic_size"
+            android:layout_height="@dimen/profile_pic_size"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            app:srcCompat="@drawable/ic_photoholder" />
 
-    <TextView
-        android:id="@+id/tvUsername"
-        tools:text="Username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ivProfilePhoto"
-        android:layout_toEndOf="@+id/ivProfilePhoto"
-        android:layout_marginBottom="@dimen/margin"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        <TextView
+            android:id="@+id/tvUsername"
+            tools:text="Username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/ivProfilePhoto"
+            android:layout_toEndOf="@+id/ivProfilePhoto"
+            android:textAppearance="@style/textLarge" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_person_add"
-        android:layout_alignBottom="@id/ivProfilePhoto"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/ivFollowUser"/>
-</RelativeLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_person_add"
+            android:layout_alignBottom="@id/ivProfilePhoto"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/ivFollowUser"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

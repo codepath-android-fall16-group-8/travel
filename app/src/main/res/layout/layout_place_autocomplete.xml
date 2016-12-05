@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:drawableRight="@drawable/ic_search"
         android:inputType="none"
-        android:textSize="14sp"
         android:cursorVisible="false"
         android:maxLines="1"
         android:hint="@string/destination_hint"
+        android:textAppearance="@style/textXLarge"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:background="@android:color/transparent" />

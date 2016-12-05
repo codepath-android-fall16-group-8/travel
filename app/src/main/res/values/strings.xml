@@ -38,8 +38,9 @@
     <string name="past_trips">Past Trips</string>
     <string name="current_trip">Current Trip</string>
 
-    <!-- Search User DialogFrgament -->
+    <!-- Search User DialogFragment -->
     <string name="search_user">Find Friends</string>
+    <string name="no_users_found">No users found :(</string>
 
     <!-- Create Trip -->
     <string name="default_trip_title">Trip to %1$s</string>
