@@ -3,6 +3,7 @@ package com.codepath.travel.adapters.viewholders;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
@@ -18,7 +19,7 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
     // Views
     @BindView(R.id.tvAuthor) TextView tvAuthor;
-    @BindView(R.id.tvRating) TextView tvRating;
+    @BindView(R.id.rbRating) RatingBar rbRating;
     @BindView(R.id.tvText) TextView tvText;
     @BindView(R.id.tvTime) TextView tvTime;
 
@@ -29,7 +30,7 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
     public void populate(Review review) {
         tvAuthor.setText(review.getAuthor());
-        tvRating.setText(String.valueOf(review.getRating()));
+        rbRating.setRating(review.getRating());
         tvTime.setText(review.getTimestamp());
 
         String text = review.getText();

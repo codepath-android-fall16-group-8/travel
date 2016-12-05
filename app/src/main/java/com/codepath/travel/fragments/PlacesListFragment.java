@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.activities.PlaceDetailActivity;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
@@ -35,9 +36,6 @@ import cz.msebera.android.httpclient.Header;
 
 public class PlacesListFragment extends Fragment {
   private static final String TAG = PlacesListFragment.class.getSimpleName();
-
-  // activity request code
-  private static final int PLACE_DETAIL_REQUEST = 100;
 
   // intent args
   public static final String POSITION_ARG = "position";
@@ -119,11 +117,11 @@ public class PlacesListFragment extends Fragment {
 
   private void launchPlaceDetailActivity(int position) {
     SuggestionPlace suggestionPlace = mPlaces.get(position);
-    Intent placeDetail = new Intent(getActivity(), PlaceDetailActivity.class);
+    Intent placeDetail = new Intent(getContext(), PlaceDetailActivity.class);
     placeDetail.putExtra(PlaceDetailActivity.PLACE_ID_ARG, suggestionPlace.getPlaceId());
     placeDetail.putExtra(PlaceDetailActivity.PLACE_NAME_ARG, suggestionPlace.getName());
-    placeDetail.putExtra(PlaceDetailActivity.IS_STORY_PLACE_ARG, suggestionPlace.isSelected());
     placeDetail.putExtra(PlaceDetailActivity.POSITION_ARG, position);
-    startActivityForResult(placeDetail, PLACE_DETAIL_REQUEST);
+    placeDetail.putExtra(PLACE_ADDED_ARG, suggestionPlace.isSelected());
+    startActivityForResult(placeDetail, Constants.PLACE_DETAIL_REQUEST);
   }
 }

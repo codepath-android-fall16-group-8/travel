@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvTripTitle"
             android:layout_marginTop="@dimen/space"
-            android:drawableStart="@drawable/ic_date"
+            android:drawableStart="@drawable/ic_clock"
             android:drawableTint="@color/secondary_text"
             android:drawablePadding="@dimen/textDrawablePadding"
             android:gravity="center_vertical"

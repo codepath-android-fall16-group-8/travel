@@ -61,7 +61,7 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
         // the image color doesn't change when tabs get selected/unselected,
         // so setting it to a neutral less distracting color here
-        DrawableCompat.setTint(image, ContextCompat.getColor(mContext, R.color.cardview_dark_background));
+        DrawableCompat.setTint(image, ContextCompat.getColor(mContext, R.color.icon_gray));
         // Replace blank spaces with image icon
         SpannableString sb = new SpannableString("   " + tabTitles[position]);
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);

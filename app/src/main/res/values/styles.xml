@@ -63,6 +63,11 @@
 
 
     <!-- TEXT STYLES -->
+    <!-- X Large 20sp (matches toolbar size) -->
+    <style name="textXLarge" parent="Toolbar.TitleText">
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
     <!-- Large 16sp (Roboto Regular) -->
     <style name="textLarge" parent="Base.TextAppearance.AppCompat.Subhead">
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -100,6 +105,12 @@
         <item name="android:progressDrawable">@drawable/rating_bar_heart_full</item>
         <item name="android:minHeight">23dp</item>
         <item name="android:maxHeight">25dp</item>
+    </style>
+
+    <style name="starRatingBar" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressTint">@color/star</item>
+        <item name="android:progressBackgroundTint">@color/star</item>
+        <item name="android:secondaryProgressTint">@color/star</item>
     </style>
     
     <!-- View Pager Tabs Styling -->
