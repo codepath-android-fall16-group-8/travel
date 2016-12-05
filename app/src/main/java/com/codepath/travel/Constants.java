@@ -21,7 +21,6 @@ public final class Constants {
     public static final String PLACE_CATEGORY_ARG = "place_category";
     public static final String PLACE_PHOTO_REF_ARG = "place_photo_ref";
     public static final String POSITION_ARG = "position";
-    public static final String IS_STORY_PLACE = "isStoryPlace";
 
     /* Story Activity argument keys */
     public static final String TRIP_ID_ARG = "trip_id";

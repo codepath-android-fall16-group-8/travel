@@ -1,19 +1,28 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
+
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.PlacesPagerAdapter;
+import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.SuggestionPlace;
@@ -103,6 +112,15 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         startActivity(createTrip);
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == PLACE_DETAIL_REQUEST) {
+            // TODO: fix this, when a user leaves the detail view and comes back to this view,
+            // the status of the star and the # of saved places should be updated accordingly.
+            // required data: which fragment, the position, and the star state
+        }
     }
 //
 //

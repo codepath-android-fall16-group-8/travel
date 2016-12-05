@@ -14,7 +14,7 @@
     <color name="captionText">#54000000</color>
 
     <!-- ITEM COLORS -->
-    <color name="icons">#FFFFFF</color>
+    <color name="icon_gray">@color/secondary_text</color>
     <color name="divider">@color/lightGray</color>
 
     <!-- OTHER COLORS -->
@@ -27,5 +27,6 @@
     <color name="green">#008000</color>
     <color name="tango">#F07621</color>
     <color name="heart">#CC817C</color>
+    <color name="star">#E8BF6A</color>
 
 </resources>

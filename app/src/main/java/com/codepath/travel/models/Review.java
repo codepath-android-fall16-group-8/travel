@@ -25,7 +25,7 @@ public class Review {
 
     // fields must be public
     String author;
-    Double rating;
+    long rating;
     String text;
     String timestamp;
 
@@ -37,7 +37,7 @@ public class Review {
         super();
         try {
             setAuthor(jsonObject.getString(AUTHOR_NAME_KEY));
-            setRating(jsonObject.getDouble(RATING_KEY));
+            setRating(jsonObject.getLong(RATING_KEY));
             setText(jsonObject.getString(TEXT_KEY));
             if (jsonObject.has(RELATIVE_TIME_KEY)) {
                 setTimestamp(jsonObject.getString(RELATIVE_TIME_KEY));
@@ -72,11 +72,11 @@ public class Review {
         this.author = author;
     }
 
-    public Double getRating() {
+    public long getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(long rating) {
         this.rating = rating;
     }
 

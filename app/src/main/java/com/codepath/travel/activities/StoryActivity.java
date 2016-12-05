@@ -1,5 +1,7 @@
 package com.codepath.travel.activities;
 
+import permissions.dispatcher.RuntimePermissions;
+
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -48,11 +50,10 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
-import static com.codepath.travel.Constants.IS_STORY_PLACE;
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.activities.PlaceDetailActivity.IS_STORY_PLACE_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
 import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
@@ -232,7 +233,7 @@ public class StoryActivity extends AppCompatActivity implements
         Intent placeDetail = new Intent(this, PlaceDetailActivity.class);
         placeDetail.putExtra(PLACE_ID_ARG, storyPlace.getPlaceId());
         placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
-        placeDetail.putExtra(IS_STORY_PLACE, true);
+        placeDetail.putExtra(IS_STORY_PLACE_ARG, true);
         startActivity(placeDetail);
     }
 

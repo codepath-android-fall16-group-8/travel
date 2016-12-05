@@ -86,6 +86,9 @@
     <string name="closed">Closed now</string>
     <string name="free">Free</string>
     <string name="reviews">Reviews</string>
+    <string name="directions">DIRECTIONS</string>
+    <string name="call">CALL</string>
+    <string name="website">WEBSITE</string>
 
     <!-- Places suggestion activity -->
     <string name="saved_places">Saved Places: </string>
