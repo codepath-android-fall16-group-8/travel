@@ -1,20 +1,22 @@
 package com.codepath.travel.activities;
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.codepath.travel.R;
-import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
+import com.codepath.travel.adapters.StoryPlacePagerAdapter;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -38,7 +40,7 @@ public class StoryMapViewActivity extends BaseActivity {
   public static final String TRIP_ID_ARG = "trip_id";
 
   // views
-  @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
+  @BindView(R.id.vpStoryPlaces) ViewPager mStoryPlacePager;
 
   // member vars
   private SupportMapFragment mStoryMapFragment;
@@ -47,13 +49,20 @@ public class StoryMapViewActivity extends BaseActivity {
   private String mTripTitle;
   private Trip mTrip;
   private List<StoryPlace> mStoryPlaces;
-  private StoryPlaceArrayAdapter mStoryPlacesAdapter;
+  private List<Marker> mMapMarker;
+  private StoryPlacePagerAdapter mStoryPlacePagerAdapter;
+  private LatLngBounds mBounds;
+  private BitmapDescriptor defaultMarker;
+  private BitmapDescriptor selectedPlaceMarker;
 
   @Override
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     setContentView(R.layout.activity_story_map);
     initializeCommonViews();
+    MapsInitializer.initialize(getApplicationContext());
+    defaultMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+    selectedPlaceMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
     mStoryMapFragment =
     ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapStoryView));
     if (mStoryMapFragment != null) {
@@ -68,6 +77,32 @@ public class StoryMapViewActivity extends BaseActivity {
     }
     mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
     mTripTitle = getIntent().getStringExtra(TRIP_TITLE_ARG);
+    mStoryPlaces = new ArrayList<>();
+    mMapMarker = new ArrayList<>();
+    mStoryPlacePagerAdapter = new StoryPlacePagerAdapter(getSupportFragmentManager(), mStoryPlaces);
+    mStoryPlacePager.setAdapter(mStoryPlacePagerAdapter);
+    mStoryPlacePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+      }
+
+      @Override
+      public void onPageSelected(int position) {
+        for (Marker marker : mMapMarker) {
+          marker.setIcon(defaultMarker);
+        }
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(mBounds, 100);
+        mGoogleMap.animateCamera(cu);
+        Marker marker = mMapMarker.get(position);
+        marker.setIcon(selectedPlaceMarker);
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) {
+
+      }
+    });
   }
 
   private void initializeViews() {
@@ -75,7 +110,6 @@ public class StoryMapViewActivity extends BaseActivity {
     Trip.getTripForObjectId(mTripID, (trip, e) -> {
       if (e == null) {
         mTrip = trip;
-        setUpRecyclerView();
         getPlacesInTrip();
       } else {
         Log.d(TAG, String.format("Failed to get trip for id %s", mTrip));
@@ -84,29 +118,27 @@ public class StoryMapViewActivity extends BaseActivity {
     });
   }
 
-  private void setUpRecyclerView() {
-    mStoryPlaces = new ArrayList<>();
-    mStoryPlacesAdapter = new StoryPlaceArrayAdapter(this, null, mStoryPlaces);
-    rvStoryPlaces.setHasFixedSize(true);
-    rvStoryPlaces.setAdapter(mStoryPlacesAdapter);
-    rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-  }
-
   private void getPlacesInTrip() {
     Trip.getPlacesForTripId(mTripID, (places, se) -> {
       if (se == null) {
         mStoryPlaces.addAll(places);
-        mStoryPlacesAdapter.notifyDataSetChanged();
+        mStoryPlacePagerAdapter.notifyDataSetChanged();
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (StoryPlace place : places) {
           double latitude = place.getLatitude();
           double longitude = place.getLongitude();
           Marker marker =
-            mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)));
+            mGoogleMap.addMarker(
+              new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .icon(defaultMarker)
+            );
+          mMapMarker.add(marker);
           builder.include(marker.getPosition());
         }
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        mMapMarker.get(0).setIcon(selectedPlaceMarker);
+        mBounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(mBounds, 100);
         mGoogleMap.animateCamera(cu);
       } else {
         Log.d(TAG, String.format("Failed getPlacesInTrip: %s", se.getMessage()));

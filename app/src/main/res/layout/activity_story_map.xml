@@ -8,24 +8,28 @@
     android:fitsSystemWindows="true"
     tools:context="com.codepath.travel.activities.StoryMapViewActivity">
 
-    <include
-        android:id="@+id/toolbarHolder"
-        layout="@layout/layout_app_bar"/>
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <include
+            android:id="@+id/toolbarHolder"
+            layout="@layout/layout_app_bar"/>
+
         <fragment
             android:id="@+id/mapStoryView"
             class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vpStoryPlaces"
+            android:layout_weight="0.59"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvStoryPlaces"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vpStoryPlaces"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space"/>
-    </RelativeLayout>
+            android:layout_weight="1"/>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
