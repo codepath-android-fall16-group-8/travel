@@ -12,16 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.adapters.ReviewsAdapter;
 import com.codepath.travel.fragments.PlacesListFragment;
 import com.codepath.travel.helper.ImageUtils;
+import com.codepath.travel.listeners.PlacesCartListener;
 import com.codepath.travel.models.Review;
+import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,6 +37,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -78,7 +81,6 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
     @BindColor(R.color.red) int red;
 
     // Views
-    @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
     @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
     @BindView(R.id.tvPlaceName) TextView tvPlaceName;
     @BindView(R.id.cbAddPlace) AppCompatCheckBox cbAddPlace;
@@ -114,7 +116,6 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_place_detail);
         setupWindowAnimationsEnterBottom();
         initializeCommonViews();
-
         String placeId = getIntent().getStringExtra(PLACE_ID_ARG);
         placeName = getIntent().getStringExtra(PLACE_NAME_ARG);
         setActionBarTitle(placeName);
@@ -145,7 +146,6 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
                         setupViews(response.getJSONObject(RESULT_KEY));
                     } else {
                         Log.e("ERROR", String.format("Null place id from old story place data: %s", placeId));
-                        pbImageLoading.setVisibility(View.GONE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -158,6 +158,17 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
                 Log.e("ERROR", t.toString());
             }
         });
+
+//        cbAddPlace.setOnClickListener((View view) -> {
+//            if (suggestionPlace.isSelected()) {
+//                suggestionPlace.setSelected(false);
+//                cbAddPlace.setChecked(false);
+//
+//            } else {
+//                suggestionPlace.setSelected(true);
+//                cbAddPlace.setChecked(true);
+//            }
+//        });
     }
 
     /**
@@ -180,8 +191,7 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
             String photoRef = data.getJSONArray(PHOTOS_KEY)
                     .getJSONObject(0).getString(PHOTO_REF_KEY);
             String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
-            ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder,
-            pbImageLoading);
+            ImageUtils.loadImage(ivBackDrop, photoUrl);
         }
 
         // rating

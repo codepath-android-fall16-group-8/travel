@@ -12,6 +12,7 @@
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:expandedTitleTextAppearance="@style/collapsedAppBar"
     app:expandedTitleGravity="top|left"
+    app:expandedTitleMarginTop="40dp"
     app:expandedTitleMarginStart="50dp">
 
     <LinearLayout

@@ -3,6 +3,7 @@ package com.codepath.travel.adapters.viewholders;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +24,8 @@ public class SuggestedPlaceViewHolder extends RecyclerView.ViewHolder {
     // Views
     @BindView(R.id.tvSuggestionPlaceName) TextView tvSuggestionPlaceName;
     @BindView(R.id.rbPlaceRating) AppCompatRatingBar rbPlaceRating;
-    @BindView(R.id.ivAddSuggestionPlace)  ImageView ivAddSuggestionPlace;
+    //@BindView(R.id.ivAddSuggestionPlace)  ImageView ivAddSuggestionPlace;
+    @BindView(R.id.cbAddPlace) CheckBox cbAddPlace;
     @BindView(R.id.ivSuggestionPlacePhoto) ImageView ivSuggestionPlacePhoto;
 
     public SuggestedPlaceViewHolder(View itemView) {
@@ -37,28 +39,27 @@ public class SuggestedPlaceViewHolder extends RecyclerView.ViewHolder {
             rbPlaceRating.setRating(suggestionPlace.getRating().floatValue());
         }
         if (suggestionPlace.isSelected()) {
-            ivAddSuggestionPlace.setImageResource(R.drawable.ic_tick);
+            cbAddPlace.setChecked(true);
         } else {
-            ivAddSuggestionPlace.setImageResource(R.drawable.ic_add);
+            cbAddPlace.setChecked(false);
         }
         ivSuggestionPlacePhoto.setImageResource(0);
 
         ImageUtils.loadImage(this.ivSuggestionPlacePhoto,
-                GoogleAsyncHttpClient.getPlacePhotoUrl(suggestionPlace.getPhotoUrl()),
-                R.drawable.ic_photoholder, null);
+                GoogleAsyncHttpClient.getPlacePhotoUrl(suggestionPlace.getPhotoUrl()));
     }
 
     public void listeners(SuggestionPlace suggestionPlace, PlacesCartListener placesCartListener) {
-        ivAddSuggestionPlace.setOnClickListener((View view) -> {
+        cbAddPlace.setOnClickListener((View view) -> {
             if (suggestionPlace.isSelected()) {
-                ivAddSuggestionPlace.setImageResource(R.drawable.ic_add);
                 suggestionPlace.setSelected(false);
+                cbAddPlace.setChecked(false);
                 //Remove place id from cart
                 placesCartListener.removePlace(suggestionPlace);
 
             } else {
-                ivAddSuggestionPlace.setImageResource(R.drawable.ic_tick);
                 suggestionPlace.setSelected(true);
+                cbAddPlace.setChecked(true);
                 //Add place id to cart
                 placesCartListener.addPlace(suggestionPlace);
             }
