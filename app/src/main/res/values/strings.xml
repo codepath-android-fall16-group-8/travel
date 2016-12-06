@@ -7,7 +7,6 @@
 
     <!-- App related strings -->
     <string name="app_name">Travel</string>
-    <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
 
     <string name="toolbar_title_create_story">Create Trip</string>
@@ -44,8 +43,10 @@
     <!-- Create Trip -->
     <string name="default_trip_title">Trip to %1$s</string>
     <string name="hint_trip_title">Trip Title</string>
-    <string name="hint_places_of_interest">Find more places</string>
+    <string name="hint_places_of_interest">Add Destination</string>
     <string name="error_trip_dates">Please select trip dates</string>
+    <string name="error_no_place">Please add a place</string>
+    <string name="confirm_story">Done</string>
 
     <!-- Story Activity -->
     <!-- Confirm Delete Trip Dialog -->

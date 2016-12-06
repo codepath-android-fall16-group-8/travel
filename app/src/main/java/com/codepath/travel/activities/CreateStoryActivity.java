@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +19,6 @@ import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.helper.DateUtils;
-import com.codepath.travel.helper.OnStartDragListener;
-import com.codepath.travel.helper.SimpleItemTouchHelperCallback;
 import com.codepath.travel.listeners.DateRangePickerListener;
 import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.parse.StoryPlace;
@@ -50,8 +47,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import cz.msebera.android.httpclient.Header;
 
-public class CreateStoryActivity extends BaseActivity implements OnStartDragListener,
-        DateRangePickerListener {
+public class CreateStoryActivity extends BaseActivity implements DateRangePickerListener {
 
     private static final String TAG = CreateStoryActivity.class.getSimpleName();
 
@@ -60,27 +56,22 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     @BindString(R.string.default_trip_title) String tripTitleFormat;
     @BindString(R.string.hint_trip_dates) String hintTripDates;
     @BindString(R.string.error_trip_dates) String errorTripDates;
+    @BindString(R.string.error_no_place) String errorNoPlace;
 
     // Views
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.etTripTitle) EditText etTripTitle;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.etPlacesOfInterest) EditText etPlaceOfInterest;
-    @BindView(R.id.btAddNewPlace) Button btAddNewPlace;
+    @BindView(R.id.tvAddNewPlace) TextView tvAddNewPlace;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
     @BindView(R.id.btCreateTrip) Button btCreateMyTrip;
-
-    // Listeners
-    private ItemTouchHelper mItemTouchHelper;
 
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
     private ArrayList<SuggestionPlace> mSelectedSuggestionPlaces;
     private StoryPlaceArrayAdapter mAdapter;
-    private Place mNewSelectedPlace;
     private String mDestination;
     private String mDestinationPhotoRef;
-    private String mPhotoReference;
     private Trip mNewTrip;
     private String defaultTripTitle;
     private boolean tripDatesSet;
@@ -110,14 +101,10 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
 
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(),this, mStoryPlaces);
+        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(), mStoryPlaces);
         rvStoryPlaces.setHasFixedSize(true);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
-
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mAdapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(rvStoryPlaces);
     }
 
     private void setUpTrip() {
@@ -164,19 +151,8 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
             }
         });
 
-        etPlaceOfInterest.setOnClickListener((View view) -> {
-            mPhotoReference = "";
+        tvAddNewPlace.setOnClickListener((View view) -> {
             openAutocompleteActivity();
-        });
-
-        btAddNewPlace.setOnClickListener((View view) -> {
-            String placeOfInterest = etPlaceOfInterest.getText().toString();
-            if(!placeOfInterest.isEmpty()) {
-                etPlaceOfInterest.setText("");
-                addSelectedPlaceInTrip(mNewSelectedPlace, mPhotoReference);
-            }else {
-                Toast.makeText(CreateStoryActivity.this, "Please add a place of interest", Toast.LENGTH_LONG).show();
-            }
         });
 
         btCreateMyTrip.setOnClickListener((View v) -> {
@@ -203,6 +179,8 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
                         Log.d(TAG, String.format("Failed: %s", e.getMessage()));
                     }
                 });
+            } else {
+                showErrorDialog(errorNoPlace);
             }
         });
     }
@@ -213,16 +191,18 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         mAdapter.notifyDataSetChanged();
     }
 
-    private void getPhotoReferenceByPlaceID(String placeID) {
+    private void getPhotoReferenceByPlace(Place place) {
         {   //To get photo reference for a place in create story view
-            GoogleAsyncHttpClient.getPlaceDetails(placeID, new JsonHttpResponseHandler() {
+            GoogleAsyncHttpClient.getPlaceDetails(place.getId(), new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
-                        mPhotoReference = response.getJSONObject("result").getJSONArray("photos").getJSONObject(0).getString("photo_reference");
+                        addSelectedPlaceInTrip(place, response.getJSONObject("result").getJSONArray("photos").getJSONObject(0).getString("photo_reference"));
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        //No value for photos hence photo reference is empty
+                        addSelectedPlaceInTrip(place, "");
                     }
                 }
 
@@ -268,12 +248,8 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         // Check that the result was from the autocomplete widget.
         if (requestCode == Constants.AUTOCOMPLETE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                // Get the user's selected place from the edit text.
-                mNewSelectedPlace = PlaceAutocomplete.getPlace(this, data);
-                //Get photo reference for it by querying api
-                getPhotoReferenceByPlaceID(mNewSelectedPlace.getId());
-                Log.i(TAG, "Place Selected: " + mNewSelectedPlace.getName());
-                etPlaceOfInterest.setText(mNewSelectedPlace.getName());
+                //Get photo reference for place by querying api
+                getPhotoReferenceByPlace(PlaceAutocomplete.getPlace(this, data));
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
@@ -291,11 +267,6 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     }
 
     /* Listeners */
-    @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
-    }
-
     @Override
     public void onDateRangeSet(Calendar startDate, Calendar endDate) {
         Log.d(TAG, String.format("Dates set: %s - %s", startDate.toString(), endDate.toString()));
