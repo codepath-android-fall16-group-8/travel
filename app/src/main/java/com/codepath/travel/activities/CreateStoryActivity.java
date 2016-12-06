@@ -89,6 +89,7 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_story);
+        setupWindowAnimationsEnterRight();
         initializeCommonViews();
         toolbar.setTitle(toolbarTitle);
 
@@ -196,9 +197,8 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
             if (!mStoryPlaces.isEmpty()) {
                 StoryPlace.saveAllInBackground(mStoryPlaces, (ParseException e) -> {
                     if (e == null) {
-                        Toast.makeText(CreateStoryActivity.this, "Trip saved", Toast.LENGTH_LONG).show();
                         setResult(RESULT_OK);
-                        finish();
+                        finishAfterTransition();
                     } else {
                         Log.d(TAG, String.format("Failed: %s", e.getMessage()));
                     }
@@ -313,9 +313,6 @@ public class CreateStoryActivity extends BaseActivity implements OnStartDragList
         // as you specify a parent activity in AndroidManifest.xml.
         //int id = item.getItemId();
         switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -35,6 +35,7 @@ public class FollowActivity extends BaseActivity {
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     setContentView(R.layout.activity_follow);
+    setupWindowAnimationsEnterRight();
     initializeCommonViews();
     tvNoUsersFound.setVisibility(View.GONE);
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

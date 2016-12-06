@@ -112,6 +112,7 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail);
+        setupWindowAnimationsEnterBottom();
         initializeCommonViews();
 
         String placeId = getIntent().getStringExtra(PLACE_ID_ARG);

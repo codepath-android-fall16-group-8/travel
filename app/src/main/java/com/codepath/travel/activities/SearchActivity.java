@@ -35,6 +35,7 @@ public class SearchActivity extends BaseActivity {
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     setContentView(R.layout.activity_search_users);
+    setupWindowAnimationsEnterRight();
     initializeCommonViews();
     setActionBarTitle(toolbarTitle);
     tvNoUsersFound.setVisibility(View.GONE);

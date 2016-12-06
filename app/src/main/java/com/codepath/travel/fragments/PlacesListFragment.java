@@ -4,6 +4,7 @@ import static com.codepath.travel.activities.PlaceDetailActivity.LAT_LNG_ARG;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,8 @@ import android.widget.ProgressBar;
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
 import com.codepath.travel.activities.PlaceDetailActivity;
+import com.codepath.travel.activities.PlaceSuggestionActivity;
+import com.codepath.travel.activities.StoryActivity;
 import com.codepath.travel.adapters.PlaceSuggestionArrayAdapter;
 import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.models.SuggestionPlace;
@@ -126,6 +129,8 @@ public class PlacesListFragment extends Fragment {
     placeDetail.putExtra(PlaceDetailActivity.POSITION_ARG, position);
     placeDetail.putExtra(PLACE_ADDED_ARG, suggestionPlace.isSelected());
     placeDetail.putExtra(LAT_LNG_ARG, new LatLng(suggestionPlace.getLatitude(), suggestionPlace.getLongitude()));
-    startActivityForResult(placeDetail, Constants.PLACE_DETAIL_REQUEST);
+
+    ActivityOptionsCompat options = android.support.v4.app.ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity());
+    startActivityForResult(placeDetail, Constants.PLACE_DETAIL_REQUEST, options.toBundle());
   }
 }
