@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.PlaceSuggestionActivity">
 
-    <item
-        android:id="@+id/miShare"
-        android:orderInCategory="10"
-        android:title="@string/share_story"
-        android:icon="@android:drawable/ic_menu_share"
-        app:showAsAction="ifRoom" />
+    <!--<item-->
+        <!--android:id="@+id/miShare"-->
+        <!--android:orderInCategory="10"-->
+        <!--android:title="@string/share_story"-->
+        <!--android:icon="@android:drawable/ic_menu_share"-->
+        <!--app:showAsAction="ifRoom" />-->
 </menu>

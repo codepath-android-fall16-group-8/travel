@@ -5,8 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,6 +60,7 @@ public class ProfileViewActivity
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_user_profile);
+        setupWindowAnimationsEnterRight();
         initializeCommonViews();
         String userID = getIntent().getStringExtra(USER_ID);
 
@@ -126,7 +130,8 @@ public class ProfileViewActivity
         openStory.putExtra(Constants.TRIP_TITLE_ARG, tripTitle);
         openStory.putExtra(Constants.TRIP_ID_ARG, tripId);
         openStory.putExtra(Constants.IS_OWNER_ARG, isOwner);
-        startActivity(openStory);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ProfileViewActivity.this);
+        startActivity(openStory, options.toBundle());
     }
 
     @Override
@@ -163,19 +168,19 @@ public class ProfileViewActivity
 
         initFollowers(user);
         initFollowing(user);
-
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ProfileViewActivity.this);
         tvFollowersCount.setOnClickListener((View v) -> {
             Intent showFollowers = new Intent(ProfileViewActivity.this, FollowActivity.class);
             showFollowers.putExtra(FollowActivity.SHOW_FOLLOWERS, true);
             showFollowers.putExtra(FollowActivity.USER_ID, user.getObjectId());
-            startActivity(showFollowers);
+            startActivity(showFollowers, options.toBundle());
         });
 
         tvFollowingCount.setOnClickListener((View v) -> {
             Intent showFollowers = new Intent(ProfileViewActivity.this, FollowActivity.class);
             showFollowers.putExtra(FollowActivity.SHOW_FOLLOWERS, false);
             showFollowers.putExtra(FollowActivity.USER_ID, user.getObjectId());
-            startActivity(showFollowers);
+            startActivity(showFollowers, options.toBundle());
         });
 
         // user can't follow himself

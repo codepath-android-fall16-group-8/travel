@@ -3,7 +3,6 @@ package com.codepath.travel.activities;
 import static com.codepath.travel.Constants.TRIP_ID_ARG;
 import static com.codepath.travel.Constants.TRIP_TITLE_ARG;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -26,16 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.BindString;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class StoryCollageActivity extends AppCompatActivity {
+public class StoryCollageActivity extends BaseActivity {
     private static final int GRID_NUM_COLUMNS = 2;
     private static final int GRID_SPACE_SIZE = 5;
-
-    // strings
-    @BindString(R.string.toolbar_title_story_collage) String toolbarTitle;
 
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -49,11 +43,9 @@ public class StoryCollageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_collage);
-        ButterKnife.bind(this);
-
-        toolbar.setTitle(String.format(toolbarTitle, getIntent().getStringExtra(TRIP_TITLE_ARG)));
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupWindowAnimationsEnterBottom();
+        initializeCommonViews();
+        setActionBarTitle(getIntent().getStringExtra(TRIP_TITLE_ARG));
 
         mTripID = getIntent().getStringExtra(TRIP_ID_ARG);
 
@@ -111,14 +103,6 @@ public class StoryCollageActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        if (id == android.R.id.home) {
-            finish();
-            return true;
-        } else if (id == R.id.miShare) {
-            // Todo: share dialog fragment? followers/following must be implemented first
-            Toast.makeText(this, "Todo: share dialog fragment", Toast.LENGTH_SHORT).show();
-        }
 
         return super.onOptionsItemSelected(item);
     }

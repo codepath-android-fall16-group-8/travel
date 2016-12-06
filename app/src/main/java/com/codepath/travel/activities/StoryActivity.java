@@ -10,12 +10,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,6 +98,7 @@ public class StoryActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
+        setupWindowAnimations();
 
         ButterKnife.bind(this);
 
@@ -124,6 +129,18 @@ public class StoryActivity extends AppCompatActivity implements
             }
 
         });
+    }
+
+    // should match BaseActivity's setupWindowAnimations() until this class is updated to extend BaseActivity.
+    protected void setupWindowAnimations() {
+        Fade fadeOut = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_out);
+        Slide slideRight = (Slide) TransitionInflater.from(this).inflateTransition(R.transition.activity_slide_right);
+        getWindow().setEnterTransition(slideRight); // enter: slide in from right side when being opened
+        getWindow().setExitTransition(fadeOut); // exit: fadeOut when opening another activity
+        // re-enter: should automatically reverse (fadeIn) when returning from another activity
+        // return: should automatically reverse (slideLeft) when closing
+        getWindow().setAllowEnterTransitionOverlap(false); // wait for calling activity's exit transition to be done
+        getWindow().setAllowReturnTransitionOverlap(false); // wait for called activity's return transition to be done?
     }
 
     private void setupSharedCheckbox() {
@@ -221,14 +238,16 @@ public class StoryActivity extends AppCompatActivity implements
         Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
         intent.putExtra(Constants.TRIP_ID_ARG, mTripID);
         intent.putExtra(Constants.TRIP_TITLE_ARG, mTripTitle);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);
+        startActivity(intent, options.toBundle());
     }
 
     private void launchStoryMapActivity() {
         Intent intent = new Intent(StoryActivity.this, StoryMapViewActivity.class);
         intent.putExtra(StoryMapViewActivity.TRIP_ID_ARG, mTripID);
         intent.putExtra(StoryMapViewActivity.TRIP_TITLE_ARG, mTripTitle);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);
+        startActivity(intent, options.toBundle());
     }
 
     private void launchPlaceDetailActivity(StoryPlace storyPlace) {
@@ -237,7 +256,10 @@ public class StoryActivity extends AppCompatActivity implements
         placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
         placeDetail.putExtra(IS_STORY_PLACE_ARG, true);
         placeDetail.putExtra(LAT_LNG_ARG, new LatLng(storyPlace.getLatitude(), storyPlace.getLongitude()));
-        startActivity(placeDetail);
+
+        // special bundle for activity transitions
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);
+        startActivity(placeDetail, options.toBundle());
     }
 
     private void launchMediaDialogFragment(int position, String mediaId,
@@ -410,7 +432,7 @@ public class StoryActivity extends AppCompatActivity implements
     public void onDeleteTrip() {
         Trip.deleteTripForId(mTripID);
         setResult(RESULT_OK);
-        finish();
+        finishAfterTransition();
     }
 
     @Override
@@ -465,8 +487,8 @@ public class StoryActivity extends AppCompatActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            setResult(RESULT_CANCELED);
-            finish();
+            setResult(RESULT_CANCELED); // result_ok is being used for delete trip
+            finishAfterTransition();
             return true;
         } else if (id == R.id.miMap) {
             launchStoryMapActivity();

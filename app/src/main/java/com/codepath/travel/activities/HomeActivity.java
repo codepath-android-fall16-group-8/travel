@@ -5,12 +5,15 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -85,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        setupWindowAnimations();
 
         ButterKnife.bind(this);
 
@@ -105,6 +109,14 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         } else {
             launchLoginActivity();
         }
+    }
+
+    private void setupWindowAnimations() {
+        Fade fadeOut = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_out);
+        Fade fadeIn = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade_in);
+        getWindow().setExitTransition(fadeOut); // exit: fade out when opening a new activity
+        getWindow().setReenterTransition(fadeIn); // re-enter: fade in returning from another activity
+        getWindow().setAllowReturnTransitionOverlap(false); // overlap with the callers exit transition when returning?
     }
 
     private void setupViews() {
@@ -184,7 +196,9 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     /* Navigation */
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
-        startActivityForResult(builder.build(), LOGIN_REQUEST);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
+        startActivityForResult(builder.build(), LOGIN_REQUEST, options.toBundle());
     }
 
     private void launchStoryActivity(String tripId, String tripTitle, boolean isOwner) {
@@ -192,32 +206,24 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         openStory.putExtra(Constants.TRIP_TITLE_ARG, tripTitle);
         openStory.putExtra(Constants.TRIP_ID_ARG, tripId);
         openStory.putExtra(Constants.IS_OWNER_ARG, isOwner);
-        startActivityForResult(openStory, STORY_REQUEST);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
+        startActivityForResult(openStory, STORY_REQUEST, options.toBundle());
     }
 
-    private void logout() {
-        Log.d(TAG, String.format("Logging out for user: %s",
-                getCurrentUser().getUsername()));
-        ParseUser.logOut();
-        mDrawer.closeDrawers();
-        launchLoginActivity();
-    }
+    private void showUserProfile(ParseUser pUser) {
+        Intent viewProfile = new Intent(this, ProfileViewActivity.class);
+        viewProfile.putExtra(ProfileViewActivity.USER_ID, pUser.getObjectId());
 
-    private void deleteAccount() {
-        Log.d(TAG, String.format("Deleting account for user: %s", getCurrentUser().getUsername()));
-        User.deleteUserAndData(getCurrentUser());
-        launchLoginActivity();
-    }
-
-    private void showUserProfile(String userID) {
-        Intent intent = new Intent(this, ProfileViewActivity.class);
-        intent.putExtra(ProfileViewActivity.USER_ID, userID);
-        startActivity(intent);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
+        startActivity(viewProfile, options.toBundle());
     }
 
     private void showSearchActivity() {
         Intent intent = new Intent(this, SearchActivity.class);
-        startActivity(intent);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
+        startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -241,7 +247,21 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
         }
     }
 
-    /* Listeners */
+    /* Listeners and other user actions*/
+    private void logout() {
+        Log.d(TAG, String.format("Logging out for user: %s",
+                getCurrentUser().getUsername()));
+        ParseUser.logOut();
+        mDrawer.closeDrawers();
+        launchLoginActivity();
+    }
+
+    private void deleteAccount() {
+        Log.d(TAG, String.format("Deleting account for user: %s", getCurrentUser().getUsername()));
+        User.deleteUserAndData(getCurrentUser());
+        launchLoginActivity();
+    }
+
     @Override
     public void onTripClick(String tripId, String tripTitle, boolean isOwner) {
         launchStoryActivity(tripId, tripTitle, isOwner);
@@ -260,9 +280,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
 
     @Override
     public void onProfileClick(ParseUser pUser) {
-        Intent viewProfile = new Intent(this, ProfileViewActivity.class);
-        viewProfile.putExtra(ProfileViewActivity.USER_ID, pUser.getObjectId());
-        startActivity(viewProfile);
+        showUserProfile(pUser);
     }
 
     /* Navigation Drawer */
@@ -306,7 +324,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
                 deleteAccount();
                 break;
             case R.id.nav_profile:
-                showUserProfile(ParseUser.getCurrentUser().getObjectId());
+                showUserProfile(ParseUser.getCurrentUser());
                 break;
             default: break;
         }
@@ -351,7 +369,8 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
                         createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_ID_ARG, destinationId);
                         createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_LAT_LONG_ARG, LatLng);
                         createTrip.putExtra(PlaceSuggestionActivity.DESTINATION_PHOTO_ARG, photoReference);
-                        startActivityForResult(createTrip, CREATE_STORY_REQUEST);
+                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
+                        startActivityForResult(createTrip, CREATE_STORY_REQUEST, options.toBundle());
                     } else {
                         Toast.makeText(HomeActivity.this, "Please add a destination", Toast.LENGTH_LONG).show();
                     }

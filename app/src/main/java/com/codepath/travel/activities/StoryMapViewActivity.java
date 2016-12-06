@@ -59,6 +59,7 @@ public class StoryMapViewActivity extends BaseActivity {
   public void onCreate(Bundle savedInstance) {
     super.onCreate(savedInstance);
     setContentView(R.layout.activity_story_map);
+    setupWindowAnimationsEnterRight();
     initializeCommonViews();
     MapsInitializer.initialize(getApplicationContext());
     defaultMarker = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);

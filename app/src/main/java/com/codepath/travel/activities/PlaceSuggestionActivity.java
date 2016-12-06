@@ -3,6 +3,7 @@ package com.codepath.travel.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +57,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_suggestion);
+        setupWindowAnimationsEnterRight();
         initializeCommonViews();
 
         mDestination = getIntent().getStringExtra(DESTINATION_NAME_ARG);
@@ -93,16 +95,17 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         mStoryPlaces.remove(suggestionPlace);
         setCreateState();
     }
-//
+
     /* Navigation */
     private void launchCreateStoryActivity() {
         Intent createTrip = new Intent(this, CreateStoryActivity.class);
         createTrip.putExtra(Constants.PLACE_NAME_ARG, mDestination);
         createTrip.putExtra(Constants.PLACE_PHOTO_REF_ARG, getIntent().getStringExtra(DESTINATION_PHOTO_ARG));
         createTrip.putExtra(Constants.SUGGESTION_PLACES_LIST_ARG, Parcels.wrap(mStoryPlaces));
-        startActivity(createTrip);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(PlaceSuggestionActivity.this);
+        startActivity(createTrip, options.toBundle());
         setResult(RESULT_OK);
-        finish();
+        finishAfterTransition();
     }
 
     @Override
@@ -129,7 +132,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     @Override
     public void onBackPressed() {
         setResult(RESULT_OK);
-        finish();
+        finishAfterTransition();
     }
 
     private void setCreateState() {
