@@ -15,7 +15,7 @@
         android:background="@android:color/white"
         android:fitsSystemWindows="true">
 
-        <include layout="@layout/layout_app_bar_with_backdrop" />
+        <include layout="@layout/layout_collapsing_toolbar_with_backdrop" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -29,12 +29,6 @@
             android:layout_height="match_parent"
             android:background="@color/white">
 
-            <ProgressBar
-                android:id="@+id/pbImageLoading"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
             <!-- Header section with place name and star to save checkbox -->
             <RelativeLayout
                 android:id="@+id/rlHeader"
@@ -47,7 +41,7 @@
                     tools:text="Place Name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/textXLarge"/>
+                    android:textAppearance="@style/textLarge"/>
 
                 <TextView
                     android:id="@+id/tvRating"
@@ -71,7 +65,7 @@
 
                 <android.support.v7.widget.AppCompatCheckBox
                     android:id="@+id/cbAddPlace"
-                    android:button="@drawable/checkbox_star"
+                    android:button="@drawable/checkbox_add_remove_place"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

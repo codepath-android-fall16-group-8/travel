@@ -14,7 +14,7 @@
         android:cursorVisible="false"
         android:maxLines="1"
         android:hint="@string/destination_hint"
-        android:textAppearance="@style/textXLarge"
+        android:textAppearance="@style/textLarge"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:background="@android:color/transparent" />

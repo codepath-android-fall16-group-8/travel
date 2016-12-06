@@ -56,7 +56,7 @@
         <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
     </style>
 
-    <!-- This configures the styles for the title within the Toolbar (20sp)-->
+    <!-- This configures the styles for the title within the Toolbar (sp)-->
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">normal</item>

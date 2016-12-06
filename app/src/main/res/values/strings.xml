@@ -10,7 +10,6 @@
     <string name="confirm_story">confirm to create story</string>
     <string name="add_a_place">Add a place to trip</string>
 
-    <string name="toolbar_title_place_suggestion">%1$s</string>
     <string name="toolbar_title_create_story">Create Trip</string>
     <string name="toolbar_title_story_collage">Story: %1$s</string>
 

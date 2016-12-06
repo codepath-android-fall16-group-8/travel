@@ -173,8 +173,7 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
             // photo and name
             ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(ivPlacePhoto,
-                    GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()),
-                    R.drawable.ic_photoholder, null);
+                    GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()));
             tvPlaceName.setText(storyPlace.getName());
 
             // check-in and user rating

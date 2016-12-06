@@ -113,10 +113,7 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
             ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(
                 ivPlacePhoto,
-                GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()),
-                R.drawable.ic_photoholder,
-                null
-            );
+                GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()));
             tvPlaceName.setText(storyPlace.getName());
         }
 

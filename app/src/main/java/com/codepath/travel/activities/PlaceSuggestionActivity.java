@@ -26,8 +26,6 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.codepath.travel.Constants.PLACE_DETAIL_REQUEST;
-
 public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartListener {
 
     // Intent ARGS
@@ -36,16 +34,12 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     public static final String DESTINATION_LAT_LONG_ARG = "destination_lat_long";
     public static final String DESTINATION_PHOTO_ARG = "destination_photo";
 
-    // Strings
-    //@BindString(R.string.toolbar_title_place_suggestion) String toolbarTitle;
-
     //Views
     @BindView(R.id.ivBackDrop) ImageView ivBackDrop;
     @BindView(R.id.pbBackDropImageLoading) ProgressBar pbImageLoading;
     @BindView(R.id.tabLayout) TabLayout tabLayout;
     @BindView(R.id.tabViewPager) ViewPager tabViewPager;
     @BindView(R.id.tvSavedPlacesCount) TextView tvSavedPlacesCount;
-    //@BindView(R.id.btCreateTrip) Button btCreateTrip;
     @BindView(R.id.tvCreateTrip) TextView tvCreateTrip;
     //Member variable
     private String mDestination;
@@ -63,7 +57,6 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
         mDestination = getIntent().getStringExtra(DESTINATION_NAME_ARG);
         mLatLng = getIntent().getStringExtra(DESTINATION_LAT_LONG_ARG);
         setActionBarTitle(mDestination);
-
         tabViewPager.setAdapter(new PlacesPagerAdapter(getSupportFragmentManager(), this, mLatLng));
         tabLayout.setupWithViewPager(tabViewPager);
 
@@ -71,7 +64,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
 
         String photoRef = getIntent().getStringExtra(DESTINATION_PHOTO_ARG);
         String photoUrl = GoogleAsyncHttpClient.getPlacePhotoUrl(photoRef);
-        ImageUtils.loadImage(ivBackDrop, photoUrl, R.drawable.ic_photoholder, pbImageLoading);
+        ImageUtils.loadImage(ivBackDrop, photoUrl);
 
         mStoryPlaces = new ArrayList<>();
         setCreateState();
@@ -110,7 +103,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == PLACE_DETAIL_REQUEST) {
+        if (resultCode == RESULT_OK) {
             // TODO: fix this, when a user leaves the detail view and comes back to this view,
             // the status of the star and the # of saved places should be updated accordingly.
             // required data: which fragment, the position, and the star state
