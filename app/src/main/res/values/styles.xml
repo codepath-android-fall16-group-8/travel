@@ -131,6 +131,8 @@
         <item name="textAllCaps">false</item>
     </style>
     <!-- end view pager styling -->
+    
+    <!-- Toggle Button Styling -->
     <style name="toggleApperance">
         <item name="android:layout_width">55dp</item>
         <item name="android:layout_height">55dp</item>
@@ -140,8 +142,6 @@
         <item name="android:textOff"></item>
         <item name="android:textOn"></item>
     </style>
-    <!-- Toggle Button Styling -->
-
     <!--End Toggle Button Styling -->
 
     <!-- Places Suggestion Activity Style -->
