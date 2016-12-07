@@ -131,7 +131,7 @@
         <item name="textAllCaps">false</item>
     </style>
     <!-- end view pager styling -->
-
+    
     <!-- Toggle Button Styling -->
     <style name="toggleApperance">
         <item name="android:layout_width">55dp</item>
@@ -191,15 +191,6 @@
     <style name="Dialog.FullScreen" parent="Theme.AppCompat.Dialog">
         <item name="android:padding">0dp</item>
         <item name="android:windowBackground">@android:color/white</item>
-    </style>
-    
-    <style name="alertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <!-- Used for the buttons -->
-        <item name="colorAccent">@color/colorAccent</item>
-        <!-- Used for the title and text -->
-        <item name="android:textColorPrimary">@color/primary_text</item>
-        <!-- Used for the background -->
-        <item name="android:background">@color/transparent</item>
     </style>
 
 </resources>
