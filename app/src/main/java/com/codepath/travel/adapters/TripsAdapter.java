@@ -14,7 +14,6 @@ import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
-import com.google.android.gms.vision.text.Text;
 
 import java.util.List;
 
@@ -93,6 +92,11 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             toggleBtnShare.setChecked(trip.isShared());
             toggleBtnShare.setOnCheckedChangeListener(
                     (buttonView, isChecked) -> listener.onShareClick(trip, isChecked));
+            if(trip.isShared()) {
+                tvShare.setText(R.string.unshare);
+            } else {
+                tvShare.setText(R.string.share);
+            }
         } else {
             toggleBtnShare.setVisibility(View.GONE);
             tvShare.setVisibility(View.GONE);

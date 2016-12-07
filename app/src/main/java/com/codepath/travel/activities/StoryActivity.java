@@ -1,7 +1,5 @@
 package com.codepath.travel.activities;
 
-import permissions.dispatcher.RuntimePermissions;
-
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,7 +11,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +53,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
@@ -155,6 +153,11 @@ public class StoryActivity extends AppCompatActivity implements
                 mTrip.setShared(isChecked);
                 mTrip.saveInBackground();
             });
+            if(mTrip.isShared()) {
+                tvShare.setText(R.string.unshare);
+            } else {
+                tvShare.setText(R.string.share);
+            }
         } else {
             tvShare.setVisibility(View.GONE);
             toggleBtnShare.setVisibility(View.GONE);
