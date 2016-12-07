@@ -6,6 +6,7 @@ import android.util.Log;
 import com.codepath.travel.models.SuggestionPlace;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -28,6 +29,7 @@ import static com.codepath.travel.models.parse.ParseModelConstants.RATING_KEY;
 import static com.codepath.travel.models.parse.ParseModelConstants.STORY_PLACE_CLASS_NAME;
 import static com.codepath.travel.models.parse.ParseModelConstants.STORY_PLACE_KEY;
 import static com.codepath.travel.models.parse.ParseModelConstants.TRIP_KEY;
+import static com.codepath.travel.models.parse.ParseModelConstants.UPDATED_AT_KEY;
 
 /**
  * Parse model for a travel story/trip.
@@ -153,6 +155,19 @@ public class StoryPlace extends ParseObject {
         ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
         placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
         placeQuery.getFirstInBackground(callback);
+    }
+
+
+    /**
+     * Find media items that belong to the given story place id and call the given callback.
+     *
+     * @param storyPlaceId the story place id
+     * @param callback the callback function to call
+     */
+    public static void getMediaForStoryPlaceId(String storyPlaceId, FindCallback<Media> callback) {
+        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
+        mediaQuery.whereEqualTo(STORY_PLACE_KEY, ParseObject.createWithoutData(StoryPlace.class, storyPlaceId));
+        mediaQuery.findInBackground(callback);
     }
 
     /**

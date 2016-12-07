@@ -88,7 +88,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".activities.PlaceSuggestionActivity" />
         <activity android:name=".activities.StoryActivity" />
-        <activity android:name=".activities.StoryCollageActivity" />
+        <activity android:name=".activities.MediaCollageActivity" />
         <activity android:name=".activities.ProfileViewActivity" />
         <activity android:name=".activities.SearchActivity" />
         <activity android:name=".activities.FollowActivity" />

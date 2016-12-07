@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.codepath.travel.R;
-import com.codepath.travel.models.parse.StoryPlace;
+import com.codepath.travel.helper.ImageUtils;
+import com.codepath.travel.models.parse.Media;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ import java.util.List;
  */
 public class CollageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<StoryPlace> mStoryPlaces;
+    private List<Media> mMediaItems;
     private Context mContext;
 
     private final int DEFAULT = 0;
 
-    public CollageAdapter(Context context, List<StoryPlace> storyPlaces) {
-        this.mStoryPlaces = storyPlaces;
+    public CollageAdapter(Context context, List<Media> mediaItems) {
+        this.mMediaItems = mediaItems;
         this.mContext = context;
     }
 
@@ -60,24 +60,30 @@ public class CollageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void configureViewHolder(CollageItemViewHolder viewHolder, int position) {
-        StoryPlace storyPlace = this.mStoryPlaces.get(position);
+        Media media = this.mMediaItems.get(position);
 
-        ImageView ivCoverPhoto = viewHolder.getCoverPhoto();
-        ivCoverPhoto.setImageResource(0);
-        String photoUrl = storyPlace.getPhotoUrl();
-        if (!TextUtils.isEmpty(photoUrl)) {
-            Glide.with(getContext()).load(photoUrl)
-                    .placeholder(android.R.drawable.ic_menu_slideshow)
-                    .centerCrop()
-                    .into(ivCoverPhoto);
+        ImageView ivPhoto = viewHolder.getPhoto();
+        ivPhoto.setImageResource(0);
+        String photoUrl = media.getDataUrl();
+        if (photoUrl != null && !TextUtils.isEmpty(photoUrl)) {
+            ImageUtils.loadImage(ivPhoto, photoUrl);
+            ivPhoto.setVisibility(View.VISIBLE);
+        } else {
+            ivPhoto.setVisibility(View.GONE);
         }
-        TextView tvPlaceName = viewHolder.getPlaceName();
-        tvPlaceName.setText(storyPlace.getName());
+        TextView tvCaption = viewHolder.getCaption();
+        String caption = media.getCaption();
+        if (caption != null && !TextUtils.isEmpty(caption)) {
+            tvCaption.setText(media.getCaption());
+            tvCaption.setVisibility(View.VISIBLE);
+        } else {
+            tvCaption.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return this.mStoryPlaces.size();
+        return this.mMediaItems.size();
     }
 
     @Override

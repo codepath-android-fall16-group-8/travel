@@ -53,13 +53,6 @@
     <string name="delete_trip">Delete Trip</string>
     <string name="cancel">Cancel</string>
 
-    <!-- Edit Media DialogFragment -->
-    <string name="hint_compose_note">Memories go here...</string>
-    <string name="save">Save</string>
-    <string name="set_story_place_cover">Set place cover</string>
-    <string name="set_trip_cover">Set trip cover</string>
-    <string name="set_user_cover">Set user cover</string>
-
     <!-- Trip Date Selection -->
     <string name="hint_trip_dates">Select Trip Dates</string>
     <string name="start_date">Start Date</string>
@@ -96,5 +89,15 @@
 
     <!-- Maps Story activity -->
     <string name="google_maps_api_key">AIzaSyAS09XEATHFoSrPgxeC0ItjctwmxdLi9AQ</string>
+
+    <!-- Media Collage Activity -->
+    <string name="hint_compose_note">Memories go here...</string>
+    <string name="save">Save</string>
+    <string name="set_story_place_cover">Set place cover</string>
+    <string name="set_trip_cover">Set trip cover</string>
+    <string name="set_user_cover">Set user cover</string>
+    <string name="camera">Take Photo</string>
+    <string name="photo_library">Add Photo</string>
+    <string name="note">Add Note</string>
 
 </resources>

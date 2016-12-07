@@ -11,31 +11,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * ViewHolder class for story place collage items.
+ * ViewHolder class for media collage items.
  */
 public class CollageItemViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.ivCoverPhoto) ImageView ivCoverPhoto;
-    @BindView(R.id.tvPlaceName) TextView tvPlaceName;
+    @BindView(R.id.ivPhoto) ImageView ivPhoto;
+    @BindView(R.id.tvCaption) TextView tvCaption;
 
     public CollageItemViewHolder(View itemView) {
         super(itemView);
             ButterKnife.bind(this, itemView);
     }
 
-    public ImageView getCoverPhoto() {
-        return this.ivCoverPhoto;
+    public ImageView getPhoto() {
+        return this.ivPhoto;
     }
 
-    public void setCoverPhoto(ImageView coverPhoto) {
-        this.ivCoverPhoto = coverPhoto;
-    }
-
-    public TextView getPlaceName() {
-        return this.tvPlaceName;
-    }
-
-    public void setPlaceName(TextView placeName) {
-        this.tvPlaceName = placeName;
+    public TextView getCaption() {
+        return this.tvCaption;
     }
 }
 

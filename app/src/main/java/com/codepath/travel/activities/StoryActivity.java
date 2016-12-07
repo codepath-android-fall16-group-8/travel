@@ -235,7 +235,7 @@ public class StoryActivity extends AppCompatActivity implements
 
     /* Navigation */
     private void launchStoryCollageActivity() {
-        Intent intent = new Intent(StoryActivity.this, StoryCollageActivity.class);
+        Intent intent = new Intent(StoryActivity.this, MediaCollageActivity.class);
         intent.putExtra(Constants.TRIP_ID_ARG, mTripID);
         intent.putExtra(Constants.TRIP_TITLE_ARG, mTripTitle);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);

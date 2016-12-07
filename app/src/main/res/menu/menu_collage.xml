@@ -3,10 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.PlaceSuggestionActivity">
 
-    <!--<item-->
-        <!--android:id="@+id/miShare"-->
-        <!--android:orderInCategory="10"-->
-        <!--android:title="@string/share_story"-->
-        <!--android:icon="@android:drawable/ic_menu_share"-->
-        <!--app:showAsAction="ifRoom" />-->
+    <item
+        android:id="@+id/miCamera"
+        android:orderInCategory="10"
+        android:title="@string/camera"
+        android:icon="@drawable/ic_add_photo"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/miPhotoLibrary"
+        android:orderInCategory="10"
+        android:title="@string/photo_library"
+        android:icon="@drawable/ic_photo_library"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/miNote"
+        android:orderInCategory="10"
+        android:title="@string/note"
+        android:icon="@drawable/ic_add_note"
+        app:showAsAction="ifRoom" />
 </menu>
