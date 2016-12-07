@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -90,8 +91,15 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             toggleBtnShare.setVisibility(View.VISIBLE);
             tvShare.setVisibility(View.VISIBLE);
             toggleBtnShare.setChecked(trip.isShared());
-            toggleBtnShare.setOnCheckedChangeListener(
-                    (buttonView, isChecked) -> listener.onShareClick(trip, isChecked));
+            toggleBtnShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                listener.onShareClick(trip, isChecked);
+                if(isChecked) {
+                    tvShare.setText(R.string.unshare);
+                } else {
+                    tvShare.setText(R.string.share);
+                }
+            });
+
             if(trip.isShared()) {
                 tvShare.setText(R.string.unshare);
             } else {

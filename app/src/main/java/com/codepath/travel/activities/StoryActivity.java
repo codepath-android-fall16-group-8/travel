@@ -151,6 +151,11 @@ public class StoryActivity extends AppCompatActivity implements
             toggleBtnShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 Log.d(TAG, String.format("Share: %s", isChecked));
                 mTrip.setShared(isChecked);
+                if(isChecked) {
+                    tvShare.setText(R.string.unshare);
+                } else {
+                    tvShare.setText(R.string.share);
+                }
                 mTrip.saveInBackground();
             });
             if(mTrip.isShared()) {
