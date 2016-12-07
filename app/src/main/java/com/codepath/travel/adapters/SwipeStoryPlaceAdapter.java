@@ -164,9 +164,9 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
                     v -> listener.onStoryPlaceInfo(getRealPosition(storyPlace)));
             tvPlaceName.setText(storyPlace.getName());
 
-            if (isOwner && datesRelation != FUTURE) {
+            if (isOwner) {
                 ivCollageIcon.setVisibility(GONE);
-            } else {
+            } else if (datesRelation != FUTURE) {
                 // show collage icon for people to tap on
                 ivCollageIcon.setVisibility(VISIBLE);
                 ivCollageIcon.setOnClickListener(

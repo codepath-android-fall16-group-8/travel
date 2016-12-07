@@ -117,7 +117,6 @@
                 android:layout_alignParentEnd="true"
                 android:numStars="5"
                 android:stepSize="0.5"
-                android:rating="3"
                 style="@style/heartRatingBar" />
 
             <TextView

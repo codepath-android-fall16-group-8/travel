@@ -242,12 +242,13 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
             tvWebsite.setOnClickListener(v -> onWebAddressClick(website));
         } else {
             tvWebsite.setVisibility(View.GONE);
+            tvWebAddress.setVisibility(View.GONE);
             // google url
             if (data.has(GOOGLE_URL_KEY)) {
                 // google url is basically just map view with the location coordinates.
                 tvGoogleUrl.setVisibility(View.VISIBLE);
                 String googleUrl = data.getString(GOOGLE_URL_KEY);
-                tvGoogleUrl.setText(website);
+                tvGoogleUrl.setText(data.getString(GOOGLE_URL_KEY));
                 // open up maps
                 tvGoogleUrl.setOnClickListener(v -> onGoogleUrlClick(googleUrl));
                 tvWebsite.setOnClickListener(v -> onGoogleUrlClick(googleUrl));
