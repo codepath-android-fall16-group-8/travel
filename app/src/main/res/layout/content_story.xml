@@ -40,7 +40,7 @@
         android:layout_alignTop="@+id/toggleBtnShare"
         android:layout_alignBottom="@+id/toggleBtnShare"
         android:gravity="center_vertical"
-        android:text="Share"
+        android:text="@string/share"
         android:textAppearance="@style/textMedium"/>
 
     <android.support.v7.widget.RecyclerView

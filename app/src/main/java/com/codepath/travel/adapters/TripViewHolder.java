@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.codepath.travel.R;
+import com.google.android.gms.vision.text.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +26,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.rlTrip) RelativeLayout rlTrip;
     @BindView(R.id.tvLocation) TextView tvLocation;
     @BindView(R.id.toggleBtnShare) ToggleButton toggleBtnShare;
+    @BindView(R.id.tvShare) TextView tvShare;
 
     public TripViewHolder(View itemView) {
         super(itemView);
@@ -52,5 +54,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     public TextView getTripLocation() { return this.tvLocation; }
 
     public ToggleButton getToggleBtnShare() { return this.toggleBtnShare; }
+
+    public TextView getTvShare() { return this.tvShare; }
 }
 

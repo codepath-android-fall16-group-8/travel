@@ -14,6 +14,7 @@ import com.codepath.travel.fragments.TripClickListener;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Trip;
+import com.google.android.gms.vision.text.Text;
 
 import java.util.List;
 
@@ -83,15 +84,18 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tvLocation.setText(trip.getDestinationPlaceName());
         }
 
+        TextView tvShare = viewHolder.getTvShare();
         // sharing toggle button
         ToggleButton toggleBtnShare = viewHolder.getToggleBtnShare();
         if (showSharing) {
             toggleBtnShare.setVisibility(View.VISIBLE);
+            tvShare.setVisibility(View.VISIBLE);
             toggleBtnShare.setChecked(trip.isShared());
             toggleBtnShare.setOnCheckedChangeListener(
                     (buttonView, isChecked) -> listener.onShareClick(trip, isChecked));
         } else {
             toggleBtnShare.setVisibility(View.GONE);
+            tvShare.setVisibility(View.GONE);
         }
     }
 
