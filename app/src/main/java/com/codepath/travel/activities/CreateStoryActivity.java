@@ -1,7 +1,13 @@
 package com.codepath.travel.activities;
 
+import static com.codepath.travel.Constants.PLACE_ID_ARG;
+import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.activities.PlaceDetailActivity.IS_STORY_PLACE_ARG;
+import static com.codepath.travel.activities.PlaceDetailActivity.LAT_LNG_ARG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +25,7 @@ import com.codepath.travel.R;
 import com.codepath.travel.adapters.StoryPlaceArrayAdapter;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
 import com.codepath.travel.helper.DateUtils;
+import com.codepath.travel.helper.ItemClickSupport;
 import com.codepath.travel.listeners.DateRangePickerListener;
 import com.codepath.travel.models.SuggestionPlace;
 import com.codepath.travel.models.parse.StoryPlace;
@@ -30,6 +37,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -101,10 +109,14 @@ public class CreateStoryActivity extends BaseActivity implements DateRangePicker
 
     private void setUpRecyclerView() {
         mStoryPlaces = new ArrayList<>();
-        mAdapter = new StoryPlaceArrayAdapter(getApplicationContext(), mStoryPlaces);
+        mAdapter = new StoryPlaceArrayAdapter(this, mStoryPlaces);
         rvStoryPlaces.setHasFixedSize(true);
         rvStoryPlaces.setAdapter(mAdapter);
         rvStoryPlaces.setLayoutManager(new LinearLayoutManager(this));
+
+        ItemClickSupport.addTo(this.rvStoryPlaces).setOnItemClickListener(
+                (recyclerView, position, v) -> launchPlaceDetailActivity(mStoryPlaces.get(position))
+        );
     }
 
     private void setUpTrip() {
@@ -266,6 +278,18 @@ public class CreateStoryActivity extends BaseActivity implements DateRangePicker
         drpf.show(fm, "DateRangePickerDialog");
     }
 
+    // TODO: really need to refactor this into a shared place
+    private void launchPlaceDetailActivity(StoryPlace storyPlace) {
+        Intent placeDetail = new Intent(this, PlaceDetailActivity.class);
+        placeDetail.putExtra(PLACE_ID_ARG, storyPlace.getPlaceId());
+        placeDetail.putExtra(PLACE_NAME_ARG, storyPlace.getName());
+        placeDetail.putExtra(IS_STORY_PLACE_ARG, true);
+        placeDetail.putExtra(LAT_LNG_ARG, new LatLng(storyPlace.getLatitude(), storyPlace.getLongitude()));
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(CreateStoryActivity.this);
+        startActivity(placeDetail, options.toBundle());
+    }
+
     /* Listeners */
     @Override
     public void onDateRangeSet(Calendar startDate, Calendar endDate) {
@@ -284,6 +308,8 @@ public class CreateStoryActivity extends BaseActivity implements DateRangePicker
         // as you specify a parent activity in AndroidManifest.xml.
         //int id = item.getItemId();
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -293,7 +319,6 @@ public class CreateStoryActivity extends BaseActivity implements DateRangePicker
     public void onBackPressed() {
         mNewTrip.deleteInBackground();
         super.onBackPressed();
-        finish();
+        finishAfterTransition();
     }
-
 }

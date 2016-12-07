@@ -143,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/detail_map_height"
                 android:layout_below="@id/llActions"
-                map:cameraZoom="7"
+                map:cameraZoom="16"
                 map:mapType="normal"
                 map:liteMode="true"/>
 
