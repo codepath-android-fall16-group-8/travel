@@ -1,4 +1,4 @@
-package com.codepath.travel.adapters;
+package com.codepath.travel.adapters.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

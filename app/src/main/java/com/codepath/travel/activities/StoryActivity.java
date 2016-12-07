@@ -1,13 +1,7 @@
 package com.codepath.travel.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,42 +24,36 @@ import com.codepath.travel.adapters.SwipeStoryPlaceAdapter;
 import com.codepath.travel.fragments.dialog.ConfirmDeleteTripDialogFragment;
 import com.codepath.travel.fragments.dialog.DatePickerFragment;
 import com.codepath.travel.fragments.dialog.DateRangePickerFragment;
-import com.codepath.travel.fragments.dialog.EditMediaDialogFragment;
 import com.codepath.travel.helper.DateUtils;
 import com.codepath.travel.listeners.DatePickerListener;
 import com.codepath.travel.listeners.DateRangePickerListener;
-import com.codepath.travel.models.parse.Media;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.models.parse.Trip;
 import com.daimajia.swipe.util.Attributes;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseUser;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.IS_OWNER_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.STORY_PLACE_CHECKIN_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.STORY_PLACE_COVER_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.STORY_PLACE_ID_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.STORY_PLACE_NAME_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.STORY_PLACE_RATING_ARG;
+import static com.codepath.travel.activities.MediaCollageActivity.USER_ID_ARG;
 import static com.codepath.travel.activities.PlaceDetailActivity.IS_STORY_PLACE_ARG;
 import static com.codepath.travel.activities.PlaceDetailActivity.LAT_LNG_ARG;
 import static com.codepath.travel.helper.DateUtils.formatDateRange;
-import static com.codepath.travel.models.parse.User.setCoverPicUrl;
 
-@RuntimePermissions
 public class StoryActivity extends AppCompatActivity implements
         SwipeStoryPlaceAdapter.StoryPlaceListener,
-        EditMediaDialogFragment.EditMediaListener,
         ConfirmDeleteTripDialogFragment.DeleteTripListener,
         DateRangePickerListener,
         DatePickerListener {
@@ -82,11 +70,10 @@ public class StoryActivity extends AppCompatActivity implements
     // member variables
     private ArrayList<StoryPlace> mStoryPlaces;
     private SwipeStoryPlaceAdapter mAdapter;
-    private int mMediaLauncherStoryIndex;
+
     private String mTripID;
     private Trip mTrip;
     private String mTripTitle;
-    private String mPhotoURL;
     private int mCheckinIndex;
 
     // flags for story place view state
@@ -188,67 +175,19 @@ public class StoryActivity extends AppCompatActivity implements
         });
     }
 
-    /* Camera and Photo helpers */
-    private void compressAndSaveImage(Bitmap selectedImage) {
-
-        // scaling down for quick upload - may need a backend service to scale and keep mutiple
-        // sizes for the image
-        //Bitmap resizedBitmap = BitmapScaler.scaleToFill(selectedImage, 500, 120);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] image = stream.toByteArray();
-
-        ParseFile newImage = new ParseFile(image);
-        newImage.saveInBackground((ParseException e) -> {
-            if (e != null) {
-                Log.d("error", e.toString());
-            }
-            Media media = new Media(mStoryPlaces.get(mMediaLauncherStoryIndex), Media.Type.PHOTO);
-            media.setDataUrl(newImage.getUrl());
-            media.saveInBackground((ParseException me) -> {
-                if (me != null) {
-                    Log.d("error", me.toString());
-                } else {
-                    mAdapter.notifyItemChanged(mMediaLauncherStoryIndex);
-                }
-            });
-        });
-    }
-
-    // Returns the Uri for a photo stored on disk given the fileName
-    public Uri getPhotoFileUri(String fileName) {
-        // Only continue if the SD Card is mounted
-        if (isExternalStorageAvailable()) {
-            // Get safe storage directory for photos
-            // Use `getExternalFilesDir` on Context to access package-specific directories.
-            // This way, we don't need to request external read/write runtime permissions.
-            File mediaStorageDir = new File(
-                    getExternalFilesDir(Environment.DIRECTORY_PICTURES), Constants.APP_TAG);
-
-            // Create the storage directory if it does not exist
-            if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-                Log.d(Constants.APP_TAG, "failed to create directory");
-            }
-
-            // Return the file target for the photo based on filename
-            return Uri.fromFile(new File(mediaStorageDir.getPath() + File.separator + fileName));
-        }
-        return null;
-    }
-
-    // Returns true if external storage for photos is available
-    private boolean isExternalStorageAvailable() {
-        String state = Environment.getExternalStorageState();
-        return state.equals(Environment.MEDIA_MOUNTED);
-    }
-
     /* Navigation */
-    private void launchStoryCollageActivity() {
-        Intent intent = new Intent(StoryActivity.this, MediaCollageActivity.class);
-        intent.putExtra(Constants.TRIP_ID_ARG, mTripID);
-        intent.putExtra(Constants.TRIP_TITLE_ARG, mTripTitle);
+    private void launchMediaCollageActivity(StoryPlace storyPlace) {
+        Intent collage = new Intent(StoryActivity.this, MediaCollageActivity.class);
+        collage.putExtra(STORY_PLACE_ID_ARG, storyPlace.getObjectId());
+        collage.putExtra(STORY_PLACE_NAME_ARG, storyPlace.getName());
+        collage.putExtra(STORY_PLACE_COVER_ARG, storyPlace.getPhotoUrl());
+        collage.putExtra(STORY_PLACE_CHECKIN_ARG, DateUtils.formatDate(this, storyPlace.getCheckinTime()));
+        collage.putExtra(STORY_PLACE_RATING_ARG, storyPlace.getRating());
+        collage.putExtra(USER_ID_ARG, mTrip.getUser().getObjectId());
+        collage.putExtra(IS_OWNER_ARG, isOwner);
+
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);
-        startActivity(intent, options.toBundle());
+        startActivity(collage, options.toBundle());
     }
 
     private void launchStoryMapActivity() {
@@ -266,16 +205,8 @@ public class StoryActivity extends AppCompatActivity implements
         placeDetail.putExtra(IS_STORY_PLACE_ARG, true);
         placeDetail.putExtra(LAT_LNG_ARG, new LatLng(storyPlace.getLatitude(), storyPlace.getLongitude()));
 
-        // special bundle for activity transitions
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(StoryActivity.this);
         startActivity(placeDetail, options.toBundle());
-    }
-
-    private void launchMediaDialogFragment(int position, String mediaId,
-            String caption, String data) {
-        EditMediaDialogFragment fragment = EditMediaDialogFragment.newInstance(position,
-                mStoryPlaces.get(position).getName(), mediaId, caption, data, isOwner);
-        fragment.show(getSupportFragmentManager(), "editMediaDialogFragment");
     }
 
     private void launchDatePickerDialog(Date date, Date minDate, Date maxDate) {
@@ -290,49 +221,6 @@ public class StoryActivity extends AppCompatActivity implements
         drpf.show(fm, "DateRangePickerDialog");
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
-    public void launchCameraActivity(int position) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        mPhotoURL = "placeMedia" + '_' + timeStamp + ".jpg";
-        mMediaLauncherStoryIndex = position;
-        Intent startCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startCamera.putExtra(
-                MediaStore.EXTRA_OUTPUT, getPhotoFileUri(mPhotoURL)
-        );
-        if (startCamera.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startCamera, Constants.START_CAMERA_REQUEST_CODE);
-        }
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void launchGalleryActivity(int position) {
-        mMediaLauncherStoryIndex = position;
-        Intent startGallery =
-                new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (startGallery.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(startGallery, Constants.PICK_IMAGE_FROM_GALLERY_CODE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == Constants.START_CAMERA_REQUEST_CODE) {
-            // See code above
-            Uri takenPhotoUri = getPhotoFileUri(mPhotoURL);
-            Bitmap selectedImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
-            compressAndSaveImage(selectedImage);
-        } else if (resultCode == RESULT_OK && requestCode == Constants.PICK_IMAGE_FROM_GALLERY_CODE) {
-            Uri photoURI = data.getData();
-            try {
-                Bitmap selectedImage =
-                        MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
-                compressAndSaveImage(selectedImage);
-            } catch (Exception e) {
-                Log.d("Gallery Image failed", e.toString());
-            }
-        }
-    }
-
     private void showConfirmDeleteDialog() {
         ConfirmDeleteTripDialogFragment fragment =
                 ConfirmDeleteTripDialogFragment.newInstance();
@@ -340,21 +228,6 @@ public class StoryActivity extends AppCompatActivity implements
     }
 
     /* Listeners */
-    @Override
-    public void cameraOnClick(int position) {
-        launchCameraActivity(position);
-    }
-
-    @Override
-    public void galleryOnClick(int position) {
-        launchGalleryActivity(position);
-    }
-
-    @Override
-    public void noteOnClick(int position) {
-        launchMediaDialogFragment(position, null, null, null);
-    }
-
     @Override
     public void onStoryPlaceDelete(int position) {
         Log.d(TAG, String.format("delete story at pos: %d", position));
@@ -371,70 +244,8 @@ public class StoryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void mediaOnClick(Media media, int mPos, int storyPos) {
-        Log.d(TAG, String.format("mediaOnClick, mPos %d, storyPos %d", mPos, storyPos));
-        launchMediaDialogFragment(storyPos, media.getObjectId(), media.getCaption(),
-                    media.getDataUrl());
-    }
-
-    @Override
-    public void onSaveCaption(int storyPos, String caption, String mediaId) {
-        if (mediaId == null) { // new note
-            Media mediaItem = new Media(mStoryPlaces.get(storyPos), Media.Type.TEXT);
-            saveMediaNote(mediaItem, caption, storyPos);
-        } else { // edited media
-            Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
-                if (e == null) {
-                    saveMediaNote(mediaItem, caption, storyPos);
-                } else {
-                    Log.d(TAG, String.format("Get media error: %s", e.toString()));
-                }
-            });
-        }
-    }
-
-    private void saveMediaNote(Media mediaItem, String caption, int storyPos) {
-        mediaItem.setCaption(caption);
-        mediaItem.saveInBackground((ParseException e) -> {
-            if (e == null) {
-                mAdapter.notifyItemChanged(storyPos);
-            } else {
-                Log.d(TAG, String.format("Save media error: %s", e.toString()));
-            }
-        });
-    }
-
-    @Override
-    public void onDeleteMedia(int storyPos, String mediaId) {
-        if (mediaId != null) {
-            Media.getMediaForObjectId(mediaId, (mediaItem, e) -> {
-                if (e == null) {
-                    mediaItem.deleteInBackground(e1 -> mAdapter.notifyItemChanged(storyPos));
-                } else {
-                    Log.d(TAG, String.format("Get media for delete error: %s", e.toString()));
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onSetStoryPlaceCoverPhoto(int storyPos, String coverUrl) {
-        StoryPlace storyPlace = mStoryPlaces.get(storyPos);
-        storyPlace.setPhotoUrl(coverUrl);
-        storyPlace.saveInBackground();
-    }
-
-    @Override
-    public void onSetTripCoverPhoto(String coverUrl) {
-        mTrip.setCoverPicUrl(coverUrl);
-        mTrip.saveInBackground();
-    }
-
-    @Override
-    public void onSetUserCoverPhoto(String coverUrl) {
-        ParseUser user = ParseUser.getCurrentUser();
-        setCoverPicUrl(user, coverUrl);
-        user.saveInBackground();
+    public void mediaOnClick(int position) {
+        launchMediaCollageActivity(mStoryPlaces.get(position));
     }
 
     @Override
@@ -501,8 +312,6 @@ public class StoryActivity extends AppCompatActivity implements
             return true;
         } else if (id == R.id.miMap) {
             launchStoryMapActivity();
-        } else if (id == R.id.miCollage) {
-            launchStoryCollageActivity();
         } else if (id == R.id.miDelete) {
             showConfirmDeleteDialog();
             return true;

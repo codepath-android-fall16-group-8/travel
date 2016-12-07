@@ -114,9 +114,7 @@ public class PlaceSuggestionActivity extends BaseActivity implements PlacesCartL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // if called from home activity
-                setResult(RESULT_OK);
-                return super.onOptionsItemSelected(item);
+                onBackPressed();
             default:
                 return super.onOptionsItemSelected(item);
         }
