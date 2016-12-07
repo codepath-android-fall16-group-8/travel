@@ -84,6 +84,7 @@ public class MediaCollageActivity extends BaseActivity implements
     @BindView(R.id.tvCheckinDate) TextView tvCheckinDate;
     @BindView(R.id.rbUserRating) RatingBar rbUserRating;
     @BindView(R.id.rvMediaItems) RecyclerView rvMediaItems;
+    @BindView(R.id.tvNoMedia) TextView tvNoMedia;
 
     // variables
     private String mStoryPlaceId;
@@ -120,8 +121,12 @@ public class MediaCollageActivity extends BaseActivity implements
                 mStoryPlace = storyPlace;
                 Media.getMediaForStoryPlace(mStoryPlace, (mediaItems, e1) -> {
                     if (e1 == null) {
-                        mMediaItems.addAll(mediaItems);
-                        mCollageAdapter.notifyDataSetChanged();
+                        if (mediaItems.size() > 0) {
+                            tvNoMedia.setVisibility(View.GONE);
+                            mMediaItems.addAll(mediaItems);
+                            rvMediaItems.setVisibility(View.VISIBLE);
+                            mCollageAdapter.notifyDataSetChanged();
+                        }
                     } else {
                         Log.d(TAG, String.format("media fetch failed for storyplace %d: %s",
                                 mStoryPlaceId,  e1.toString()));
@@ -259,6 +264,8 @@ public class MediaCollageActivity extends BaseActivity implements
                 if (position < 0) {
                     mMediaItems.add(mediaItem);
                 }
+                tvNoMedia.setVisibility(View.GONE);
+                rvMediaItems.setVisibility(View.VISIBLE);
                 mCollageAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, String.format("Save media error for id %s: %s",
@@ -274,6 +281,10 @@ public class MediaCollageActivity extends BaseActivity implements
             if (e == null) {
                 mMediaItems.remove(mediaItem);
                 mCollageAdapter.notifyDataSetChanged();
+                if (mMediaItems.size() == 0) {
+                    tvNoMedia.setVisibility(View.VISIBLE);
+                    rvMediaItems.setVisibility(View.GONE);
+                }
             } else {
                 Log.d(TAG, String.format("Delete media error for id %s: %s",
                         mediaItem.getObjectId(), e.toString()));
@@ -411,6 +422,8 @@ public class MediaCollageActivity extends BaseActivity implements
                     Log.d("error", me.toString());
                 } else {
                     mMediaItems.add(media);
+                    tvNoMedia.setVisibility(View.GONE);
+                    rvMediaItems.setVisibility(View.VISIBLE);
                     mCollageAdapter.notifyDataSetChanged();
                 }
             });

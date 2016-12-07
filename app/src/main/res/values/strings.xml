@@ -110,5 +110,6 @@
         <item>@string/set_user_cover</item>
         <item>@string/set_user_profile</item>
     </string-array>
+    <string name="no_media">Nothing to look at here :/</string>
 
 </resources>

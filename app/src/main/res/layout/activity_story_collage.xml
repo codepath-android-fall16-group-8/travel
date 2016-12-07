@@ -99,6 +99,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tvNoMedia"
+        android:text="@string/no_media"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:textAppearance="@style/textMedium"
+        android:textColor="@color/tertiary_text"
+        android:textAlignment="center"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
