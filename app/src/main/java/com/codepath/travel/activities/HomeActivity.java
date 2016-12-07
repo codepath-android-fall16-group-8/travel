@@ -196,9 +196,7 @@ public class HomeActivity extends AppCompatActivity implements TripClickListener
     /* Navigation */
     private void launchLoginActivity() {
         ParseLoginBuilder builder = new ParseLoginBuilder(HomeActivity.this);
-
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this);
-        startActivityForResult(builder.build(), LOGIN_REQUEST, options.toBundle());
+        startActivityForResult(builder.build(), LOGIN_REQUEST);
     }
 
     private void launchStoryActivity(String tripId, String tripTitle, boolean isOwner) {
