@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.codepath.travel.R;
+
 /**
  * {@link AlertDialog} to show a basic error message.
  */
@@ -23,7 +25,7 @@ public class ErrorMessageDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.alertDialogTheme);
         builder.setMessage(getArguments().getString(ERROR_MESSAGE_KEY))
                 .setCancelable(false)
                 .setPositiveButton(android.R.string.ok, (dialog, id) -> dismiss());
