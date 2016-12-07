@@ -15,13 +15,13 @@ import com.codepath.travel.helper.ItemTouchHelperViewHolder;
 import com.codepath.travel.models.parse.StoryPlace;
 import com.codepath.travel.net.GoogleAsyncHttpClient;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Adapter for story places being added to a new trip.
  */
 public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArrayAdapter.StoryPlaceViewHolder> {
-
 
     private List<StoryPlace> mStoryPlaces;
     public Context mContext;
@@ -85,12 +85,10 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
         }
 
         public void populate(StoryPlace storyPlace) {
-            ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(
                 ivPlacePhoto,
                 GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()));
             tvPlaceName.setText(storyPlace.getName());
-
         }
 
         @Override

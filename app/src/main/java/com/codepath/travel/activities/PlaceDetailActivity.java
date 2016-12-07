@@ -182,7 +182,7 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
                 .position(mLatLng)
                 .title(placeName)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 7f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 16f));
     }
 
     private void setupViews(JSONObject data) throws JSONException {
@@ -335,7 +335,6 @@ public class PlaceDetailActivity extends BaseActivity implements OnMapReadyCallb
     }
 
     private void onGoogleUrlClick(String googleUrl) {
-        Toast.makeText(PlaceDetailActivity.this, "GoogleURL: " + googleUrl, Toast.LENGTH_SHORT).show();
         launchMapsIntent(googleUrl);
     }
 

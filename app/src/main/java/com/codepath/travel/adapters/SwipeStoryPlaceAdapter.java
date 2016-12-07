@@ -3,6 +3,8 @@ package com.codepath.travel.adapters;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.codepath.travel.R.id.ivCollageIcon;
+import static com.codepath.travel.R.id.ivPlacePhoto;
 import static com.codepath.travel.R.id.swipe;
 import static com.codepath.travel.helper.DateUtils.FUTURE;
 import static com.codepath.travel.helper.DateUtils.PAST;
@@ -119,6 +121,7 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @BindView(R.id.cbCheckin) AppCompatCheckBox cbCheckin;
         @BindView(R.id.tvCheckin) TextView tvCheckin;
         @BindView(R.id.rbUserRating) RatingBar rbUserRating;
+        @BindView(R.id.ivCollageIcon) ImageView ivCollageIcon;
 
         // swipe views
         @BindView(swipe) SwipeLayout swipeLayout;
@@ -145,7 +148,7 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
                 swipeLayout.setSwipeEnabled(true);
                 swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
                 swipeLayout.setClickToClose(true);
-                setupListeners();
+                setupSwipeMenuListeners();
             } else {
                 swipeLayout.setSwipeEnabled(false);
             }
@@ -155,16 +158,26 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
             mStoryPlace = storyPlace;
 
             // photo and name
-            ivPlacePhoto.setImageResource(0);
             ImageUtils.loadImage(ivPlacePhoto,
                     GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()));
+            ivPlacePhoto.setOnClickListener(
+                    v -> listener.onStoryPlaceInfo(getRealPosition(storyPlace)));
             tvPlaceName.setText(storyPlace.getName());
+
+            if (isOwner && datesRelation != FUTURE) {
+                ivCollageIcon.setVisibility(GONE);
+            } else {
+                // show collage icon for people to tap on
+                ivCollageIcon.setVisibility(VISIBLE);
+                ivCollageIcon.setOnClickListener(
+                        v -> listener.mediaOnClick(getRealPosition(mStoryPlace)));
+            }
 
             // check-in and user rating
             setupCheckinCheckbox(storyPlace);
         }
 
-        private void setupListeners() {
+        private void setupSwipeMenuListeners() {
             // left menu
             ivDelete.setOnClickListener(v -> onItemDelete(getRealPosition(mStoryPlace)));
 
