@@ -280,13 +280,15 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
                             storyPlace.getCheckinTime());
                 }
             });
-            rbUserRating.setRating((float) storyPlace.getRating());
-            rbUserRating.setIsIndicator(false);
-            rbUserRating.setVisibility(VISIBLE);
-            rbUserRating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-                storyPlace.setRating(rating);
-                storyPlace.saveInBackground();
-            });
+            if (checkIn != null) {
+                rbUserRating.setRating((float) storyPlace.getRating());
+                rbUserRating.setIsIndicator(false);
+                rbUserRating.setVisibility(VISIBLE);
+                rbUserRating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                    storyPlace.setRating(rating);
+                    storyPlace.saveInBackground();
+                });
+            }
         }
 
         private void showMyPastCheckin(StoryPlace storyPlace) {
