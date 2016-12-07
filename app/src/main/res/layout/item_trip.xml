@@ -78,14 +78,9 @@
 
         <ToggleButton
             android:id="@+id/toggleBtnShare"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
             android:layout_above="@id/tvLocation"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/space"
-            android:background="@drawable/toggle_selector"
-            android:textOff=""
-            android:textOn="" />
+            android:layout_alignTop="@id/tvTripTitle"
+            style="@style/toggleApperance"/>
 
         <TextView
             android:id="@+id/tvShare"
