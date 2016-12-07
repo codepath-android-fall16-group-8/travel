@@ -144,6 +144,16 @@
     </style>
     <!--End Toggle Button Styling -->
 
+    <!-- Alert Dialog -->
+    <style name="alertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/transparent</item>
+    </style>
+
     <!-- Places Suggestion Activity Style -->
     <style name="storySuggestionToolbar">
         <!-- android:textColorPrimary is the color of the title text in the Toolbar  -->
