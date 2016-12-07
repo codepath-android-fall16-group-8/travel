@@ -2,38 +2,32 @@ package com.codepath.travel.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.travel.net.GoogleAsyncHttpClient;
 import com.codepath.travel.R;
 import com.codepath.travel.helper.ImageUtils;
-import com.codepath.travel.helper.ItemTouchHelperAdapter;
 import com.codepath.travel.helper.ItemTouchHelperViewHolder;
-import com.codepath.travel.helper.OnStartDragListener;
 import com.codepath.travel.models.parse.StoryPlace;
+import com.codepath.travel.net.GoogleAsyncHttpClient;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Adapter for story places being added to a new trip.
  */
-public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArrayAdapter.StoryPlaceViewHolder> implements ItemTouchHelperAdapter {
+public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArrayAdapter.StoryPlaceViewHolder> {
+
 
     private List<StoryPlace> mStoryPlaces;
-    private final OnStartDragListener mDragStartListener;
     public Context mContext;
 
-    public StoryPlaceArrayAdapter(Context context, OnStartDragListener dragStartListener, List<StoryPlace> storyPlaces) {
+    public StoryPlaceArrayAdapter(Context context, List<StoryPlace> storyPlaces) {
         mStoryPlaces = storyPlaces;
-        mDragStartListener = dragStartListener;
         mContext = context;
     }
 
@@ -59,31 +53,10 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
     public void onBindViewHolder(final StoryPlaceArrayAdapter.StoryPlaceViewHolder holder, int position) {
         StoryPlace destination = mStoryPlaces.get(position);
         holder.populate(destination);
-        // Start a drag whenever the handle view it touched
-        holder.ivPlacePhoto.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    if (mDragStartListener != null) {
-                        mDragStartListener.onStartDrag(holder);
-                    }
-                }
-                return false;
-            }
+        holder.ivPlaceDelete.setOnClickListener(v -> {
+            mStoryPlaces.remove(destination);
+            notifyDataSetChanged();
         });
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        mStoryPlaces.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mStoryPlaces, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
     }
 
     @Override
@@ -101,12 +74,14 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
     public class StoryPlaceViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         public ImageView ivPlacePhoto;
+        public ImageView ivPlaceDelete;
         public TextView tvPlaceName;
 
         public StoryPlaceViewHolder(View itemView) {
             super(itemView);
             ivPlacePhoto = (ImageView) itemView.findViewById(R.id.ivPlacePhoto);
             tvPlaceName = (TextView) itemView.findViewById(R.id.tvPlaceName);
+            ivPlaceDelete = (ImageView) itemView.findViewById(R.id.ivDelete);
         }
 
         public void populate(StoryPlace storyPlace) {
@@ -115,6 +90,7 @@ public class StoryPlaceArrayAdapter extends RecyclerView.Adapter<StoryPlaceArray
                 ivPlacePhoto,
                 GoogleAsyncHttpClient.getPlacePhotoUrl(storyPlace.getPhotoUrl()));
             tvPlaceName.setText(storyPlace.getName());
+
         }
 
         @Override
