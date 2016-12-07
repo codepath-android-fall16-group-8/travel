@@ -27,16 +27,6 @@
                 android:layout_height="wrap_content"/>
         </RelativeLayout>
 
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/cbShare"
-            android:button="@drawable/checkbox_share"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size"
-            android:layout_alignTop="@id/rlTrip"
-            android:layout_margin="10dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"/>
-
         <TextView
             android:id="@+id/tvTripTitle"
             tools:text="Trip Title"
@@ -58,8 +48,7 @@
             android:drawableTint="@color/secondary_text"
             android:drawablePadding="@dimen/textDrawablePadding"
             android:gravity="center_vertical"
-            android:textSize="12sp"
-            android:textColor="@color/secondary_text" />
+            style="@style/tabTextAppearance" />
 
         <ImageView
             android:id="@+id/ivProfilePhoto"
@@ -84,9 +73,32 @@
             android:drawableTint="@color/secondary_text"
             android:drawablePadding="@dimen/textDrawablePadding"
             android:gravity="center_vertical"
-            android:textSize="12sp"
-            android:textColor="@color/secondary_text"
+            style="@style/tabTextAppearance"
             tools:text="San Francisco"/>
 
+        <ToggleButton
+            android:id="@+id/toggleBtnShare"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_above="@id/tvLocation"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/space"
+            android:background="@drawable/toggle_selector"
+            android:textOff=""
+            android:textOn="" />
+
+        <TextView
+            android:id="@+id/tvShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/toggleBtnShare"
+            android:layout_toStartOf="@+id/toggleBtnShare"
+            android:layout_marginRight="@dimen/margin_s"
+            android:layout_marginEnd="@dimen/margin_s"
+            android:layout_alignTop="@+id/toggleBtnShare"
+            android:layout_alignBottom="@+id/toggleBtnShare"
+            android:gravity="center_vertical"
+            android:text="Share"
+            android:textAppearance="@style/textMedium"/>
     </android.support.percent.PercentRelativeLayout>
 </android.support.v7.widget.CardView>

@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.codepath.travel.R;
 
@@ -20,14 +21,14 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.ivProfilePhoto) ImageView ivProfilePhoto;
     @BindView(R.id.tvTripTitle) TextView tvTripTitle;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
     @BindView(R.id.pbImageLoading) ProgressBar pbImageLoading;
     @BindView(R.id.rlTrip) RelativeLayout rlTrip;
     @BindView(R.id.tvLocation) TextView tvLocation;
+    @BindView(R.id.toggleBtnShare) ToggleButton toggleBtnShare;
 
     public TripViewHolder(View itemView) {
         super(itemView);
-            ButterKnife.bind(this, itemView);
+        ButterKnife.bind(this, itemView);
     }
 
     public ProgressBar getProgressBar() {
@@ -49,5 +50,7 @@ public class TripViewHolder extends RecyclerView.ViewHolder {
     public RelativeLayout getRelativeLayout(){ return this.rlTrip; }
 
     public TextView getTripLocation() { return this.tvLocation; }
+
+    public ToggleButton getToggleBtnShare() { return this.toggleBtnShare; }
 }
 

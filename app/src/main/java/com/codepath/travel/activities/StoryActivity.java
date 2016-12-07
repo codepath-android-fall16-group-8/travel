@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
@@ -76,7 +77,7 @@ public class StoryActivity extends AppCompatActivity implements
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
+    @BindView(R.id.toggleBtnShare) ToggleButton toggleBtnShare;
     @BindView(R.id.tvShare) TextView tvShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
@@ -147,16 +148,16 @@ public class StoryActivity extends AppCompatActivity implements
         // only display for logged in user
         if (isOwner) {
             tvShare.setVisibility(View.VISIBLE);
-            cbShare.setVisibility(View.VISIBLE);
-            cbShare.setChecked(mTrip.isShared());
-            cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                Log.d(TAG, String.format("Sharing: %s", isChecked));
+            toggleBtnShare.setVisibility(View.VISIBLE);
+            toggleBtnShare.setChecked(mTrip.isShared());
+            toggleBtnShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Log.d(TAG, String.format("Share: %s", isChecked));
                 mTrip.setShared(isChecked);
                 mTrip.saveInBackground();
             });
         } else {
             tvShare.setVisibility(View.GONE);
-            cbShare.setVisibility(View.GONE);
+            toggleBtnShare.setVisibility(View.GONE);
         }
     }
 

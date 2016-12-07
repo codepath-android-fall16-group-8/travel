@@ -5,9 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.codepath.travel.R;
 import com.codepath.travel.fragments.TripClickListener;
@@ -83,16 +83,15 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tvLocation.setText(trip.getDestinationPlaceName());
         }
 
-
-        // sharing checkbox (currently for my trips tab only)
-        CheckBox cbShare = viewHolder.cbShare;
+        // sharing toggle button
+        ToggleButton toggleBtnShare = viewHolder.getToggleBtnShare();
         if (showSharing) {
-            cbShare.setVisibility(View.VISIBLE);
-            cbShare.setChecked(trip.isShared());
-            cbShare.setOnCheckedChangeListener(
+            toggleBtnShare.setVisibility(View.VISIBLE);
+            toggleBtnShare.setChecked(trip.isShared());
+            toggleBtnShare.setOnCheckedChangeListener(
                     (buttonView, isChecked) -> listener.onShareClick(trip, isChecked));
         } else {
-            cbShare.setVisibility(View.GONE);
+            toggleBtnShare.setVisibility(View.GONE);
         }
     }
 
