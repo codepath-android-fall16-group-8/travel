@@ -56,7 +56,7 @@
                 android:id="@+id/rlFollow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/flUserPicBorderContainer">
@@ -68,67 +68,67 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_person_add" />
-                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/profileFollowContainer"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/rlFollow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:id="@+id/profileFollowContainer"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/rlFollow"
+                    android:id="@+id/followersContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <RelativeLayout
-                        android:id="@+id/followersContainer"
+                    <TextView
+                        android:id="@+id/tvFollowersCount"
+                        tools:text="0"
+                        android:textStyle="bold"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="@dimen/margin"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:id="@+id/tvFollowersCount"
-                            tools:text="0"
-                            android:textStyle="bold"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginStart="@dimen/margin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvFollowersLabel"
-                            android:layout_below="@+id/tvFollowersCount"
-                            android:layout_gravity="center"
-                            android:text="@string/followers"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/followingContainer"
-                        android:layout_toRightOf="@+id/followersContainer"
+                    <TextView
+                        android:id="@+id/tvFollowersLabel"
+                        android:layout_below="@+id/tvFollowersCount"
+                        android:layout_gravity="center"
+                        android:text="@string/followers"
+                        android:textStyle="bold"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:id="@+id/tvFollowingCount"
-                            tools:text="0"
-                            android:textStyle="bold"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginStart="@dimen/margin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvFollowingLabel"
-                            android:layout_below="@+id/tvFollowingCount"
-                            android:text="@string/following"
-                            android:textStyle="bold"
-                            android:layout_marginStart="@dimen/margin"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                    </RelativeLayout>
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/followingContainer"
+                    android:layout_toRightOf="@+id/followersContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tvFollowingCount"
+                        tools:text="0"
+                        android:textStyle="bold"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="@dimen/margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tvFollowingLabel"
+                        android:layout_below="@+id/tvFollowingCount"
+                        android:text="@string/following"
+                        android:textStyle="bold"
+                        android:layout_marginStart="@dimen/margin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+            </RelativeLayout>
             </RelativeLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
