@@ -49,7 +49,7 @@ public final class User {
     public static String getCoverPicUrl(ParseUser pUser) {
         String coverUrl = pUser.getString(PHOTO_URL);
         if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
-            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+            return "http://webvision.med.utah.edu/wp-content/uploads/2012/06/50-percent-gray.jpg";
         }
         return coverUrl;
     }
@@ -112,9 +112,9 @@ public final class User {
     }
 
     public static void queryIsFollowing(
-        ParseUser pCurrentUser,
-        ParseUser pCheckUser,
-        FindCallback<ParseUser> callback
+            ParseUser pCurrentUser,
+            ParseUser pCheckUser,
+            FindCallback<ParseUser> callback
     ) {
         ParseQuery followingRelationQuery = getFollowingRelation(pCurrentUser).getQuery();
         followingRelationQuery.whereEqualTo(OBJECT_ID_KEY, pCheckUser.getObjectId());

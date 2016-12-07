@@ -5,9 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.codepath.travel.R;
 import com.codepath.travel.fragments.TripClickListener;
@@ -83,16 +84,30 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tvLocation.setText(trip.getDestinationPlaceName());
         }
 
-
-        // sharing checkbox (currently for my trips tab only)
-        CheckBox cbShare = viewHolder.cbShare;
+        TextView tvShare = viewHolder.getTvShare();
+        // sharing toggle button
+        ToggleButton toggleBtnShare = viewHolder.getToggleBtnShare();
         if (showSharing) {
-            cbShare.setVisibility(View.VISIBLE);
-            cbShare.setChecked(trip.isShared());
-            cbShare.setOnCheckedChangeListener(
-                    (buttonView, isChecked) -> listener.onShareClick(trip, isChecked));
+            toggleBtnShare.setVisibility(View.VISIBLE);
+            tvShare.setVisibility(View.VISIBLE);
+            toggleBtnShare.setChecked(trip.isShared());
+            toggleBtnShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                listener.onShareClick(trip, isChecked);
+                if(isChecked) {
+                    tvShare.setText(R.string.unshare);
+                } else {
+                    tvShare.setText(R.string.share);
+                }
+            });
+
+            if(trip.isShared()) {
+                tvShare.setText(R.string.unshare);
+            } else {
+                tvShare.setText(R.string.share);
+            }
         } else {
-            cbShare.setVisibility(View.GONE);
+            toggleBtnShare.setVisibility(View.GONE);
+            tvShare.setVisibility(View.GONE);
         }
     }
 

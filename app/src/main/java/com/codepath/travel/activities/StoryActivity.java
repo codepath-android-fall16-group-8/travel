@@ -1,7 +1,5 @@
 package com.codepath.travel.activities;
 
-import permissions.dispatcher.RuntimePermissions;
-
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,7 +11,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.codepath.travel.Constants;
 import com.codepath.travel.R;
@@ -55,6 +53,7 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.codepath.travel.Constants.PLACE_ID_ARG;
 import static com.codepath.travel.Constants.PLACE_NAME_ARG;
@@ -76,7 +75,7 @@ public class StoryActivity extends AppCompatActivity implements
     // views
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.tvTripDates) TextView tvTripDates;
-    @BindView(R.id.cbShare) AppCompatCheckBox cbShare;
+    @BindView(R.id.toggleBtnShare) ToggleButton toggleBtnShare;
     @BindView(R.id.tvShare) TextView tvShare;
     @BindView(R.id.rvStoryPlaces) RecyclerView rvStoryPlaces;
 
@@ -147,16 +146,26 @@ public class StoryActivity extends AppCompatActivity implements
         // only display for logged in user
         if (isOwner) {
             tvShare.setVisibility(View.VISIBLE);
-            cbShare.setVisibility(View.VISIBLE);
-            cbShare.setChecked(mTrip.isShared());
-            cbShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                Log.d(TAG, String.format("Sharing: %s", isChecked));
+            toggleBtnShare.setVisibility(View.VISIBLE);
+            toggleBtnShare.setChecked(mTrip.isShared());
+            toggleBtnShare.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Log.d(TAG, String.format("Share: %s", isChecked));
                 mTrip.setShared(isChecked);
+                if(isChecked) {
+                    tvShare.setText(R.string.unshare);
+                } else {
+                    tvShare.setText(R.string.share);
+                }
                 mTrip.saveInBackground();
             });
+            if(mTrip.isShared()) {
+                tvShare.setText(R.string.unshare);
+            } else {
+                tvShare.setText(R.string.share);
+            }
         } else {
             tvShare.setVisibility(View.GONE);
-            cbShare.setVisibility(View.GONE);
+            toggleBtnShare.setVisibility(View.GONE);
         }
     }
 

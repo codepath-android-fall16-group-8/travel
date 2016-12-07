@@ -138,7 +138,7 @@ public class StoryPlace extends ParseObject {
     public String getPhotoUrl() {
         String photoUrl = getString(PHOTO_URL);
         if (photoUrl == null || TextUtils.isEmpty(photoUrl)) {
-            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+            return "http://webvision.med.utah.edu/wp-content/uploads/2012/06/50-percent-gray.jpg";
         }
         return photoUrl;
     }

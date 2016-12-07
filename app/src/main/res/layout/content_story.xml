@@ -17,27 +17,30 @@
         android:textAppearance="@style/textMedium"
         style="@style/textViewWithDrawable"/>
 
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/cbShare"
-        android:button="@drawable/checkbox_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ToggleButton
+        android:id="@+id/toggleBtnShare"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/space"
+        android:background="@drawable/toggle_selector"
+        android:textOff=""
+        android:textOn="" />
 
     <TextView
         android:id="@+id/tvShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/cbShare"
-        android:layout_toStartOf="@+id/cbShare"
+        android:layout_toLeftOf="@+id/toggleBtnShare"
+        android:layout_toStartOf="@+id/toggleBtnShare"
         android:layout_marginRight="@dimen/margin_s"
         android:layout_marginEnd="@dimen/margin_s"
-        android:layout_alignTop="@+id/cbShare"
-        android:layout_alignBottom="@+id/cbShare"
+        android:layout_alignTop="@+id/toggleBtnShare"
+        android:layout_alignBottom="@+id/toggleBtnShare"
         android:gravity="center_vertical"
-        android:text="@string/share_label"
+        android:text="@string/share"
         android:textAppearance="@style/textMedium"/>
 
     <android.support.v7.widget.RecyclerView

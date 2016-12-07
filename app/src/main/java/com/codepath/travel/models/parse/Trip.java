@@ -79,7 +79,7 @@ public class Trip extends ParseObject {
     public String getCoverPicUrl() {
         String coverUrl = getString(PHOTO_URL);
         if (coverUrl == null || TextUtils.isEmpty(coverUrl)) {
-            return "http://www.english-heritage.org.uk/content/properties/stonehenge/things-to-do/stonehenge-in-day";
+            return "http://webvision.med.utah.edu/wp-content/uploads/2012/06/50-percent-gray.jpg";
         }
         return coverUrl;
     }
@@ -178,7 +178,7 @@ public class Trip extends ParseObject {
      * @param callback the callback function to call
      */
     public static void getAllTripsForUser(String userId, boolean includeUser,
-            FindCallback<Trip> callback) {
+                                          FindCallback<Trip> callback) {
         ParseQuery<Trip> tripQuery = ParseQuery.getQuery(TRIP_CLASS_NAME);
         tripQuery.whereEqualTo(USER_KEY, ParseObject.createWithoutData(ParseUser.class, userId));
         tripQuery.addDescendingOrder(START_DATE_KEY);
@@ -215,7 +215,7 @@ public class Trip extends ParseObject {
      * @param callback the callback function to call
      */
     public static void getUpcomingTripsForUser(String userId, boolean includeUser,
-            FindCallback<Trip> callback) {
+                                               FindCallback<Trip> callback) {
         ParseQuery<Trip> upcomingTrips = ParseQuery.getQuery(TRIP_CLASS_NAME);
         upcomingTrips.whereGreaterThanOrEqualTo(END_DATE_KEY, new Date()); // ends now or today
 
