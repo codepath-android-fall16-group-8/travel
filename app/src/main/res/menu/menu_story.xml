@@ -4,15 +4,8 @@
     tools:context=".activities.PlaceSuggestionActivity">
 
     <item
-        android:id="@+id/miCollage"
-        android:orderInCategory="20"
-        android:title="@string/view_collage"
-        android:icon="@android:drawable/ic_menu_gallery"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/miMap"
-        android:orderInCategory="30"
+        android:orderInCategory="10"
         android:title="Map"
         android:icon="@android:drawable/ic_menu_mapmode"
         app:showAsAction="ifRoom" />

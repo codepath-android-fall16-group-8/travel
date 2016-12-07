@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:color/white" >
+    style="@style/cardViewBase">
 
-    <ImageView
-        android:id="@+id/ivCoverPhoto"
-        android:layout_width="@dimen/item_collage_width"
-        android:layout_height="@dimen/item_collage_height"
-        tools:src="@mipmap/ic_launcher" />
-
-    <TextView
-        android:id="@+id/tvPlaceName"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@android:color/black"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        tools:text="Place Name" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="@dimen/item_collage_size"
+            android:layout_height="@dimen/item_collage_size"
+            android:paddingBottom="@dimen/space"
+            tools:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tvCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="@style/textMedium"
+            tools:text="Caption" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

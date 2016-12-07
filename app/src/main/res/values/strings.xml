@@ -92,13 +92,23 @@
     <string name="google_maps_api_key">AIzaSyAS09XEATHFoSrPgxeC0ItjctwmxdLi9AQ</string>
 
     <!-- Media Collage Activity -->
-    <string name="hint_compose_note">Memories go here...</string>
-    <string name="save">Save</string>
-    <string name="set_story_place_cover">Set place cover</string>
-    <string name="set_trip_cover">Set trip cover</string>
-    <string name="set_user_cover">Set user cover</string>
     <string name="camera">Take Photo</string>
     <string name="photo_library">Add Photo</string>
     <string name="note">Add Note</string>
+    <string name="hint_compose_note">Memories go here...</string>
+    <string name="save">Save</string>
+    <string name="set_photo_label">Set photo as...</string>
+    <string name="set_photo_none">none</string>
+    <string name="set_story_place_cover">Story cover</string>
+    <string name="set_trip_cover">Trip cover</string>
+    <string name="set_user_cover">Profile cover</string>
+    <string name="set_user_profile">Profile photo</string>
+    <string-array name="set_photo_options_array">
+        <item>@string/set_photo_none</item>
+        <item>@string/set_story_place_cover</item>
+        <item>@string/set_trip_cover</item>
+        <item>@string/set_user_cover</item>
+        <item>@string/set_user_profile</item>
+    </string-array>
 
 </resources>

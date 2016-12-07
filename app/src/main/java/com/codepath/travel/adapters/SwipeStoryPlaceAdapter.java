@@ -11,7 +11,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,13 +52,10 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
     private int datesRelation; // PAST, NOW, or FUTURE
 
     public interface StoryPlaceListener {
-        void cameraOnClick(int position);
-        void galleryOnClick(int position);
-        void noteOnClick(int position);
+        void mediaOnClick(int position);
         void checkinOnClick(int position, Date checkinDate);
         void onStoryPlaceDelete(int position);
         void onStoryPlaceInfo(int position);
-        void mediaOnClick(Media media, int mPos, int storyPos);
     }
 
     public SwipeStoryPlaceAdapter(Context context, List<StoryPlace> storyPlaces, boolean isOwner,
@@ -114,8 +110,8 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         notifyItemRemoved(position);
     }
 
-    public class StoryPlaceViewHolder extends RecyclerView.ViewHolder
-            implements ItemTouchHelperViewHolder, MediaItemAdapter.MediaItemListener {
+    public class StoryPlaceViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperViewHolder {
 
         // main item views
         @BindView(R.id.ivPlacePhoto) ImageView ivPlacePhoto;
@@ -123,7 +119,6 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @BindView(R.id.cbCheckin) AppCompatCheckBox cbCheckin;
         @BindView(R.id.tvCheckin) TextView tvCheckin;
         @BindView(R.id.rbUserRating) RatingBar rbUserRating;
-        @BindView(R.id.rvMediaHolder) RecyclerView rvMediaItems;
 
         // swipe views
         @BindView(swipe) SwipeLayout swipeLayout;
@@ -131,29 +126,18 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @BindView(R.id.ivDelete) ImageView ivDelete;
         @BindView(R.id.bottomRight) CardView rightMenu;
         @BindView(R.id.ivInfo) ImageView ivInfo;
-//        @BindView(R.id.ivEdit) ImageView ivEdit;
-        @BindView(R.id.ivNote) ImageView ivNote;
-        @BindView(R.id.ivCamera) ImageView ivCamera;
-        @BindView(R.id.ivPhotos) ImageView ivPhotos;
+        @BindView(R.id.ivMedia) ImageView ivMedia;
 
         // strings
         @BindString(R.string.checkin) String checkin;
         @BindString(R.string.forgot_checkin) String forgot_checkin;
 
         // variables
-        private ArrayList<Media> mMediaItems;
-        private MediaItemAdapter mMediaAdapter;
         private StoryPlace mStoryPlace;
 
         public StoryPlaceViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            mMediaItems = new ArrayList<>();
-            mMediaAdapter = new MediaItemAdapter(mContext, mMediaItems, this);
-            rvMediaItems.setAdapter(mMediaAdapter);
-            rvMediaItems.setLayoutManager(
-                    new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
         }
 
         public void setupSwipe(boolean enabled) {
@@ -178,19 +162,6 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
 
             // check-in and user rating
             setupCheckinCheckbox(storyPlace);
-
-            // media items
-            Media.getMediaForStoryPlace(storyPlace, (mediaObjects, e) -> {
-                if (e == null) {
-                    mMediaItems.clear();
-                    mMediaItems.addAll(mediaObjects);
-                    mMediaAdapter.notifyDataSetChanged();
-                    // show/hide media items recycler view
-                    rvMediaItems.setVisibility(!mediaObjects.isEmpty() ? VISIBLE : GONE);
-                } else {
-                    Log.d("Media fetch failed", e.toString());
-                }
-            });
         }
 
         private void setupListeners() {
@@ -199,10 +170,7 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
 
             // right menu
             ivInfo.setOnClickListener(v -> listener.onStoryPlaceInfo(getRealPosition(mStoryPlace)));
-//            ivEdit.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
-            ivNote.setOnClickListener(v -> listener.noteOnClick(getRealPosition(mStoryPlace)));
-            ivCamera.setOnClickListener(v -> listener.cameraOnClick(getRealPosition(mStoryPlace)));
-            ivPhotos.setOnClickListener(v -> listener.galleryOnClick(getRealPosition(mStoryPlace)));
+            ivMedia.setOnClickListener(v -> listener.mediaOnClick(getRealPosition(mStoryPlace)));
 
             // click listener on surface view to swipe right on tap
             swipeLayout.getSurfaceView().setOnClickListener(v -> {
@@ -312,13 +280,15 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
                             storyPlace.getCheckinTime());
                 }
             });
-            rbUserRating.setRating((float) storyPlace.getRating());
-            rbUserRating.setIsIndicator(false);
-            rbUserRating.setVisibility(VISIBLE);
-            rbUserRating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-                storyPlace.setRating(rating);
-                storyPlace.saveInBackground();
-            });
+            if (checkIn != null) {
+                rbUserRating.setRating((float) storyPlace.getRating());
+                rbUserRating.setIsIndicator(false);
+                rbUserRating.setVisibility(VISIBLE);
+                rbUserRating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                    storyPlace.setRating(rating);
+                    storyPlace.saveInBackground();
+                });
+            }
         }
 
         private void showMyPastCheckin(StoryPlace storyPlace) {
@@ -367,20 +337,6 @@ public class SwipeStoryPlaceAdapter extends RecyclerSwipeAdapter<SwipeStoryPlace
         @Override
         public void onItemClear() {
             itemView.setBackgroundColor(0);
-        }
-
-        @Override
-        public void photoOnClick(int mPosition) {
-            Media mediaItem = mMediaItems.get(mPosition);
-            Log.d("photoOnClick", mediaItem.getObjectId());
-            listener.mediaOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
-        }
-
-        @Override
-        public void noteOnClick(int mPosition) {
-            Media mediaItem = mMediaItems.get(mPosition);
-            Log.d("noteOnClick", mediaItem.getCaption());
-            listener.mediaOnClick(mediaItem, mPosition, getRealPosition(mStoryPlace));
         }
     }
 }

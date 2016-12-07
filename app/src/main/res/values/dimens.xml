@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="icon_size">24dp</dimen>
+    <dimen name="icon_tap_size">48dp</dimen>
     <!-- subtitles -->
     <dimen name="subtitle_height">48dp</dimen>
     <!-- vertical space between content -->
@@ -27,11 +28,7 @@
     <dimen name="thumbnail_size">80dp</dimen>
 
     <!-- Collage Activity -->
-    <dimen name="item_collage_width">200dp</dimen>
-    <dimen name="item_collage_height">100dp</dimen>
-
-    <!-- Story View -->
-    <dimen name="media_size">120dp</dimen>
+    <dimen name="item_collage_size">175dp</dimen>
     
     <!-- place suggestion activity -->
     <dimen name="destination_backdrop">200dp</dimen>

@@ -15,7 +15,7 @@
         android:background="@android:color/white"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:expandedTitleTextAppearance="@style/collapsedAppBar"
-            app:expandedTitleGravity="center_horizontal">
+            app:expandedTitleGravity="bottom|center_horizontal">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
                 <ImageView
                     android:id="@+id/ivBackDrop"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="250dp"
                     tools:background="@color/cardview_light_background"/>
 
                 <FrameLayout
@@ -52,31 +52,37 @@
                         android:layout_height="match_parent" />
                 </FrameLayout>
 
-                <TextView
-                    android:id="@+id/tvCheckinDate"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/flUserPicBorderContainer"
-                    android:layout_marginTop="30dp"
-                    android:layout_centerHorizontal="true"
-                    tools:text="Check in date"
-                    android:textAppearance="@style/textMedium"
-                    android:textColor="@color/tertiary_text"
-                    android:visibility="gone"/>
+                    android:orientation="vertical"
+                    android:layout_centerHorizontal="true">
+                    <!-- checkin date if available -->
+                    <TextView
+                        android:id="@+id/tvCheckinDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space"
+                        tools:text="Check in date"
+                        android:textAppearance="@style/textMedium"
+                        android:textColor="@color/tertiary_text"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone" />
 
-                <!-- rating if available -->
-                <RatingBar
-                    android:id="@+id/rbUserRating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tvCheckinDate"
-                    android:layout_centerHorizontal="true"
-                    android:numStars="5"
-                    android:stepSize="0.5"
-                    android:rating="3"
-                    android:isIndicator="true"
-                    style="@style/heartRatingBar"
-                    android:visibility="gone"/>
+                    <!-- rating if available -->
+                    <RatingBar
+                        android:id="@+id/rbUserRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        android:rating="3"
+                        android:isIndicator="true"
+                        style="@style/heartRatingBar"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone"/>
+                </LinearLayout>
             </RelativeLayout>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -84,7 +90,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:titleTextColor="@android:color/white"
                 app:layout_collapseMode="pin" />
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <!-- media items -->

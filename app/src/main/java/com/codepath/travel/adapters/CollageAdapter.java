@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.travel.R;
+import com.codepath.travel.adapters.viewholders.CollageItemViewHolder;
 import com.codepath.travel.helper.ImageUtils;
 import com.codepath.travel.models.parse.Media;
 

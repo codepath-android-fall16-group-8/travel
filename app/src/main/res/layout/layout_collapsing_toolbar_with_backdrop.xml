@@ -11,7 +11,7 @@
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:expandedTitleTextAppearance="@style/collapsedAppBar"
-    app:expandedTitleGravity="top|left"
+    app:expandedTitleGravity="bottom|right"
     app:expandedTitleMarginTop="40dp"
     app:expandedTitleMarginStart="50dp">
 

@@ -25,7 +25,7 @@ public class StoryPlacePagerAdapter extends FragmentPagerAdapter {
 
   @Override
   public Fragment getItem(int position) {
-    return StoryPlaceCardFragment.newInstance(mStoryPlaces.get(position));
+    return StoryPlaceCardFragment.newInstance(mStoryPlaces.get(position), position);
   }
 
   @Override

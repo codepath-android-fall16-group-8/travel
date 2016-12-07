@@ -154,20 +154,8 @@ public class StoryPlace extends ParseObject {
         Log.d(TAG, String.format("Querying Parse for StoryPlace with objectId: %s", objectId));
         ParseQuery<StoryPlace> placeQuery = ParseQuery.getQuery(STORY_PLACE_CLASS_NAME);
         placeQuery.whereEqualTo(OBJECT_ID_KEY, objectId);
+        placeQuery.include(TRIP_KEY);
         placeQuery.getFirstInBackground(callback);
-    }
-
-
-    /**
-     * Find media items that belong to the given story place id and call the given callback.
-     *
-     * @param storyPlaceId the story place id
-     * @param callback the callback function to call
-     */
-    public static void getMediaForStoryPlaceId(String storyPlaceId, FindCallback<Media> callback) {
-        ParseQuery<Media> mediaQuery = ParseQuery.getQuery(MEDIA_CLASS_NAME);
-        mediaQuery.whereEqualTo(STORY_PLACE_KEY, ParseObject.createWithoutData(StoryPlace.class, storyPlaceId));
-        mediaQuery.findInBackground(callback);
     }
 
     /**

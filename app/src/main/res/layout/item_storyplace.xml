@@ -25,14 +25,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/ivDelete"
                 app:srcCompat="@drawable/ic_delete"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"/>
+                android:layout_width="@dimen/icon_tap_size"
+                android:layout_height="@dimen/icon_tap_size"
+                android:scaleType="center"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -49,38 +49,21 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/ivInfo"
                 app:srcCompat="@drawable/ic_info"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"/>
+                android:layout_width="@dimen/icon_tap_size"
+                android:layout_height="@dimen/icon_tap_size"
+                android:scaleType="center"/>
 
             <ImageView
-                android:id="@+id/ivNote"
-                app:srcCompat="@drawable/ic_add_note"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"/>
-
-            <ImageView
-                android:id="@+id/ivCamera"
-                app:srcCompat="@drawable/ic_add_photo"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_marginEnd="@dimen/margin"/>
-
-            <ImageView
-                android:id="@+id/ivPhotos"
-                app:srcCompat="@drawable/ic_photo_library"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"/>
+                android:id="@+id/ivMedia"
+                app:srcCompat="@drawable/ic_create"
+                android:layout_width="@dimen/icon_tap_size"
+                android:layout_height="@dimen/icon_tap_size"
+                android:scaleType="center"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -91,74 +74,61 @@
         android:layout_height="wrap_content"
         style="@style/cardViewBase">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/llHeader"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:id="@+id/llHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/ivPlacePhoto"
+                android:layout_width="@dimen/thumbnail_size"
+                android:layout_height="@dimen/thumbnail_size"
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/ic_launcher" />
 
-                <ImageView
-                    android:id="@+id/ivPlacePhoto"
-                    android:layout_width="@dimen/thumbnail_size"
-                    android:layout_height="@dimen/thumbnail_size"
-                    android:scaleType="centerCrop"
-                    tools:src="@mipmap/ic_launcher" />
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/cbCheckin"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="@dimen/space"
+                android:button="@drawable/checkbox_checkin" />
 
-                <android.support.v7.widget.AppCompatCheckBox
-                    android:id="@+id/cbCheckin"
-                    android:layout_width="@dimen/icon_size"
-                    android:layout_height="@dimen/icon_size"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="@dimen/space"
-                    android:button="@drawable/checkbox_checkin" />
+            <TextView
+                android:id="@+id/tvCheckin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/cbCheckin"
+                android:layout_toStartOf="@id/cbCheckin"
+                android:layout_marginRight="@dimen/margin_s"
+                android:layout_marginEnd="@dimen/margin_s"
+                android:layout_marginBottom="@dimen/margin"
+                tools:text="@string/forgot_checkin"
+                android:textAppearance="@style/textMedium"
+                android:textColor="@color/tertiary_text"/>
 
-                <TextView
-                    android:id="@+id/tvCheckin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/cbCheckin"
-                    android:layout_toStartOf="@id/cbCheckin"
-                    android:layout_marginRight="@dimen/margin_s"
-                    android:layout_marginEnd="@dimen/margin_s"
-                    android:layout_marginBottom="@dimen/margin"
-                    tools:text="@string/forgot_checkin"
-                    android:textAppearance="@style/textMedium"
-                    android:textColor="@color/tertiary_text"/>
+            <RatingBar
+                android:id="@+id/rbUserRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cbCheckin"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:numStars="5"
+                android:stepSize="0.5"
+                android:rating="3"
+                style="@style/heartRatingBar" />
 
-                <RatingBar
-                    android:id="@+id/rbUserRating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/cbCheckin"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:numStars="5"
-                    android:stepSize="0.5"
-                    android:rating="3"
-                    style="@style/heartRatingBar" />
-
-                <TextView
-                    android:id="@+id/tvPlaceName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/ivPlacePhoto"
-                    android:layout_toStartOf="@id/tvCheckin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    tools:text="Place Name Name Name Name Name Very Long Name"
-                    android:textAppearance="@style/textMediumBold"/>
-            </RelativeLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvMediaHolder"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/media_size"
-                android:layout_marginTop="@dimen/space"
-                android:layout_marginBottom="@dimen/margin_s"/>
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tvPlaceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/ivPlacePhoto"
+                android:layout_toStartOf="@id/tvCheckin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                tools:text="Place Name Name Name Name Name Very Long Name"
+                android:textAppearance="@style/textMediumBold"/>
+        </RelativeLayout>
     </android.support.v7.widget.CardView>
 </com.daimajia.swipe.SwipeLayout>
