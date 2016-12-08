@@ -7,7 +7,10 @@ Members: Aditi.K ,Huyen.T, Raj Praveen
 The Explorer is your travel buddy. It stays with you throughout your journey. It lets you look for places, plan your trip, post pictures and add reviews/ratings. It lets you create a story out of your journey which you can share with your friends and family and cherish those moments.
 
 ## Video Walkthrough
-The latest video walkthrough can be found [here](http://imgur.com/oQU8cJc). Updated 11/21/2016
+- Updated 12/07/2016 Trip Feed [video walkthrough] (http://imgur.com/a/OjZQu)
+- Updated 12/07/2016 Trip Creation [video walkthrough] (http://imgur.com/a/5R990)
+- Updated 11/21/2016 [video walkthrough] (http://imgur.com/oQU8cJc). 
+
 
 ## Wireframes
 
